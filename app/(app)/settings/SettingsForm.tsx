@@ -35,7 +35,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
       if (!res.ok) throw new Error(data.error ?? "Save failed");
       setS(data.settings);
       setSave("saved");
-      if (!data.persisted) setMsg("Saved in memory - this filesystem isn't writable (add a KV store for durable prod settings).");
+      setMsg(data.storage === "cookie" ? "Saved for this browser." : "");
       setTimeout(() => setSave("idle"), 2500);
     } catch (err) {
       setSave("error");

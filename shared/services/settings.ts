@@ -1,5 +1,6 @@
 import { kvGet, kvSet } from "./store";
 import { settingsSchema, type Settings } from "./settings-schema";
+import { cookies } from "next/headers";
 
 /**
  * PLATFORM SETTINGS - owner-level configuration (single owner). Runtime layer.
@@ -16,6 +17,33 @@ import { settingsSchema, type Settings } from "./settings-schema";
 export * from "./settings-schema";
 
 const SETTINGS_KEY = "settings";
+export const SETTINGS_COOKIE = "sampeer_settings";
+
+function parseStoredSettings(raw: string | undefined): Partial<Settings> | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as Partial<Settings>;
+  } catch {
+    try {
+      return JSON.parse(decodeURIComponent(raw)) as Partial<Settings>;
+    } catch {
+      return null;
+    }
+  }
+}
+
+export function encodeSettingsCookie(settings: Settings): string {
+  return encodeURIComponent(JSON.stringify(settings));
+}
+
+async function cookieSettings(): Promise<Partial<Settings> | null> {
+  try {
+    const store = await cookies();
+    return parseStoredSettings(store.get(SETTINGS_COOKIE)?.value);
+  } catch {
+    return null;
+  }
+}
 
 /** Defaults seeded from env so an unconfigured install matches today's behaviour. */
 function defaults(): Settings {
@@ -37,7 +65,7 @@ function defaults(): Settings {
 /** Current settings: stored values merged over defaults (forward-compatible). */
 export async function getSettings(): Promise<Settings> {
   const base = defaults();
-  const stored = await kvGet<Partial<Settings>>(SETTINGS_KEY);
+  const stored = (await cookieSettings()) ?? (await kvGet<Partial<Settings>>(SETTINGS_KEY));
   if (!stored) return base;
   return settingsSchema.parse({
     branding: { ...base.branding, ...(stored.branding ?? {}) },
