@@ -193,7 +193,7 @@ export default function InvoiceForm() {
               />
               <button
                 type="button"
-                className="h-10 rounded-lg border border-line text-slate-400 hover:text-red-500 sm:col-span-1"
+                className="h-10 rounded-lg border border-line text-muted hover:text-danger sm:col-span-1"
                 onClick={() => setItems((p) => (p.length > 1 ? p.filter((_, j) => j !== i) : p))}
                 aria-label="Remove item"
               >
@@ -231,7 +231,7 @@ export default function InvoiceForm() {
             : "Generate & Send Invoice"}
         </button>
         {run.phase === "polling" && (
-          <span className="text-sm text-slate-500">Status: {run.status}</span>
+          <span className="text-sm text-muted">Status: {run.status}</span>
         )}
       </div>
 
@@ -245,7 +245,7 @@ export default function InvoiceForm() {
 function Result({ run }: { run: RunState }) {
   if (run.phase === "error") {
     return (
-      <pre className="whitespace-pre-wrap rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      <pre className="whitespace-pre-wrap rounded-xl border border-danger/30 bg-danger/5 p-4 text-sm text-danger">
         {run.message}
       </pre>
     );
@@ -255,18 +255,18 @@ function Result({ run }: { run: RunState }) {
   return (
     <div className="space-y-4 rounded-xl border border-line bg-panel p-6 shadow-soft">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-brand">
+        <h3 className="font-display text-lg font-medium text-brand">
           Invoice {o.invoice.invoiceNumber} / {o.invoice.currency} {o.summary.total}
         </h3>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            o.emailSent ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+            o.emailSent ? "bg-brand-50 text-brand-700" : "bg-warn/10 text-warn"
           }`}
         >
           {o.emailSent ? "Emailed" : "PDF ready (email not sent)"}
         </span>
       </div>
-      <div className="grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+      <div className="grid gap-2 text-sm text-muted sm:grid-cols-2">
         <span>Subtotal: {o.summary.subtotal}</span>
         <span>Discount: {o.summary.discount}</span>
         <span>Tax: {o.summary.tax}</span>
@@ -283,9 +283,9 @@ function Result({ run }: { run: RunState }) {
           Download PDF
         </button>
       )}
-      <details className="text-xs text-slate-500">
+      <details className="text-xs text-muted">
         <summary className="cursor-pointer">View JSON</summary>
-        <pre className="mt-2 overflow-auto rounded bg-slate-50 p-3">
+        <pre className="mt-2 overflow-auto rounded bg-stone-50 p-3">
           {JSON.stringify(stripPdf(o), null, 2)}
         </pre>
       </details>
@@ -298,7 +298,7 @@ function Result({ run }: { run: RunState }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <fieldset className="rounded-2xl border border-line bg-panel p-6 shadow-soft">
-      <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
+      <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-muted">
         {title}
       </legend>
       <div className="grid gap-4 sm:grid-cols-2">{children}</div>
@@ -323,16 +323,16 @@ function Field({
 }) {
   return (
     <label className={`block text-sm ${wide ? "sm:col-span-2" : ""}`}>
-      <span className="mb-1 block font-medium text-slate-600">
+      <span className="mb-1 block font-medium text-ink">
         {label}
-        {required && <span className="text-red-400"> *</span>}
+        {required && <span className="text-danger"> *</span>}
       </span>
       <input
         type={type}
         value={v}
         onChange={onChange}
         required={required}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+        className="w-full rounded-lg border border-line px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
       />
     </label>
   );

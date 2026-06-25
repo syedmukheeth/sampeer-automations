@@ -24,7 +24,7 @@ export function PageHeader({
     >
       <div className="flex items-start gap-4">
         {icon && (
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand shadow-soft">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand">
             {icon}
           </div>
         )}
@@ -34,7 +34,7 @@ export function PageHeader({
               {eyebrow}
             </p>
           )}
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+          <h1 className="mt-2 font-display text-3xl font-medium tracking-tight text-ink sm:text-4xl">
             {title}
           </h1>
           {description && (

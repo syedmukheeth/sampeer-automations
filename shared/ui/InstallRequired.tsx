@@ -6,10 +6,10 @@ import { InstallToggle } from "./InstallToggle";
 export function InstallRequired({ slug, name }: { slug: string; name: string }) {
   return (
     <Card className="mx-auto flex max-w-lg flex-col items-center px-6 py-14 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
+      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand">
         <PackageOpen className="h-7 w-7" />
       </div>
-      <h1 className="mt-4 text-xl font-bold text-ink">{name} isn&rsquo;t installed</h1>
+      <h1 className="mt-4 text-xl font-medium text-ink">{name} isn&rsquo;t installed</h1>
       <p className="mt-1 max-w-sm text-sm text-muted">
         Install this automation to run it and surface it in your sidebar and dashboard.
         You can uninstall any time from the Library.

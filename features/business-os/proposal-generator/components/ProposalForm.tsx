@@ -198,7 +198,7 @@ export default function ProposalForm() {
               />
               <button
                 type="button"
-                className="h-10 rounded-lg border border-line text-slate-400 hover:text-red-500 sm:col-span-1"
+                className="h-10 rounded-lg border border-line text-muted hover:text-danger sm:col-span-1"
                 onClick={() => setItems((p) => (p.length > 1 ? p.filter((_, j) => j !== i) : p))}
                 aria-label="Remove item"
               >
@@ -231,7 +231,7 @@ export default function ProposalForm() {
         >
           {run.phase === "submitting" || run.phase === "polling" ? "Generating..." : "Generate & Send Proposal"}
         </button>
-        {run.phase === "polling" && <span className="text-sm text-slate-500">Status: {run.status}</span>}
+        {run.phase === "polling" && <span className="text-sm text-muted">Status: {run.status}</span>}
       </div>
 
       <Result run={run} />
@@ -242,7 +242,7 @@ export default function ProposalForm() {
 function Result({ run }: { run: RunState }) {
   if (run.phase === "error") {
     return (
-      <pre className="whitespace-pre-wrap rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+      <pre className="whitespace-pre-wrap rounded-xl border border-danger/30 bg-danger/5 p-4 text-sm text-danger">
         {run.message}
       </pre>
     );
@@ -252,18 +252,18 @@ function Result({ run }: { run: RunState }) {
   return (
     <div className="space-y-4 rounded-xl border border-line bg-panel p-6 shadow-soft">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-brand">
+        <h3 className="font-display text-lg font-medium text-brand">
           {o.proposal.title} / {o.proposal.currency} {o.summary.total}
         </h3>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            o.emailSent ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+            o.emailSent ? "bg-brand-50 text-brand-700" : "bg-warn/10 text-warn"
           }`}
         >
           {o.emailSent ? "Emailed" : "PDF ready (email not sent)"}
         </span>
       </div>
-      <p className="text-sm text-slate-600">{o.executiveSummary}</p>
+      <p className="text-sm text-muted">{o.executiveSummary}</p>
       {o.pdfBase64 && (
         <button
           type="button"
@@ -282,7 +282,7 @@ function Result({ run }: { run: RunState }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <fieldset className="rounded-2xl border border-line bg-panel p-6 shadow-soft">
-      <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</legend>
+      <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-muted">{title}</legend>
       <div className="grid gap-4 sm:grid-cols-2">{children}</div>
     </fieldset>
   );
@@ -305,16 +305,16 @@ function Field({
 }) {
   return (
     <label className={`block text-sm ${wide ? "sm:col-span-2" : ""}`}>
-      <span className="mb-1 block font-medium text-slate-600">
+      <span className="mb-1 block font-medium text-ink">
         {label}
-        {required && <span className="text-red-400"> *</span>}
+        {required && <span className="text-danger"> *</span>}
       </span>
       <input
         type={type}
         value={v}
         onChange={onChange}
         required={required}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+        className="w-full rounded-lg border border-line px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
       />
     </label>
   );
@@ -331,12 +331,12 @@ function Textarea({
 }) {
   return (
     <label className="block text-sm sm:col-span-2">
-      <span className="mb-1 block font-medium text-slate-600">{label}</span>
+      <span className="mb-1 block font-medium text-ink">{label}</span>
       <textarea
         value={v}
         onChange={onChange}
         rows={3}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+        className="w-full rounded-lg border border-line px-3 py-2 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
       />
     </label>
   );

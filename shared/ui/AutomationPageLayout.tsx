@@ -40,14 +40,14 @@ export function AutomationPageLayout({
       <div className="overflow-hidden rounded-3xl border border-line/80 bg-panel/90 shadow-soft backdrop-blur-sm">
         <div className="grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_auto]">
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-stone-50 text-brand">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 text-brand">
               <Icon className="h-7 w-7" strokeWidth={1.9} />
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
                 {eyebrow}
               </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink">{name}</h1>
+              <h1 className="mt-2 font-display text-3xl font-medium tracking-tight text-ink">{name}</h1>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{description}</p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export function AutomationPageLayout({
           <div className="grid border-t border-line/80 bg-stone-50/55 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="border-b border-line/70 px-6 py-4 last:border-b-0 sm:border-r sm:last:border-r-0 lg:border-b-0">
-                <div className="text-xl font-semibold tracking-tight text-ink">{s.value}</div>
+                <div className="tabular text-xl font-semibold tracking-tight text-ink">{s.value}</div>
                 <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-muted">{s.label}</div>
               </div>
             ))}

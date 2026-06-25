@@ -42,7 +42,6 @@ export function ProposalAutomationView({
       name="Proposal Generator"
       description="Turn a brief into a persuasive, branded proposal PDF with a priced investment table - and email it to the client."
       icon={FileText}
-      accent="from-sky-500 to-indigo-600"
       status="live"
       stats={[
         { label: "Executions", value: String(metrics.total) },
@@ -61,12 +60,12 @@ export function ProposalAutomationView({
                 return (
                   <Card key={step.title} className="p-5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-600">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand">
                         <Icon className="h-5 w-5" />
                       </div>
                       <span className="text-xs font-semibold text-muted">Step {i + 1}</span>
                     </div>
-                    <h3 className="mt-3 text-sm font-bold text-ink">{step.title}</h3>
+                    <h3 className="mt-3 text-base font-medium text-ink">{step.title}</h3>
                     <p className="mt-1 text-sm text-muted">{step.body}</p>
                   </Card>
                 );

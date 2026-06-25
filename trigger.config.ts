@@ -9,6 +9,7 @@ export default defineConfig({
   dirs: [
     "./features/business-os/invoice-generator/trigger",
     "./features/business-os/proposal-generator/trigger",
+    "./features/business-os/expense-tracker/trigger",
   ],
   maxDuration: 300,
   machine: "small-2x", // headroom for @react-pdf/renderer font embedding

@@ -65,12 +65,12 @@ export function InvoiceAutomationView({
                 return (
                   <Card key={step.title} className="p-5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand">
                         <Icon className="h-5 w-5" />
                       </div>
                       <span className="text-xs font-semibold text-muted">Step {i + 1}</span>
                     </div>
-                    <h3 className="mt-3 text-sm font-bold text-ink">{step.title}</h3>
+                    <h3 className="mt-3 text-base font-medium text-ink">{step.title}</h3>
                     <p className="mt-1 text-sm text-muted">{step.body}</p>
                   </Card>
                 );

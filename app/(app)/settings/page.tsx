@@ -34,12 +34,12 @@ export default async function SettingsPage() {
             const Icon = s.icon;
             return (
               <Card key={s.title} className="flex items-start gap-4 p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-brand-100 bg-brand-50 text-brand">
                   <Icon className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-ink">{s.title}</h3>
+                    <h3 className="text-base font-medium text-ink">{s.title}</h3>
                     <StatusBadge tone="soon">Soon</StatusBadge>
                   </div>
                   <p className="mt-1 text-sm text-muted">{s.body}</p>

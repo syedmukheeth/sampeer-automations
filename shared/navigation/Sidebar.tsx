@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Home, Settings, LibraryBig, Sparkles, Menu, X, LogOut } from "lucide-react";
+import { Home, Settings, LibraryBig, Menu, X, LogOut } from "lucide-react";
 import { cn } from "@shared/lib/cn";
 import { BrandLogo } from "@shared/ui/BrandLogo";
 import { operatingSystems } from "@features/registry";
@@ -18,7 +18,7 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
         <div className="flex items-center gap-3">
           <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-sm font-semibold text-white">Sampeer Studio</p>
+            <p className="truncate font-display text-base font-medium text-white">Sampeer Studio</p>
             <p className="text-[11px] text-stone-500">Automations console</p>
           </div>
         </div>
@@ -86,7 +86,7 @@ export function MobileNav({ installed = [] }: { installed?: string[] }) {
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
           <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-line" />
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-sm font-semibold text-ink">Sampeer Studio</p>
+            <p className="truncate font-display text-base font-medium text-ink">Sampeer Studio</p>
             <p className="text-[11px] text-muted">Automations console</p>
           </div>
         </Link>
@@ -122,7 +122,7 @@ export function MobileNav({ installed = [] }: { installed?: string[] }) {
               <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
                 <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
                 <div className="min-w-0 leading-tight">
-                  <p className="truncate text-sm font-semibold text-white">Sampeer Studio</p>
+                  <p className="truncate font-display text-base font-medium text-white">Sampeer Studio</p>
                   <p className="text-[11px] text-stone-500">Automations console</p>
                 </div>
               </Link>
@@ -279,7 +279,11 @@ function AutomationNavItem({
         />
         <span className="truncate">{label}</span>
       </span>
-      {!live && <Sparkles className="h-3 w-3 text-stone-700" />}
+      {!live && (
+        <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-stone-600">
+          Soon
+        </span>
+      )}
     </span>
   );
 

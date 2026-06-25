@@ -51,7 +51,7 @@ export function InstallToggle({
         "inline-flex items-center justify-center gap-1.5 rounded-xl font-semibold transition duration-200 disabled:opacity-60",
         lg ? "px-5 py-2.5 text-sm" : "px-3 py-1.5 text-xs",
         installed
-          ? "border border-line bg-panel text-muted hover:border-rose-300 hover:text-rose-700"
+          ? "border border-line bg-panel text-muted hover:border-danger/40 hover:text-danger"
           : "bg-brand text-white shadow-soft hover:bg-brand-700",
       )}
     >

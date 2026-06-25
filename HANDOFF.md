@@ -9,9 +9,21 @@ is **working and verified** unless marked PENDING.
 
 A single-owner **automations dashboard** (`Sampeer Automations`) built on
 **Next.js (frontend + API routes)** + **Trigger.dev (background worker)**.
-First automation: an **AI Invoice Generator**.
 
-Pipeline:
+**BusinessOS is now complete** - six live automations across two modules:
+
+| Module  | Automation         | Kind                          | Backend            |
+|---------|--------------------|-------------------------------|--------------------|
+| Finance | Invoice Generator  | LLM-prose + PDF + email       | Trigger + Gemini   |
+| Finance | Proposal Generator | LLM-prose + PDF + email       | Trigger + Gemini   |
+| Finance | Expense Tracker    | CSV → categorize + PDF report | Trigger + Gemini   |
+| Finance | GST / Tax Calc     | Instant calc + client PDF     | Client-only (TS)   |
+| Clients | Client CRM         | kv-backed CRUD + health score | Next API + kv      |
+| Clients | Project Dashboard  | kv-backed CRUD + risk flag    | Next API + kv      |
+
+Same discipline everywhere: **all math/aggregation/scoring in TypeScript; the
+LLM only writes prose + assigns labels.** Invoice pipeline (the original
+template the generators mirror):
 ```
 Next.js form (/invoice) -> POST /api/invoices -> Trigger.dev "generate-invoice":
   1. validate()        deterministic TypeScript (src/lib/validate.ts)
@@ -24,6 +36,17 @@ Frontend polls GET /api/invoices/:runId until COMPLETED -> shows package + PDF d
 
 **Core rule:** all money math + validation in TypeScript. Gemini only writes
 prose. Totals can never be hallucinated.
+
+### Design foundation (Editorial Luxe)
+Platform-wide visual system, applied before the BusinessOS build-out:
+- **Type:** Fraunces (display, via `--font-display`) for headings + Inter
+  (`--font-sans`) for body. Loaded in `app/layout.tsx` (`next/font`), wired in
+  `tailwind.config.ts` `fontFamily`, base rules in `app/globals.css`
+  (`h1-h3 -> font-display`, `.tabular` for metrics).
+- **Color:** deep green brand ramp + gold accent. **Semantic tokens**
+  `success / warn / danger / info` in `tailwind.config.ts` - components use
+  these, never raw `rose-*/amber-*/slate-*`. Flat `brand-50` icon tiles (no
+  gradient blobs). One motion language in `shared/lib/motion.ts`.
 
 ---
 
@@ -72,6 +95,19 @@ features/
     components/ InvoiceForm.tsx           the form (client) + polling
                 InvoiceAutomationView.tsx tabbed page (Overview/Run/Config/History/Logs/Docs)
     types/index.ts           public feature types
+  business-os/proposal-generator/   mirrors invoice 1:1 (LLM + PDF + email)
+  business-os/expense-tracker/      utils/{schema,calc,validate,csv,expense-pdf}
+                                    + prompts/ + trigger/{track-expenses,expense-agent,
+                                    render-expense-pdf} + api/handlers + components.
+                                    CSV parsed client-side (utils/csv.ts); LLM only
+                                    categorizes + writes insights, calc.ts does all sums.
+  business-os/gst-calculator/       utils/{calc,gst-pdf} + components. NO trigger/api -
+                                    fully client-side, instant; PDF via @react-pdf
+                                    pdf().toBlob() in the browser.
+  business-os/client-crm/           utils/{schema,health} + service.ts (kv CRUD) +
+                                    components/ClientCrmView (cards + add/edit modal).
+  business-os/project-dashboard/    utils/{schema,status} + service.ts (kv CRUD) +
+                                    components/ProjectDashboardView (progress + risk flag).
 
 shared/
   services/auth.ts           jose sign/verify, isOwner, hasOwnerSession
@@ -107,13 +143,20 @@ app/
   (app)/page.tsx                         OVERVIEW dashboard (KPIs, revenue chart, activity)
   (app)/library/page.tsx                 Automation Library (marketplace, grouped by OS)
   (app)/settings/page.tsx                Settings shell (Profile/API Keys/Billing/Logs)
-  (app)/business-os/invoice-generator/page.tsx  renders InvoiceAutomationView
+  (app)/business-os/<slug>/page.tsx      one per automation; gates on isInstalled,
+                                         renders that feature's view. Slugs:
+                                         invoice-generator, proposal-generator,
+                                         expense-tracker, gst-calculator,
+                                         client-crm, project-dashboard
   login/page.tsx                         username/password sign-in (outside shell)
-  api/invoices/route.ts                  POST -> delegates to feature handler
-  api/invoices/[runId]/route.ts          GET -> delegates to feature handler
+  api/invoices|proposals|expenses/route.ts + /[runId]/route.ts  Trigger automations
+                                         (POST trigger + GET poll -> feature handlers)
+  api/clients|projects/route.ts + /[id]/route.ts  kv CRUD (GET/POST + DELETE)
   api/auth/{login,logout}/route.ts
 
-test/calc.test.ts            totals unit tests (npm run test:calc - 5 pass)
+test/*.test.ts               unit tests (npm test runs all - 26 pass):
+                             calc (invoice totals), expense-calc, gst-calc,
+                             crm-health, project-status. Per-suite: test:calc / test:expense.
 ```
 
 > New runtime deps from the migration: `framer-motion`, `lucide-react`,
@@ -163,7 +206,7 @@ Trigger.dev dashboard (except TRIGGER_SECRET_KEY which is per-env).
 npm install
 CI=false npx trigger.dev@4.4.6 dev      # worker - pin 4.4.6, CI=false avoids CI-abort
 npx next dev                            # web - picks 3000/3001/3002 if busy
-npm run test:calc                       # totals tests
+npm test                                # all unit tests (26 pass)
 npx tsc --noEmit                        # full typecheck (currently 0 errors)
 ```
 
@@ -183,6 +226,12 @@ Then open the printed `localhost:PORT` and sign in with the configured username/
   `Invoice-....pdf`. Needs a **full-scope** API key (scoped/read-only keys 401 on execute+upload).
 - Pin all `@trigger.dev/*` to the CLI version (**4.4.6**) or dev aborts on mismatch.
 - Test runner: `node --import tsx` (not `--loader`).
+- **Trigger filenames must be globally unique** across all automations' trigger
+  dirs (they bundle into one folder) - prefix with the automation name.
+- **Fraunces** is loaded at weights 400/500/600 only. On serif headings use
+  `font-medium`/`font-semibold`, NOT `font-bold` (700 = faux-bold). `<h1-h3>`
+  inherit `font-display` from globals - override eyebrow/label `<h2>` with
+  `font-sans` (see `SectionHeader`).
 
 ---
 
@@ -193,8 +242,15 @@ Then open the printed `localhost:PORT` and sign in with the configured username/
    - Owner buys domain (e.g. sampeerstudio.com) -> verify in Resend (SPF/DKIM/DMARC DNS).
    - Set `RESEND_API_KEY` + `RESEND_FROM` in `.env` -> `send-email.ts` auto-switches
      to Resend (code already done). Restart worker. Run an inbox test.
-2. **More automations.** Add an entry to `app/automations.ts` + a page at its
-   `href`. Use `status:"soon"` for a disabled placeholder card.
+2. **More automations** (next: ContentOS / SalesOS / GrowthOS - all still `soon`).
+   Recipe by kind:
+   - *LLM generator* (invoice-shaped): mirror `expense-tracker/` (utils → prompts →
+     trigger → api → components), add trigger dir to `trigger.config.ts dirs`, give
+     trigger files **globally-unique filenames** (Trigger bundles all dirs together).
+   - *Instant tool* (gst-shaped): client-only, no trigger/api; PDF via `pdf().toBlob()`.
+   - *Data app* (crm/project-shaped): `service.ts` over the kv store + `/api/<x>` CRUD.
+   Then flip its `features/registry.ts` entry from `soon({...})` to a live
+   `AutomationMeta` (live = auto-installed). Add a page under `app/(app)/<os>/<slug>/`.
 3. **Deploy** (README has steps): Vercel for web (needs TRIGGER_SECRET_KEY plus
    auth env vars), `npm run deploy:trigger` for the worker (set all
    worker env vars in dashboard).

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
+import { fadeUp } from "@shared/lib/motion";
 
 export function AutomationCard({
   name,
@@ -29,20 +30,21 @@ export function AutomationCard({
 
   const inner = (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.32, delay: index * 0.035, ease: [0.2, 0.8, 0.2, 1] }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="show"
+      custom={index}
       whileHover={live ? { y: -3 } : undefined}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line/80 bg-panel/92 p-5 shadow-soft backdrop-blur-sm transition duration-200 hover:border-brand-500/40 hover:shadow-lift"
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line/80 bg-panel/92 p-5 shadow-soft transition duration-200 hover:border-brand-500/40 hover:shadow-lift"
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand">
           {icon}
         </div>
         <StatusBadge tone={live ? "live" : "soon"} dot />
       </div>
 
-      <h3 className="mt-5 text-base font-semibold tracking-tight text-ink">{name}</h3>
+      <h3 className="mt-5 font-display text-lg font-medium tracking-tight text-ink">{name}</h3>
       <p className="mt-1 flex-1 text-sm leading-6 text-muted">{description}</p>
 
       <div className="mt-5 flex flex-wrap gap-1.5">

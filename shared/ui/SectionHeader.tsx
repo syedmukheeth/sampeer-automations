@@ -11,7 +11,7 @@ export function SectionHeader({
 }) {
   return (
     <div className={cn("mb-3 flex items-center justify-between gap-3", className)}>
-      <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+      <h2 className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-muted">
         {title}
       </h2>
       {action}

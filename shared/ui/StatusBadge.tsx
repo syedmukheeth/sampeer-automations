@@ -6,8 +6,8 @@ const TONES: Record<Tone, string> = {
   live: "bg-brand-50 text-brand-700 ring-brand-500/20",
   success: "bg-brand-50 text-brand-700 ring-brand-500/20",
   soon: "bg-stone-100 text-stone-600 ring-stone-400/30",
-  running: "bg-amber-50 text-amber-800 ring-amber-600/20",
-  failed: "bg-rose-50 text-rose-700 ring-rose-600/20",
+  running: "bg-warn/10 text-warn ring-warn/25",
+  failed: "bg-danger/10 text-danger ring-danger/25",
   neutral: "bg-stone-100 text-stone-600 ring-stone-400/30",
 };
 
@@ -39,9 +39,9 @@ export function StatusBadge({
         <span
           className={cn(
             "h-1.5 w-1.5 rounded-full",
-            tone === "running" && "animate-pulse bg-amber-600",
+            tone === "running" && "animate-pulse bg-warn",
             (tone === "live" || tone === "success") && "bg-brand-600",
-            tone === "failed" && "bg-rose-500",
+            tone === "failed" && "bg-danger",
             (tone === "soon" || tone === "neutral") && "bg-stone-400",
           )}
         />

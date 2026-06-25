@@ -32,44 +32,44 @@ export default function LoginPage() {
       <div className="w-full max-w-sm rounded-2xl border border-line bg-panel p-8 shadow-lift">
         <div className="mb-6 flex flex-col items-center text-center">
           <BrandLogo className="h-16 w-16 rounded-2xl" />
-          <h1 className="mt-4 text-lg font-bold text-ink">Sampeer Studio</h1>
+          <h1 className="mt-4 font-display text-xl font-medium text-ink">Sampeer Studio</h1>
           <p className="text-xs text-muted">Automations / Owner sign-in</p>
         </div>
 
         <form onSubmit={submit} className="space-y-4">
           <div>
-            <label className="text-xs font-medium text-slate-600">Username</label>
+            <label className="text-xs font-medium text-muted">Username</label>
             <input
               type="text"
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="username"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-600">Password</label>
+            <label className="text-xs font-medium text-muted">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="mt-1 w-full rounded-lg border border-line px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             />
           </div>
           <button
             type="submit"
             disabled={state === "submitting"}
-            className="w-full rounded-lg bg-accent px-4 py-2.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-brand px-4 py-2.5 font-semibold text-white shadow-soft transition hover:bg-brand-700 disabled:opacity-50"
           >
             {state === "submitting" ? "Signing in..." : "Sign in"}
           </button>
           {state === "error" && (
-            <p className="text-sm text-red-600">{msg}</p>
+            <p className="text-sm text-danger">{msg}</p>
           )}
-          <p className="text-center text-xs text-slate-400">
+          <p className="text-center text-xs text-muted/70">
             Access is restricted to the studio owner.
           </p>
         </form>

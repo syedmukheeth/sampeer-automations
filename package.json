@@ -7,13 +7,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --import tsx --test test/calc.test.ts",
+    "test": "node --import tsx --test test/*.test.ts",
     "dev:trigger": "trigger.dev dev",
     "deploy:trigger": "trigger.dev deploy",
     "dev:web": "next dev",
     "build:web": "next build",
     "start:web": "next start",
-    "test:calc": "node --import tsx --test test/calc.test.ts"
+    "test:calc": "node --import tsx --test test/calc.test.ts",
+    "test:expense": "node --import tsx --test test/expense-calc.test.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.83",

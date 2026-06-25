@@ -8,17 +8,37 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          "var(--font-sans)",
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "sans-serif",
+        ],
+        display: ["var(--font-display)", "Georgia", "Cambria", "serif"],
+      },
       colors: {
         brand: {
           DEFAULT: "#123C3A",
           50: "#EAF4F1",
           100: "#D6E9E4",
+          200: "#C2DED8",
+          300: "#95C2BA",
+          400: "#5C9690",
           500: "#2B6F6A",
           600: "#205C58",
           700: "#174844",
+          800: "#123C3A",
           900: "#0E2423",
         },
         accent: "#B88A44",
+        // semantic tokens — components use these instead of raw palette colors
+        success: "#205C58",
+        warn: "#B88A44",
+        danger: "#B4452E",
+        info: "#5B7089",
         canvas: "rgb(var(--canvas) / <alpha-value>)",
         panel: "rgb(var(--panel) / <alpha-value>)",
         ink: "rgb(var(--ink) / <alpha-value>)",
@@ -30,7 +50,7 @@ export default {
       backgroundImage: {
         "brand-gradient": "linear-gradient(135deg, #123C3A 0%, #205C58 100%)",
         "page-wash":
-          "radial-gradient(circle at 15% 0%, rgba(184,138,68,0.10), transparent 34%), linear-gradient(180deg, #F7F5EF 0%, #F3F0E8 100%)",
+          "radial-gradient(circle at 18% -4%, rgba(184,138,68,0.06), transparent 30%), linear-gradient(180deg, #F7F5EF 0%, #F3F0E8 100%)",
       },
       borderRadius: {
         xl: "0.75rem",

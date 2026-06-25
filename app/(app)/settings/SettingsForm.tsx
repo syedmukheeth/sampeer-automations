@@ -91,7 +91,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
           {save === "saving" ? "Saving..." : save === "saved" ? "Saved" : "Save changes"}
         </Button>
         {msg && (
-          <span className={`text-sm ${save === "error" ? "text-rose-600" : "text-amber-600"}`}>{msg}</span>
+          <span className={`text-sm ${save === "error" ? "text-danger" : "text-success"}`}>{msg}</span>
         )}
       </div>
     </div>

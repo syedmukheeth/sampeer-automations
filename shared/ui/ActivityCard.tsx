@@ -10,8 +10,8 @@ export type ActivityItem = {
 
 const DOT: Record<NonNullable<ActivityItem["tone"]>, string> = {
   success: "bg-brand-600",
-  running: "bg-amber-600 animate-pulse",
-  failed: "bg-rose-500",
+  running: "bg-warn animate-pulse",
+  failed: "bg-danger",
   neutral: "bg-stone-300",
 };
 

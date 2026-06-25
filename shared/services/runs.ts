@@ -77,8 +77,11 @@ function normalize(run: RawRun): RunRecord {
     costInCents: run.costInCents ?? 0,
     tags: run.tags ?? [],
     client: tagValue(run.tags ?? [], "client"),
-    // Document reference - invoice or proposal number, whichever tagged it.
-    invoiceNumber: tagValue(run.tags ?? [], "invoice") ?? tagValue(run.tags ?? [], "proposal"),
+    // Document reference - invoice / proposal number or expense report name.
+    invoiceNumber:
+      tagValue(run.tags ?? [], "invoice") ??
+      tagValue(run.tags ?? [], "proposal") ??
+      tagValue(run.tags ?? [], "expense"),
   };
 }
 

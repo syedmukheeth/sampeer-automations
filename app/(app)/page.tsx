@@ -134,7 +134,7 @@ export default async function OverviewPage() {
               return (
                 <Link key={a.slug} href={a.href}>
                   <Card className="group flex h-full items-start gap-4 p-5 transition duration-200 hover:border-brand-500/40 hover:shadow-lift">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand">
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -176,7 +176,7 @@ function QuickAction({
   return (
     <Link href={href}>
       <Card className="group flex items-center gap-3 p-4 transition duration-200 hover:border-brand-500/40 hover:shadow-lift">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand">
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1">
