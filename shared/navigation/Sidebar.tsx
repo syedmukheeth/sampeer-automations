@@ -237,7 +237,7 @@ function NavItem({
       {active && (
         <motion.span
           layoutId="sidebar-active"
-          className="absolute -left-3 top-1/2 h-7 w-1 -translate-y-1/2 rounded-r-full bg-accent"
+          className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-accent"
         />
       )}
       <Icon className="h-4 w-4" />
