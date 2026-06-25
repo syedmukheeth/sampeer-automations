@@ -16,6 +16,12 @@ export default function Dashboard() {
               Your control center for every workflow you build.
             </p>
           </div>
+          <a
+            href="/api/auth/logout"
+            className="ml-auto rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-500 transition hover:border-slate-300 hover:text-brand"
+          >
+            Sign out
+          </a>
         </div>
 
         <div className="mt-6 flex gap-3">
@@ -33,7 +39,7 @@ export default function Dashboard() {
       </section>
 
       <footer className="mt-14 text-center text-xs text-slate-400">
-        Sampeer Studio · built with Trigger.dev + Claude tooling
+        Sampeer Studio
       </footer>
     </main>
   );

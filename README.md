@@ -87,11 +87,17 @@ npm run build
    - Build command: `npm run build`
    - Output directory: leave empty/default
 
-5. Add this Vercel environment variable:
+5. Add these Vercel environment variables:
 
    - `TRIGGER_SECRET_KEY`
+   - `AUTH_SECRET`
+   - `OWNER_EMAIL`
+   - `COMPOSIO_API_KEY`
+   - `COMPOSIO_USER_ID`
+   - `APP_URL` set to the deployed site URL
 
-Only `TRIGGER_SECRET_KEY` is required in Vercel because the Next.js API routes trigger and poll Trigger.dev runs. The AI, PDF, and email work happens inside Trigger.dev.
+The AI, PDF, and invoice email work happens inside Trigger.dev. The web app still
+needs the auth variables so it can create and email owner sign-in links.
 
 ## Deploy Trigger.dev
 
