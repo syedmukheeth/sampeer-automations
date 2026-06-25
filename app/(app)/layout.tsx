@@ -5,16 +5,17 @@ import { installedSlugs } from "@shared/services/installs";
 
 export const dynamic = "force-dynamic";
 
-/** Premium in-app shell: persistent sidebar + top bar around every page. */
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const installed = await installedSlugs();
   return (
-    <div className="flex min-h-screen bg-canvas">
+    <div className="flex h-dvh overflow-hidden bg-canvas">
       <Sidebar installed={installed} />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Topbar />
-        <main className="mx-auto w-full max-w-[98rem] flex-1 px-5 py-8 sm:px-8 lg:px-10">
-          {children}
+        <main className="min-h-0 flex-1 overflow-y-auto overscroll-contain scroll-smooth">
+          <div className="mx-auto w-full max-w-[98rem] px-5 py-8 sm:px-8 lg:px-10">
+            {children}
+          </div>
         </main>
       </div>
     </div>

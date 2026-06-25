@@ -12,8 +12,8 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-[19rem] shrink-0 flex-col border-r border-sidebar-line bg-sidebar text-stone-300 lg:flex">
-      <div className="px-5 pb-5 pt-6">
+    <aside className="hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line bg-sidebar text-stone-300 lg:flex">
+      <div className="shrink-0 px-5 pb-5 pt-6">
         <div className="flex items-center gap-3">
           <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
           <div className="min-w-0 leading-tight">
@@ -23,7 +23,7 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-7 overflow-y-auto px-3 pb-6">
+      <nav className="min-h-0 flex-1 space-y-7 overflow-y-auto overscroll-contain px-3 pb-6 pr-2 [scrollbar-color:#3a403d_transparent] [scrollbar-width:thin]">
         <div className="space-y-1">
           <NavItem href="/" label="Overview" icon={Home} active={pathname === "/"} />
           <NavItem
@@ -64,7 +64,7 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
         })}
       </nav>
 
-      <div className="border-t border-sidebar-line p-3">
+      <div className="shrink-0 border-t border-sidebar-line bg-sidebar p-3">
         <NavItem
           href="/settings"
           label="Settings"
