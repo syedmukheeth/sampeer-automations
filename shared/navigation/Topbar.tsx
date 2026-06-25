@@ -4,7 +4,7 @@ import { LogOut, Search, Command } from "lucide-react";
 
 export function Topbar() {
   return (
-    <header className="z-10 flex h-[4.5rem] shrink-0 items-center gap-4 border-b border-line/80 bg-canvas/88 px-6 backdrop-blur-xl">
+    <header className="z-10 hidden h-[4.5rem] shrink-0 items-center gap-4 border-b border-line/80 bg-canvas/88 px-6 backdrop-blur-xl lg:flex">
       <div className="flex flex-1 items-center gap-3">
         <div className="flex h-10 w-full max-w-md items-center gap-2 rounded-xl border border-line bg-panel/80 px-3 text-sm text-muted shadow-soft">
           <Search className="h-4 w-4" />

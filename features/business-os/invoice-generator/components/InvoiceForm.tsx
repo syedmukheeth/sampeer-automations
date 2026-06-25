@@ -165,17 +165,17 @@ export default function InvoiceForm() {
       </Section>
 
       <Section title="Line Items">
-        <div className="col-span-2 space-y-3">
+        <div className="space-y-3 sm:col-span-2">
           {items.map((it, i) => (
-            <div key={i} className="grid grid-cols-12 gap-2">
+            <div key={i} className="grid gap-2 sm:grid-cols-12">
               <input
-                className="col-span-6 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-6"
                 placeholder="Service (e.g. Website)"
                 value={it.name}
                 onChange={(e) => updateItem(setItems, i, "name", e.target.value)}
               />
               <input
-                className="col-span-2 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-2"
                 placeholder="Qty"
                 type="number"
                 min="1"
@@ -183,7 +183,7 @@ export default function InvoiceForm() {
                 onChange={(e) => updateItem(setItems, i, "quantity", e.target.value)}
               />
               <input
-                className="col-span-3 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-3"
                 placeholder="Unit price"
                 type="number"
                 min="0"
@@ -193,7 +193,7 @@ export default function InvoiceForm() {
               />
               <button
                 type="button"
-                className="col-span-1 rounded-lg text-slate-400 hover:text-red-500"
+                className="h-10 rounded-lg border border-line text-slate-400 hover:text-red-500 sm:col-span-1"
                 onClick={() => setItems((p) => (p.length > 1 ? p.filter((_, j) => j !== i) : p))}
                 aria-label="Remove item"
               >
@@ -266,7 +266,7 @@ function Result({ run }: { run: RunState }) {
           {o.emailSent ? "Emailed" : "PDF ready (email not sent)"}
         </span>
       </div>
-      <div className="grid grid-cols-2 gap-2 text-sm text-slate-600">
+      <div className="grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
         <span>Subtotal: {o.summary.subtotal}</span>
         <span>Discount: {o.summary.discount}</span>
         <span>Tax: {o.summary.tax}</span>
@@ -301,7 +301,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
         {title}
       </legend>
-      <div className="grid grid-cols-2 gap-4">{children}</div>
+      <div className="grid gap-4 sm:grid-cols-2">{children}</div>
     </fieldset>
   );
 }
@@ -322,7 +322,7 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className={`block text-sm ${wide ? "col-span-2" : ""}`}>
+    <label className={`block text-sm ${wide ? "sm:col-span-2" : ""}`}>
       <span className="mb-1 block font-medium text-slate-600">
         {label}
         {required && <span className="text-red-400"> *</span>}

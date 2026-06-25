@@ -164,23 +164,23 @@ export default function ProposalForm() {
       </Section>
 
       <Section title="Investment">
-        <div className="col-span-2 space-y-3">
+        <div className="space-y-3 sm:col-span-2">
           {items.map((it, i) => (
-            <div key={i} className="grid grid-cols-12 gap-2">
+            <div key={i} className="grid gap-2 sm:grid-cols-12">
               <input
-                className="col-span-4 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-4"
                 placeholder="Item (e.g. Website)"
                 value={it.name}
                 onChange={(e) => updateItem(setItems, i, "name", e.target.value)}
               />
               <input
-                className="col-span-3 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-3"
                 placeholder="Short note (optional)"
                 value={it.description}
                 onChange={(e) => updateItem(setItems, i, "description", e.target.value)}
               />
               <input
-                className="col-span-2 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-2"
                 placeholder="Qty"
                 type="number"
                 min="1"
@@ -188,7 +188,7 @@ export default function ProposalForm() {
                 onChange={(e) => updateItem(setItems, i, "quantity", e.target.value)}
               />
               <input
-                className="col-span-2 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="sm:col-span-2"
                 placeholder="Unit price"
                 type="number"
                 min="0"
@@ -198,7 +198,7 @@ export default function ProposalForm() {
               />
               <button
                 type="button"
-                className="col-span-1 rounded-lg text-slate-400 hover:text-red-500"
+                className="h-10 rounded-lg border border-line text-slate-400 hover:text-red-500 sm:col-span-1"
                 onClick={() => setItems((p) => (p.length > 1 ? p.filter((_, j) => j !== i) : p))}
                 aria-label="Remove item"
               >
@@ -283,7 +283,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   return (
     <fieldset className="rounded-2xl border border-line bg-panel p-6 shadow-soft">
       <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</legend>
-      <div className="grid grid-cols-2 gap-4">{children}</div>
+      <div className="grid gap-4 sm:grid-cols-2">{children}</div>
     </fieldset>
   );
 }
@@ -304,7 +304,7 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className={`block text-sm ${wide ? "col-span-2" : ""}`}>
+    <label className={`block text-sm ${wide ? "sm:col-span-2" : ""}`}>
       <span className="mb-1 block font-medium text-slate-600">
         {label}
         {required && <span className="text-red-400"> *</span>}
@@ -330,7 +330,7 @@ function Textarea({
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
   return (
-    <label className="col-span-2 block text-sm">
+    <label className="block text-sm sm:col-span-2">
       <span className="mb-1 block font-medium text-slate-600">{label}</span>
       <textarea
         value={v}

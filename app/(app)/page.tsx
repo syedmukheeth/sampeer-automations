@@ -54,7 +54,7 @@ export default async function OverviewPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             Sampeer operations
           </p>
-          <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-ink lg:text-5xl">
+          <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl lg:text-5xl">
             Automation control center
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
