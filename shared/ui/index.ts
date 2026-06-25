@@ -1,4 +1,5 @@
 export { Card, CardBody } from "./Card";
+export { BrandLogo } from "./BrandLogo";
 export { Button } from "./Button";
 export { StatusBadge } from "./StatusBadge";
 export { StatCard, type StatCardProps } from "./StatCard";

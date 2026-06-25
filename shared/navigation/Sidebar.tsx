@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Home, Settings, LibraryBig, Sparkles } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { BrandLogo } from "@shared/ui/BrandLogo";
 import { operatingSystems } from "@features/registry";
 
 export function Sidebar({ installed = [] }: { installed?: string[] }) {
@@ -14,12 +15,10 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
     <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-line bg-sidebar text-slate-300 lg:flex">
       {/* Brand */}
       <div className="flex items-center gap-3 px-5 py-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-bold text-white shadow-glow">
-          S
-        </div>
+        <BrandLogo className="h-9 w-9 rounded-xl" />
         <div className="leading-tight">
-          <p className="text-sm font-bold text-white">Sampeer OS</p>
-          <p className="text-[11px] text-slate-500">AI Operating System</p>
+          <p className="text-sm font-bold text-white">Sampeer Studio</p>
+          <p className="text-[11px] text-slate-500">Get noticed. Remembered. Chosen.</p>
         </div>
       </div>
 

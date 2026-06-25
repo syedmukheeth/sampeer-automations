@@ -9,9 +9,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Core brand
-        brand: "#0F172A", // slate-900
-        accent: "#6366F1", // indigo-500
+        // Core brand — Sampeer Studio violet (matches logo ribbon)
+        brand: {
+          DEFAULT: "#7C3AED", // violet-600
+          50: "#F5F3FF",
+          100: "#EDE9FE",
+          400: "#A78BFA",
+          500: "#8B5CF6",
+          600: "#7C3AED",
+          700: "#6D28D9",
+        },
+        accent: "#7C3AED", // brand violet
         // Premium surface tokens (CSS-var driven so themes can be swapped)
         canvas: "rgb(var(--canvas) / <alpha-value>)",
         panel: "rgb(var(--panel) / <alpha-value>)",
@@ -19,8 +27,12 @@ export default {
         muted: "rgb(var(--muted) / <alpha-value>)",
         line: "rgb(var(--line) / <alpha-value>)",
         // Dark sidebar palette
-        sidebar: "#0B1120",
-        "sidebar-line": "#1E293B",
+        sidebar: "#0B0712", // near-black with violet undertone (matches logo bg)
+        "sidebar-line": "#241B33",
+      },
+      backgroundImage: {
+        // Single canonical brand gradient — use everywhere instead of rainbow.
+        "brand-gradient": "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
       },
       borderRadius: {
         xl: "0.875rem",
@@ -30,7 +42,7 @@ export default {
       boxShadow: {
         soft: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.12)",
         lift: "0 1px 3px rgba(15,23,42,0.06), 0 20px 40px -16px rgba(15,23,42,0.18)",
-        glow: "0 0 0 1px rgba(99,102,241,0.18), 0 12px 32px -12px rgba(99,102,241,0.35)",
+        glow: "0 0 0 1px rgba(124,58,237,0.20), 0 12px 32px -12px rgba(124,58,237,0.40)",
       },
       keyframes: {
         "fade-up": {

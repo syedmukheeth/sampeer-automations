@@ -66,9 +66,13 @@ export type OperatingSystem = {
   modules: ModuleMeta[];
 };
 
+// "soon" automations are not live yet — render them in a muted, neutral tone
+// so color is reserved for live, semantic state (not decoration). This also
+// overrides any per-item accent below, keeping the palette disciplined.
+const SOON_ACCENT = "from-slate-400 to-slate-500";
 const soon = (
   partial: Omit<AutomationMeta, "status" | "href">,
-): AutomationMeta => ({ ...partial, status: "soon", href: "" });
+): AutomationMeta => ({ ...partial, accent: SOON_ACCENT, status: "soon", href: "" });
 
 export const operatingSystems: OperatingSystem[] = [
   {
