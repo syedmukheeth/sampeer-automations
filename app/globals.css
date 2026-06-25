@@ -4,8 +4,43 @@
 
 :root {
   color-scheme: light;
+  /* Premium light canvas tokens (rgb channels for <alpha-value> support) */
+  --canvas: 248 250 252; /* slate-50 */
+  --panel: 255 255 255; /* white */
+  --ink: 15 23 42; /* slate-900 */
+  --muted: 100 116 139; /* slate-500 */
+  --line: 226 232 240; /* slate-200 */
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-canvas text-ink antialiased;
+}
+
+/* Subtle scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-300/60;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400/70;
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  @apply relative overflow-hidden rounded-lg bg-slate-100;
+}
+.skeleton::after {
+  content: "";
+  @apply absolute inset-0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
 }

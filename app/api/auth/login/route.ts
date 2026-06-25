@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isOwnerLogin, signSession, SESSION_COOKIE } from "~/lib/auth";
+import { isOwnerLogin, signSession, SESSION_COOKIE } from "@shared/services/auth";
 
 export const runtime = "nodejs";
 

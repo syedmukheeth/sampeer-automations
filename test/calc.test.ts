@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeTotals, round2 } from "../src/lib/calc.ts";
-import type { InvoiceInput } from "../src/lib/schema.ts";
+import { computeTotals, round2 } from "../features/business-os/invoice-generator/utils/calc.ts";
+import type { InvoiceInput } from "../features/business-os/invoice-generator/utils/schema.ts";
 
 function base(overrides: Partial<InvoiceInput> = {}): InvoiceInput {
   return {

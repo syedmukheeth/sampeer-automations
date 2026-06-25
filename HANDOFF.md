@@ -43,33 +43,97 @@ cookie and return 401 without it.
 
 ---
 
-## 3. File map
+## 3. File map (Sampeer OS platform architecture)
+
+Layered platform: **OS → module → automation**. One Next.js app, feature
+folders + path aliases (`@features/*`, `@shared/*`). Add a new automation by
+creating its feature folder + one entry in `features/registry.ts` (+ its
+trigger dir in `trigger.config.ts`). Nothing else changes.
 
 ```
-trigger.config.ts            project "proj_riwwwudaoobdfynosfrd", dirs ./src/trigger, machine small-2x
-middleware.ts                auth gate (Edge)
-src/lib/
-  schema.ts                  zod input/output + InvoicePackage type
-  validate.ts                required-field checks
-  calc.ts                    totals math (+ round2, formatMoney)
-  invoice-pdf.tsx            branded React-PDF document
-  auth.ts                    jose sign/verify, isOwner, hasOwnerSession
-src/trigger/
-  generate-invoice.ts        orchestrator (schemaTask, entrypoint) + buildEmailBody() signature
-  invoice-agent.ts           Gemini prose agent (model google("gemini-2.5-flash"))
-  render-pdf.ts              PDF → base64
-  send-email.ts              Resend OR Composio Gmail (auto-switch), clean filename, fallback
+trigger.config.ts            project "proj_riwwwudaoobdfynosfrd", machine small-2x
+                             dirs = each automation's trigger folder (currently invoice-generator)
+middleware.ts                auth gate (Edge) — imports @shared/services/auth
+
+features/
+  registry.ts                PLATFORM REGISTRY: OS→module→automation tree + selectors
+                             (drives sidebar, dashboard KPIs, library)
+  business-os/invoice-generator/
+    utils/  schema.ts        zod input/output + InvoicePackage type
+            calc.ts          totals math (+ round2, formatMoney) — money math in TS
+            validate.ts      required-field checks
+            invoice-pdf.tsx  branded React-PDF document
+    prompts/invoice-agent.ts versioned system prompt (INVOICE_AGENT_PROMPT_VERSION)
+    trigger/ generate-invoice.ts  orchestrator (schemaTask) + buildEmailBody()
+             invoice-agent.ts     Gemini prose agent google("gemini-2.5-flash")
+             render-pdf.ts        PDF → base64
+             send-email.ts        Resend OR Composio Gmail (auto-switch)
+    api/handlers.ts          triggerInvoice() POST + getInvoiceRun() poll
+    components/ InvoiceForm.tsx           the form (client) + polling
+                InvoiceAutomationView.tsx tabbed page (Overview/Run/Config/History/Logs/Docs)
+    types/index.ts           public feature types
+
+shared/
+  services/auth.ts           jose sign/verify, isOwner, hasOwnerSession
+  services/runs.ts           RUN STORE (Phase 2): listRuns()/getRunMetrics() over
+                             Trigger.dev runs.list — real execution history + KPIs,
+                             no extra DB. Server-only. Swap internals for Postgres
+                             later behind the same interface if retention needed.
+  services/store.ts          (Phase 3) kv adapter — JSON file under .data/ (gitignored).
+                             Swap for Vercel KV/Upstash in prod (multi-instance).
+  services/settings.ts       (Phase 3) get/save white-label settings (server, fs).
+  services/installs.ts       (Phase 5) MARKETPLACE install store over kv —
+                             getInstalls()/installedSlugs()/isInstalled()/setInstalled().
+                             Live automations default installed. Sidebar+dashboard
+                             show only installed; library has Install/Uninstall toggle;
+                             automation pages gate via InstallRequired. Single-workspace
+                             now; key by tenantId to go multi-tenant (orgs/billing still
+                             need DB+auth+Stripe — out of scope). API: /api/installs GET/PUT.
+  services/settings-schema.ts  client-safe zod schema/types/PROMPT_VERSIONS.
+                             Settings flow: Settings UI → PUT /api/settings → store.
+                             api/handlers injects branding+promptVersion into the
+                             invoice payload (worker stays stateless); PDF accent/
+                             footer/logo + email signature + agent prompt version
+                             all read from it. Prompts: prompts/invoice-agent.ts v1/v2.
+  ui/                        StatCard, AutomationCard, AutomationPageLayout, StatusBadge,
+                             PageHeader, SectionHeader, EmptyState, ActivityCard, LogViewer,
+                             ChartCard, Card, Button (+ index.ts barrel)
+  charts/                    LineChart, Sparkline (inline SVG — no chart dep)
+  navigation/                Sidebar.tsx, Topbar.tsx
+  lib/                       cn.ts (clsx+tailwind-merge), format.ts
+
 app/
-  page.tsx                   DASHBOARD (reads automations registry) + Sign out
-  automations.ts             REGISTRY — add new automations here (1 entry each)
-  invoice/page.tsx           invoice automation page
-  login/page.tsx             username/password sign-in
-  components/InvoiceForm.tsx  the invoice form (client) + polling
-  api/invoices/route.ts             POST → triggers generate-invoice
-  api/invoices/[runId]/route.ts     GET → poll run status/output
+  (app)/layout.tsx                       shell = Sidebar + Topbar
+  (app)/page.tsx                         OVERVIEW dashboard (KPIs, revenue chart, activity)
+  (app)/library/page.tsx                 Automation Library (marketplace, grouped by OS)
+  (app)/settings/page.tsx                Settings shell (Profile/API Keys/Billing/Logs)
+  (app)/business-os/invoice-generator/page.tsx  renders InvoiceAutomationView
+  login/page.tsx                         username/password sign-in (outside shell)
+  api/invoices/route.ts                  POST → delegates to feature handler
+  api/invoices/[runId]/route.ts          GET → delegates to feature handler
   api/auth/{login,logout}/route.ts
+
 test/calc.test.ts            totals unit tests (npm run test:calc — 5 pass)
 ```
+
+> New runtime deps from the migration: `framer-motion`, `lucide-react`,
+> `clsx`, `tailwind-merge`. Import convention: Next-side files use
+> extensionless imports; trigger worker files keep `.js` on relative imports
+> (esbuild). Prompts are `.ts` (not `.md`) so both bundlers resolve them.
+
+> **Phase 4 — 2nd automation (Proposal Generator).** `features/business-os/
+> proposal-generator/` mirrors invoice 1:1 (utils/trigger/api/components/
+> prompts/types). Registry entry flipped to live; routes `/business-os/
+> proposal-generator` + `/api/proposals[/[runId]]`; task ids `generate-proposal`,
+> `proposal-agent`, `render-proposal-pdf`, `send-proposal-email`. Its trigger dir
+> is added to `trigger.config.ts dirs`.
+>
+> ⚠️ **Trigger filename rule (learned the hard way):** Trigger.dev bundles ALL
+> `dirs` into ONE tmp folder, so trigger FILENAMES must be globally unique across
+> automations (task ids being unique is not enough). Invoice uses `render-pdf.ts`
+> / `send-email.ts`; proposal uses `render-proposal-pdf.ts` /
+> `send-proposal-email.ts`. New automations: prefix trigger files with the
+> automation name.
 
 ---
 

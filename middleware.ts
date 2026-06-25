@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { hasOwnerSession, SESSION_COOKIE } from "~/lib/auth";
+import { hasOwnerSession, SESSION_COOKIE } from "@shared/services/auth";
 
 /**
  * Gate the entire app behind a single-owner session.

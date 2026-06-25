@@ -24,8 +24,11 @@
       }
     ],
     "paths": {
-      "~/*": [
-        "./src/*"
+      "@features/*": [
+        "./features/*"
+      ],
+      "@shared/*": [
+        "./shared/*"
       ]
     },
     "allowJs": true
