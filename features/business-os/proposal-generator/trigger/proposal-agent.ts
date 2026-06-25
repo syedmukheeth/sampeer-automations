@@ -6,7 +6,7 @@ import { getProposalSystemPrompt } from "../prompts/proposal-agent.js";
 
 /**
  * The model's ONLY job: executive summary, premium item descriptions, terms,
- * and client email copy. It receives NO prices and produces NO numbers — all
+ * and client email copy. It receives NO prices and produces NO numbers - all
  * pricing is deterministic (see ../utils/calc.ts).
  */
 export const proposalAgent = task({

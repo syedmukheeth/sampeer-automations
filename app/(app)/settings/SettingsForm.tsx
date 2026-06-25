@@ -35,7 +35,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
       if (!res.ok) throw new Error(data.error ?? "Save failed");
       setS(data.settings);
       setSave("saved");
-      if (!data.persisted) setMsg("Saved in memory — this filesystem isn't writable (add a KV store for durable prod settings).");
+      if (!data.persisted) setMsg("Saved in memory - this filesystem isn't writable (add a KV store for durable prod settings).");
       setTimeout(() => setSave("idle"), 2500);
     } catch (err) {
       setSave("error");
@@ -62,7 +62,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
 
       {/* Invoice defaults */}
       <section>
-        <SectionHeader title="Invoice Generator · Defaults" />
+        <SectionHeader title="Invoice Generator / Defaults" />
         <Card className="grid gap-4 p-6 sm:grid-cols-2">
           <Field label="Default Currency" v={s.invoice.defaultCurrency} onChange={setInv("defaultCurrency")} />
           <Field label="Invoice Prefix" v={s.invoice.invoicePrefix} onChange={setInv("invoicePrefix")} />
@@ -88,7 +88,7 @@ export function SettingsForm({ initial }: { initial: Settings }) {
       <div className="flex items-center gap-4">
         <Button onClick={onSave} disabled={save === "saving"}>
           {save === "saved" ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-          {save === "saving" ? "Saving…" : save === "saved" ? "Saved" : "Save changes"}
+          {save === "saving" ? "Saving..." : save === "saved" ? "Saved" : "Save changes"}
         </Button>
         {msg && (
           <span className={`text-sm ${save === "error" ? "text-rose-600" : "text-amber-600"}`}>{msg}</span>

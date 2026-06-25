@@ -151,7 +151,7 @@ export function ProposalDocument({ pkg }: { pkg: ProposalPackage }) {
 
         <View style={s.footer} fixed>
           <Text style={s.small}>
-            {pkg.company.name} · {pkg.company.email ?? ""} · {footerText}
+            {pkg.company.name} / {pkg.company.email ?? ""} / {footerText}
           </Text>
         </View>
       </Page>

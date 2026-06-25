@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /* ------------------------------------------------------------------ *
- * INPUT — what the frontend form / upstream source sends.
+ * INPUT - what the frontend form / upstream source sends.
  * Numbers are raw; all pricing math is done in calc.ts (never the LLM).
  * ------------------------------------------------------------------ */
 
@@ -35,7 +35,7 @@ export const proposalInputSchema = z.object({
   }),
   project: z.object({
     name: z.string(),
-    summary: z.string().optional(), // raw brief — agent expands into exec summary
+    summary: z.string().optional(), // raw brief - agent expands into exec summary
   }),
   currency: z.string().min(1),
   items: z.array(lineItemSchema).min(1, "At least one investment item is required"),
@@ -61,7 +61,7 @@ export type ProposalInput = z.infer<typeof proposalInputSchema>;
 export type LineItem = z.infer<typeof lineItemSchema>;
 
 /* ------------------------------------------------------------------ *
- * AGENT OUTPUT — the ONLY thing the model produces. Prose, never numbers.
+ * AGENT OUTPUT - the ONLY thing the model produces. Prose, never numbers.
  * ------------------------------------------------------------------ */
 
 export const agentOutputSchema = z.object({
@@ -76,7 +76,7 @@ export const agentOutputSchema = z.object({
 export type AgentOutput = z.infer<typeof agentOutputSchema>;
 
 /* ------------------------------------------------------------------ *
- * FINAL PACKAGE — exact shape consumed by PDF + email services.
+ * FINAL PACKAGE - exact shape consumed by PDF + email services.
  * ------------------------------------------------------------------ */
 
 export interface ProposalPackage {

@@ -7,7 +7,7 @@ export interface ValidationResult {
 }
 
 /**
- * Step 1 — Validate Input. Deterministic. If anything required is missing,
+ * Step 1 - Validate Input. Deterministic. If anything required is missing,
  * return errors and DO NOT generate a proposal.
  */
 export function validateInput(raw: unknown): ValidationResult {

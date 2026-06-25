@@ -13,7 +13,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <Sidebar installed={installed} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
-        <main className="mx-auto w-full max-w-7xl flex-1 px-5 py-8 sm:px-8">
+        <main className="mx-auto w-full max-w-[98rem] flex-1 px-5 py-8 sm:px-8 lg:px-10">
           {children}
         </main>
       </div>

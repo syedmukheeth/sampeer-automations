@@ -1,6 +1,5 @@
 import { cn } from "@shared/lib/cn";
 
-/** Base premium surface. Use for any panel. */
 export function Card({
   className,
   children,
@@ -9,7 +8,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-line bg-panel shadow-soft",
+        "rounded-2xl border border-line/80 bg-panel/90 shadow-soft backdrop-blur-sm",
         className,
       )}
       {...props}

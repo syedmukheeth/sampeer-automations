@@ -18,27 +18,27 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        "mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
+        "mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between",
         className,
       )}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         {icon && (
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-soft">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand shadow-soft">
             {icon}
           </div>
         )}
         <div>
           {eyebrow && (
-            <p className="text-xs font-semibold uppercase tracking-widest text-accent">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
               {eyebrow}
             </p>
           )}
-          <h1 className="text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             {title}
           </h1>
           {description && (
-            <p className="mt-1 max-w-2xl text-sm text-muted">{description}</p>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">{description}</p>
           )}
         </div>
       </div>

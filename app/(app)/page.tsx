@@ -8,6 +8,7 @@ import {
   FileText,
   BarChart3,
   ArrowRight,
+  Plus,
 } from "lucide-react";
 import { StatCard } from "@shared/ui/StatCard";
 import { ChartCard } from "@shared/ui/ChartCard";
@@ -20,7 +21,6 @@ import { countByStatus, liveAutomations } from "@features/registry";
 import { getRunMetrics, runTimeAgo, formatDuration, type RunRecord } from "@shared/services/runs";
 import { installedSlugs } from "@shared/services/installs";
 
-// Real execution data from the run store (Trigger.dev). Re-fetched per request.
 export const dynamic = "force-dynamic";
 
 const TONE: Record<RunRecord["status"], ActivityItem["tone"]> = {
@@ -40,7 +40,7 @@ export default async function OverviewPage() {
   const activity: ActivityItem[] = metrics.recent.map((r) => ({
     id: r.id,
     title: `${r.invoiceNumber ? `Invoice ${r.invoiceNumber}` : "Invoice run"} ${r.status}`,
-    meta: ["Invoice Generator", r.client].filter(Boolean).join(" · "),
+    meta: ["Invoice Generator", r.client].filter(Boolean).join(" / "),
     time: runTimeAgo(r.createdAt),
     tone: TONE[r.status],
   }));
@@ -49,47 +49,63 @@ export default async function OverviewPage() {
 
   return (
     <div className="space-y-8">
-      {/* Hero */}
-      <header className="animate-fade-up">
-        <p className="text-sm font-medium text-muted">Welcome back 👋</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink">
-          Today&rsquo;s overview
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          {live} live · {soon} in the pipeline across BusinessOS, ContentOS, SalesOS &amp; GrowthOS.
-        </p>
+      <header className="grid gap-6 rounded-3xl border border-line/80 bg-panel/88 p-6 shadow-soft backdrop-blur-sm lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            Sampeer operations
+          </p>
+          <h1 className="mt-3 max-w-3xl text-4xl font-semibold tracking-tight text-ink lg:text-5xl">
+            Automation control center
+          </h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
+            Monitor runs, open generators, and keep the installed automation stack ready for client work.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/business-os/invoice-generator"
+            className="inline-flex h-10 items-center gap-2 rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-700"
+          >
+            <Plus className="h-4 w-4" />
+            New invoice
+          </Link>
+          <Link
+            href="/library"
+            className="inline-flex h-10 items-center gap-2 rounded-xl border border-line bg-panel px-4 text-sm font-semibold text-ink shadow-soft transition hover:border-brand-500"
+          >
+            Library
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </header>
 
-      {/* KPI grid — real metrics */}
-      <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard index={0} label="Executions" value={String(metrics.total)} hint={`${metrics.running} running now`} icon={<Activity className="h-5 w-5" />} accent="from-indigo-500 to-violet-600" />
-        <StatCard index={1} label="Installed" value={String(live)} hint={`${soon} in marketplace`} icon={<Zap className="h-5 w-5" />} accent="from-fuchsia-500 to-pink-600" />
-        <StatCard index={2} label="Success Rate" value={hasRuns ? `${metrics.successRate}%` : "—"} hint={`${metrics.success} ok · ${metrics.failed} failed`} icon={<Gauge className="h-5 w-5" />} accent="from-emerald-500 to-teal-600" />
-        <StatCard index={3} label="Avg Runtime" value={formatDuration(metrics.avgRuntimeMs)} hint="completed runs" icon={<Timer className="h-5 w-5" />} accent="from-amber-500 to-orange-600" />
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard index={0} label="Executions" value={String(metrics.total)} hint={`${metrics.running} running now`} icon={<Activity className="h-5 w-5" />} />
+        <StatCard index={1} label="Installed" value={String(live)} hint={`${soon} in marketplace`} icon={<Zap className="h-5 w-5" />} />
+        <StatCard index={2} label="Success Rate" value={hasRuns ? `${metrics.successRate}%` : "None"} hint={`${metrics.success} ok / ${metrics.failed} failed`} icon={<Gauge className="h-5 w-5" />} />
+        <StatCard index={3} label="Avg Runtime" value={formatDuration(metrics.avgRuntimeMs)} hint="completed runs" icon={<Timer className="h-5 w-5" />} />
       </section>
 
-      {/* Chart + activity */}
-      <section className="grid gap-4 lg:grid-cols-3">
+      <section className="grid gap-5 xl:grid-cols-[1fr_30rem]">
         <ChartCard
-          className="lg:col-span-2"
-          title="Executions"
-          subtitle="Invoice runs · last 14 days"
+          title="Execution volume"
+          subtitle="Invoice runs / last 14 days"
         >
           {hasRuns ? (
             <LineChart
               data={metrics.daily.map((d) => d.count)}
               labels={metrics.daily.filter((_, i) => i % 2 === 0).map((d) => d.label)}
-              height={220}
+              height={260}
             />
           ) : (
-            <div className="flex h-[220px] items-center justify-center text-sm text-muted">
-              No runs yet — generate an invoice to see live data here.
+            <div className="flex h-[260px] items-center justify-center text-sm text-muted">
+              No runs yet. Generate an invoice to see live data here.
             </div>
           )}
         </ChartCard>
 
         <Card className="p-5 sm:p-6">
-          <SectionHeader title="Recent Activity" />
+          <SectionHeader title="Recent activity" />
           {activity.length ? (
             <ActivityTimeline items={activity} />
           ) : (
@@ -102,30 +118,30 @@ export default async function OverviewPage() {
         </Card>
       </section>
 
-      {/* Live automations + quick actions */}
-      <section className="grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      <section className="grid gap-5 xl:grid-cols-[1fr_24rem]">
+        <div>
           <SectionHeader
-            title="Your Automations"
+            title="Installed automations"
             action={
-              <Link href="/library" className="inline-flex items-center gap-1 text-sm font-semibold text-accent">
-                Library <ArrowRight className="h-4 w-4" />
+              <Link href="/library" className="inline-flex items-center gap-1 text-sm font-semibold text-brand">
+                Manage <ArrowRight className="h-4 w-4" />
               </Link>
             }
           />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {installedAutomations.map((a) => {
               const Icon = a.icon;
               return (
                 <Link key={a.slug} href={a.href}>
-                  <Card className="group flex h-full items-start gap-4 p-5 transition-shadow hover:shadow-lift">
-                    <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${a.accent} text-white shadow-soft`}>
+                  <Card className="group flex h-full items-start gap-4 p-5 transition duration-200 hover:border-brand-500/40 hover:shadow-lift">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
                       <Icon className="h-5 w-5" />
                     </div>
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-bold text-ink">{a.name}</h3>
-                      <p className="mt-0.5 line-clamp-2 text-sm text-muted">{a.description}</p>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-semibold text-ink">{a.name}</h3>
+                      <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted">{a.description}</p>
                     </div>
+                    <ArrowRight className="mt-1 h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" />
                   </Card>
                 </Link>
               );
@@ -134,11 +150,11 @@ export default async function OverviewPage() {
         </div>
 
         <div>
-          <SectionHeader title="Quick Actions" />
+          <SectionHeader title="Quick actions" />
           <div className="space-y-3">
-            <QuickAction href="/business-os/invoice-generator" icon={Receipt} label="Create Invoice" hint="Generate & email a branded PDF" />
-            <QuickAction href="/library" icon={FileText} label="Browse Library" hint="Explore every automation" />
-            <QuickAction href="/business-os/invoice-generator" icon={BarChart3} label="View Reports" hint="Run output & statistics" />
+            <QuickAction href="/business-os/invoice-generator" icon={Receipt} label="Create invoice" hint="Generate and email a branded PDF" />
+            <QuickAction href="/business-os/proposal-generator" icon={FileText} label="Create proposal" hint="Prepare a priced client proposal" />
+            <QuickAction href="/business-os/invoice-generator" icon={BarChart3} label="Review runs" hint="Open execution history and logs" />
           </div>
         </div>
       </section>
@@ -159,13 +175,13 @@ function QuickAction({
 }) {
   return (
     <Link href={href}>
-      <Card className="group flex items-center gap-3 p-4 transition-shadow hover:shadow-lift">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-accent">
+      <Card className="group flex items-center gap-3 p-4 transition duration-200 hover:border-brand-500/40 hover:shadow-lift">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold text-ink">{label}</p>
-          <p className="text-xs text-muted">{hint}</p>
+          <p className="text-xs leading-5 text-muted">{hint}</p>
         </div>
         <ArrowRight className="h-4 w-4 text-muted transition-transform group-hover:translate-x-0.5" />
       </Card>

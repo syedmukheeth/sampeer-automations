@@ -2,15 +2,15 @@ import { kvGet, kvSet } from "./store";
 import { liveAutomations, getAutomation } from "@features/registry";
 
 /**
- * INSTALL / ENABLE STORE — the marketplace mechanic of the SaaS layer.
+ * INSTALL / ENABLE STORE - the marketplace mechanic of the SaaS layer.
  *
  * Tracks which automations are "installed" (enabled) for this workspace. Live
  * automations default to installed; the Library lets the owner toggle them.
  * The shell (sidebar, dashboard) only surfaces installed automations, and each
  * automation page gates on install state.
  *
- * Backed by the same kv store (file → swap for KV/Redis in prod). Currently
- * single-workspace; key this by tenant/org id to go multi-tenant later — that
+ * Backed by the same kv store (file -> swap for KV/Redis in prod). Currently
+ * single-workspace; key this by tenant/org id to go multi-tenant later - that
  * is the only change needed for per-customer installs.
  *
  * Server-only.

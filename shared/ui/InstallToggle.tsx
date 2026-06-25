@@ -5,11 +5,6 @@ import { useRouter } from "next/navigation";
 import { Check, Plus, Loader2 } from "lucide-react";
 import { cn } from "@shared/lib/cn";
 
-/**
- * Install / Uninstall control for a live automation. Talks to /api/installs
- * (never imports the server-only install service) and refreshes server
- * components so the sidebar + dashboard reflect the change immediately.
- */
 export function InstallToggle({
   slug,
   installed: initial,
@@ -39,7 +34,6 @@ export function InstallToggle({
       setInstalled(next);
       startTransition(() => router.refresh());
     } catch {
-      // leave state unchanged on failure
     } finally {
       setBusy(false);
     }
@@ -54,11 +48,11 @@ export function InstallToggle({
       onClick={toggle}
       disabled={working}
       className={cn(
-        "inline-flex items-center justify-center gap-1.5 rounded-xl font-semibold transition-colors disabled:opacity-60",
+        "inline-flex items-center justify-center gap-1.5 rounded-xl font-semibold transition duration-200 disabled:opacity-60",
         lg ? "px-5 py-2.5 text-sm" : "px-3 py-1.5 text-xs",
         installed
-          ? "border border-line bg-panel text-muted hover:border-rose-200 hover:text-rose-600"
-          : "bg-accent text-white shadow-soft hover:bg-indigo-600",
+          ? "border border-line bg-panel text-muted hover:border-rose-300 hover:text-rose-700"
+          : "bg-brand text-white shadow-soft hover:bg-brand-700",
       )}
     >
       {working ? (

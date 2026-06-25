@@ -3,7 +3,7 @@ import { SESSION_COOKIE } from "@shared/services/auth";
 
 export const runtime = "nodejs";
 
-/** GET /api/auth/logout — clear the session cookie and return to /login. */
+/** GET /api/auth/logout - clear the session cookie and return to /login. */
 export async function GET(req: Request) {
   const res = NextResponse.redirect(new URL("/login", new URL(req.url).origin));
   res.cookies.set(SESSION_COOKIE, "", {

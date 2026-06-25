@@ -9,7 +9,7 @@ import {
 import type { InvoicePackage } from "./schema.js";
 import { formatMoney } from "./calc.js";
 
-// Brand palette — Sampeer Studio (ACCENT is overridable via branding)
+// Brand palette - Sampeer Studio (ACCENT is overridable via branding)
 const BRAND = "#0F172A"; // slate-900
 const DEFAULT_ACCENT = "#6366F1"; // indigo-500
 const MUTED = "#64748B"; // slate-500
@@ -97,15 +97,15 @@ function paymentLines(pkg: InvoicePackage): string[] {
   if (d.bankTransfer) {
     const b = d.bankTransfer;
     out.push(
-      `Bank Transfer — ${[b.bankName, b.accountName, b.accountNumber, b.ifscOrSwift]
+      `Bank Transfer - ${[b.bankName, b.accountName, b.accountNumber, b.ifscOrSwift]
         .filter(Boolean)
         .join(" / ")}`,
     );
   }
-  if (d.upi) out.push(`UPI — ${d.upi.id}`);
-  if (d.stripe) out.push(`Stripe — ${d.stripe.link}`);
-  if (d.wise) out.push(`Wise — ${d.wise.link}`);
-  if (d.paypal) out.push(`PayPal — ${d.paypal.email}`);
+  if (d.upi) out.push(`UPI - ${d.upi.id}`);
+  if (d.stripe) out.push(`Stripe - ${d.stripe.link}`);
+  if (d.wise) out.push(`Wise - ${d.wise.link}`);
+  if (d.paypal) out.push(`PayPal - ${d.paypal.email}`);
   return out;
 }
 
@@ -235,7 +235,7 @@ export function InvoiceDocument({ pkg }: { pkg: InvoicePackage }) {
         {/* Footer */}
         <View style={s.footer} fixed>
           <Text style={s.small}>
-            {pkg.company.name} · {pkg.company.email ?? ""} · {footerText}
+            {pkg.company.name} / {pkg.company.email ?? ""} / {footerText}
           </Text>
         </View>
       </Page>

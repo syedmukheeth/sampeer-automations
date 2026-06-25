@@ -14,7 +14,7 @@ export interface Totals {
 }
 
 /**
- * Deterministic pricing. Order: subtotal → discount → tax → total.
+ * Deterministic pricing. Order: subtotal -> discount -> tax -> total.
  * The LLM never sees or produces these numbers.
  */
 export function computeTotals(input: ProposalInput): Totals {

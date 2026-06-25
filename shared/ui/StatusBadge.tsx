@@ -3,12 +3,12 @@ import { cn } from "@shared/lib/cn";
 type Tone = "live" | "soon" | "success" | "running" | "failed" | "neutral";
 
 const TONES: Record<Tone, string> = {
-  live: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  success: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  soon: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  running: "bg-indigo-50 text-indigo-700 ring-indigo-600/20",
+  live: "bg-brand-50 text-brand-700 ring-brand-500/20",
+  success: "bg-brand-50 text-brand-700 ring-brand-500/20",
+  soon: "bg-stone-100 text-stone-600 ring-stone-400/30",
+  running: "bg-amber-50 text-amber-800 ring-amber-600/20",
   failed: "bg-rose-50 text-rose-700 ring-rose-600/20",
-  neutral: "bg-slate-100 text-slate-600 ring-slate-500/20",
+  neutral: "bg-stone-100 text-stone-600 ring-stone-400/30",
 };
 
 const LABELS: Partial<Record<Tone, string>> = {
@@ -30,7 +30,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset",
         TONES[tone],
         className,
       )}
@@ -39,11 +39,10 @@ export function StatusBadge({
         <span
           className={cn(
             "h-1.5 w-1.5 rounded-full",
-            tone === "running" && "animate-pulse bg-indigo-500",
-            (tone === "live" || tone === "success") && "bg-emerald-500",
+            tone === "running" && "animate-pulse bg-amber-600",
+            (tone === "live" || tone === "success") && "bg-brand-600",
             tone === "failed" && "bg-rose-500",
-            tone === "soon" && "bg-amber-500",
-            tone === "neutral" && "bg-slate-400",
+            (tone === "soon" || tone === "neutral") && "bg-stone-400",
           )}
         />
       )}

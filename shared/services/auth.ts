@@ -3,7 +3,7 @@ import { SignJWT } from "jose/jwt/sign";
 import { jwtVerify } from "jose/jwt/verify";
 
 /**
- * Single-user password auth helpers (stateless session — no database).
+ * Single-user password auth helpers (stateless session - no database).
  * Edge-safe: uses only `jose`, so `middleware.ts` can import this too.
  */
 

@@ -18,7 +18,7 @@ export type InvoiceViewMetrics = {
 };
 
 const PIPELINE = [
-  { icon: FileCheck2, title: "Validate", body: "Deterministic field checks — no invoice is generated if required data is missing." },
+  { icon: FileCheck2, title: "Validate", body: "Deterministic field checks - no invoice is generated if required data is missing." },
   { icon: Calculator, title: "Compute totals", body: "All money math runs in TypeScript. The model never touches a number." },
   { icon: Sparkles, title: "Premium prose", body: "Gemini rewrites line items and drafts the notes + client email copy." },
   { icon: FileText, title: "Render PDF", body: "A branded A4 invoice is rendered with React-PDF." },
@@ -42,15 +42,15 @@ export function InvoiceAutomationView({
 }) {
   return (
     <AutomationPageLayout
-      eyebrow="BusinessOS · Finance"
+      eyebrow="BusinessOS / Finance"
       name="Invoice Generator"
       description="Validate, price, design a branded PDF, and email a premium invoice to the client automatically."
       icon={Receipt}
-      accent="from-indigo-500 to-violet-600"
+      accent="from-brand to-brand-700"
       status="live"
       stats={[
         { label: "Executions", value: String(metrics.total) },
-        { label: "Success Rate", value: metrics.total ? `${metrics.successRate}%` : "—" },
+        { label: "Success Rate", value: metrics.total ? `${metrics.successRate}%` : "-" },
         { label: "Avg Runtime", value: formatDuration(metrics.avgRuntimeMs) },
         { label: "Prompt", value: INVOICE_AGENT_PROMPT_VERSION },
       ]}
@@ -65,7 +65,7 @@ export function InvoiceAutomationView({
                 return (
                   <Card key={step.title} className="p-5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-accent">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
                         <Icon className="h-5 w-5" />
                       </div>
                       <span className="text-xs font-semibold text-muted">Step {i + 1}</span>
@@ -93,7 +93,7 @@ export function InvoiceAutomationView({
           content: (
             <div className="grid gap-3 sm:grid-cols-2">
               <ConfigCard title="Default Currency" value="USD" note="Override per invoice on the Run tab." />
-              <ConfigCard title="Sender" value="Resend → Composio Gmail fallback" note="Set RESEND_API_KEY + RESEND_FROM to switch." />
+              <ConfigCard title="Sender" value="Resend -> Composio Gmail fallback" note="Set RESEND_API_KEY + RESEND_FROM to switch." />
               <ConfigCard title="Company" value="Sampeer Studio" note="White-label fields live in env for now." />
               <ConfigCard title="PDF Theme" value="Indigo / Slate" note="Branded React-PDF document." />
             </div>
@@ -115,10 +115,10 @@ export function InvoiceAutomationView({
                   ? runs.slice(0, 20).map((r) => ({
                       ts: timeAgo(r.createdAt),
                       level: r.status === "failed" ? "error" : r.status === "completed" ? "info" : "warn",
-                      message: `${r.status.toUpperCase()} · ${r.invoiceNumber ?? r.id} · ${formatDuration(r.durationMs)}${r.client ? ` · ${r.client}` : ""}`,
+                      message: `${r.status.toUpperCase()} / ${r.invoiceNumber ?? r.id} / ${formatDuration(r.durationMs)}${r.client ? ` / ${r.client}` : ""}`,
                     }))
                   : [
-                      { ts: "—", level: "debug", message: "validate → computeTotals → invoice-agent → render-pdf → send-invoice-email" },
+                      { ts: "-", level: "debug", message: "validate -> computeTotals -> invoice-agent -> render-pdf -> send-invoice-email" },
                     ]
               }
             />
@@ -132,7 +132,7 @@ export function InvoiceAutomationView({
               <p className="font-semibold text-ink">Core rule</p>
               <p>All money math + validation run in TypeScript. The model only writes prose, so totals can never be hallucinated.</p>
               <p className="mt-4 font-semibold text-ink">Pipeline</p>
-              <p>POST <code>/api/invoices</code> → <code>generate-invoice</code> task → validate → totals → Gemini prose → render PDF → send email. The frontend polls <code>/api/invoices/:runId</code> until COMPLETED.</p>
+              <p>POST <code>/api/invoices</code> starts the <code>generate-invoice</code> task, then validation, totals, Gemini prose, PDF rendering, and email delivery run in order. The frontend polls <code>/api/invoices/:runId</code> until COMPLETED.</p>
               <p className="mt-4 font-semibold text-ink">Prompt</p>
               <p>System prompt is versioned at <code>prompts/invoice-agent.ts</code> (current: {INVOICE_AGENT_PROMPT_VERSION}).</p>
             </Card>
@@ -149,7 +149,7 @@ function ExecutionHistory({ runs }: { runs: RunRecord[] }) {
       <EmptyState
         icon={<Receipt className="h-6 w-6" />}
         title="No executions yet"
-        description="Generate an invoice on the Run tab — every execution shows up here with status, timing, and client."
+        description="Generate an invoice on the Run tab - every execution shows up here with status, timing, and client."
       />
     );
   }
@@ -168,8 +168,8 @@ function ExecutionHistory({ runs }: { runs: RunRecord[] }) {
         <tbody>
           {runs.map((r) => (
             <tr key={r.id} className="border-b border-line/60 last:border-0 hover:bg-canvas">
-              <td className="px-5 py-3 font-medium text-ink">{r.invoiceNumber ?? "—"}</td>
-              <td className="px-5 py-3 text-muted">{r.client ?? "—"}</td>
+              <td className="px-5 py-3 font-medium text-ink">{r.invoiceNumber ?? "-"}</td>
+              <td className="px-5 py-3 text-muted">{r.client ?? "-"}</td>
               <td className="px-5 py-3">
                 <StatusBadge tone={STATUS_TONE[r.status]} dot>
                   {r.status}

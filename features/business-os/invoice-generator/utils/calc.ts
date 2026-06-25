@@ -55,7 +55,7 @@ export function formatMoney(amount: number, currency: string): string {
       minimumFractionDigits: 2,
     }).format(amount);
   } catch {
-    // Unknown/non-ISO currency code — fall back to "<CODE> 1,234.00"
+    // Unknown/non-ISO currency code - fall back to "<CODE> 1,234.00"
     return `${currency} ${amount.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,

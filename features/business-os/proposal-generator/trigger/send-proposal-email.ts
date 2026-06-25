@@ -15,8 +15,8 @@ type EmailPayload = {
 
 /**
  * Send the proposal email + PDF. Provider auto-selected:
- *   • RESEND_API_KEY + RESEND_FROM → Resend (verified domain, inbox).
- *   • otherwise                    → Composio Gmail (OAuth, fallback).
+ *   • RESEND_API_KEY + RESEND_FROM -> Resend (verified domain, inbox).
+ *   • otherwise                    -> Composio Gmail (OAuth, fallback).
  */
 export const sendProposalEmail = task({
   id: "send-proposal-email",
@@ -80,7 +80,7 @@ async function sendViaComposioGmail(payload: EmailPayload) {
         reason: (e as any)?.cause?.message ?? (e as Error)?.message,
       });
       const note =
-        "\n\nP.S. The PDF copy of your proposal could not be attached automatically — just reply to this email and we'll send it across right away.";
+        "\n\nP.S. The PDF copy of your proposal could not be attached automatically - just reply to this email and we'll send it across right away.";
       result = await composio.tools.execute("GMAIL_SEND_EMAIL", {
         userId,
         dangerouslySkipVersionCheck: true,

@@ -33,7 +33,7 @@ export default function LoginPage() {
         <div className="mb-6 flex flex-col items-center text-center">
           <BrandLogo className="h-16 w-16 rounded-2xl" />
           <h1 className="mt-4 text-lg font-bold text-ink">Sampeer Studio</h1>
-          <p className="text-xs text-muted">Automations · Owner sign-in</p>
+          <p className="text-xs text-muted">Automations / Owner sign-in</p>
         </div>
 
         <form onSubmit={submit} className="space-y-4">

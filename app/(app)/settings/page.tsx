@@ -22,7 +22,7 @@ export default async function SettingsPage() {
       <PageHeader
         eyebrow="Platform"
         title="Settings"
-        description="Branding and automation defaults apply across runs — no code edits needed to reskin for a client."
+        description="Branding and automation defaults apply across runs - no code edits needed to reskin for a client."
       />
 
       <SettingsForm initial={settings} />

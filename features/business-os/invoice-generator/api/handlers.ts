@@ -9,7 +9,7 @@ const orUndef = (v?: string) => (v && v.trim() ? v : undefined);
 /**
  * Apply platform settings (white-label branding + invoice defaults) to a
  * validated payload. Form values always win; settings fill the gaps. This is
- * what makes the same automation reskin per client with no code changes — and
+ * what makes the same automation reskin per client with no code changes - and
  * it keeps the Trigger worker stateless (branding travels in the payload).
  */
 async function applySettings(data: InvoiceInput): Promise<InvoiceInput> {

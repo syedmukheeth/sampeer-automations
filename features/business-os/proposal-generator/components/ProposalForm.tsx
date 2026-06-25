@@ -227,9 +227,9 @@ export default function ProposalForm() {
         <button
           type="submit"
           disabled={run.phase === "submitting" || run.phase === "polling"}
-          className="rounded-xl bg-accent px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-indigo-600 disabled:opacity-50"
+          className="rounded-xl bg-brand px-6 py-3 font-semibold text-white shadow-soft transition hover:bg-brand-700 disabled:opacity-50"
         >
-          {run.phase === "submitting" || run.phase === "polling" ? "Generating…" : "Generate & Send Proposal"}
+          {run.phase === "submitting" || run.phase === "polling" ? "Generating..." : "Generate & Send Proposal"}
         </button>
         {run.phase === "polling" && <span className="text-sm text-slate-500">Status: {run.status}</span>}
       </div>
@@ -250,10 +250,10 @@ function Result({ run }: { run: RunState }) {
   if (run.phase !== "done") return null;
   const o = run.output;
   return (
-    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="space-y-4 rounded-xl border border-line bg-panel p-6 shadow-soft">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold text-brand">
-          {o.proposal.title} · {o.proposal.currency} {o.summary.total}
+          {o.proposal.title} / {o.proposal.currency} {o.summary.total}
         </h3>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -268,7 +268,7 @@ function Result({ run }: { run: RunState }) {
         <button
           type="button"
           onClick={() => downloadPdf(o.pdfBase64, o.pdfFilename ?? "proposal.pdf")}
-          className="rounded-lg border border-accent px-4 py-2 text-sm font-semibold text-accent hover:bg-indigo-50"
+          className="rounded-lg border border-brand px-4 py-2 text-sm font-semibold text-brand hover:bg-brand-50"
         >
           Download PDF
         </button>
@@ -281,7 +281,7 @@ function Result({ run }: { run: RunState }) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <fieldset className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <fieldset className="rounded-2xl border border-line bg-panel p-6 shadow-soft">
       <legend className="px-2 text-sm font-semibold uppercase tracking-wide text-slate-500">{title}</legend>
       <div className="grid grid-cols-2 gap-4">{children}</div>
     </fieldset>

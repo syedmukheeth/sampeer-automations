@@ -3,12 +3,12 @@ import { getSettings, saveSettings } from "@shared/services/settings";
 
 export const runtime = "nodejs";
 
-/** GET /api/settings — current platform settings (owner-gated by middleware). */
+/** GET /api/settings - current platform settings (owner-gated by middleware). */
 export async function GET() {
   return NextResponse.json(await getSettings());
 }
 
-/** PUT /api/settings — persist a (partial) settings update. */
+/** PUT /api/settings - persist a (partial) settings update. */
 export async function PUT(req: Request) {
   let body: unknown;
   try {

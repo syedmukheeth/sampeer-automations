@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // API → 401 JSON; pages → redirect to login.
+  // API -> 401 JSON; pages -> redirect to login.
   if (pathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

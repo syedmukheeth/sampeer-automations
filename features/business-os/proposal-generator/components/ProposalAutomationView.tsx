@@ -14,7 +14,7 @@ import ProposalForm from "./ProposalForm";
 export type ProposalViewMetrics = { total: number; successRate: number; avgRuntimeMs: number };
 
 const PIPELINE = [
-  { icon: FileCheck2, title: "Validate", body: "Deterministic checks — no proposal is generated if required data is missing." },
+  { icon: FileCheck2, title: "Validate", body: "Deterministic checks - no proposal is generated if required data is missing." },
   { icon: Calculator, title: "Price", body: "All investment math runs in TypeScript. The model never touches a number." },
   { icon: Sparkles, title: "Persuade", body: "Gemini writes the executive summary, premium item copy, and terms." },
   { icon: FileSignature, title: "Render PDF", body: "A branded A4 proposal is rendered with React-PDF." },
@@ -38,15 +38,15 @@ export function ProposalAutomationView({
 }) {
   return (
     <AutomationPageLayout
-      eyebrow="BusinessOS · Finance"
+      eyebrow="BusinessOS / Finance"
       name="Proposal Generator"
-      description="Turn a brief into a persuasive, branded proposal PDF with a priced investment table — and email it to the client."
+      description="Turn a brief into a persuasive, branded proposal PDF with a priced investment table - and email it to the client."
       icon={FileText}
       accent="from-sky-500 to-indigo-600"
       status="live"
       stats={[
         { label: "Executions", value: String(metrics.total) },
-        { label: "Success Rate", value: metrics.total ? `${metrics.successRate}%` : "—" },
+        { label: "Success Rate", value: metrics.total ? `${metrics.successRate}%` : "-" },
         { label: "Avg Runtime", value: formatDuration(metrics.avgRuntimeMs) },
         { label: "Prompt", value: PROPOSAL_AGENT_PROMPT_VERSION },
       ]}
@@ -89,7 +89,7 @@ export function ProposalAutomationView({
           content: (
             <div className="grid gap-3 sm:grid-cols-2">
               <ConfigCard title="Default Currency" value="From Settings" note="Platform branding & currency apply automatically." />
-              <ConfigCard title="Sender" value="Resend → Composio Gmail fallback" note="Set RESEND_API_KEY + RESEND_FROM to switch." />
+              <ConfigCard title="Sender" value="Resend -> Composio Gmail fallback" note="Set RESEND_API_KEY + RESEND_FROM to switch." />
               <ConfigCard title="Branding" value="White-label" note="Logo, accent, footer pulled from Settings." />
               <ConfigCard title="PDF Theme" value="Accent from Settings" note="Branded React-PDF document." />
             </div>
@@ -111,9 +111,9 @@ export function ProposalAutomationView({
                   ? runs.slice(0, 20).map((r) => ({
                       ts: timeAgo(r.createdAt),
                       level: r.status === "failed" ? "error" : r.status === "completed" ? "info" : "warn",
-                      message: `${r.status.toUpperCase()} · ${r.invoiceNumber ?? r.id} · ${formatDuration(r.durationMs)}${r.client ? ` · ${r.client}` : ""}`,
+                      message: `${r.status.toUpperCase()} / ${r.invoiceNumber ?? r.id} / ${formatDuration(r.durationMs)}${r.client ? ` / ${r.client}` : ""}`,
                     }))
-                  : [{ ts: "—", level: "debug", message: "validate → computeTotals → proposal-agent → render-proposal-pdf → send-proposal-email" }]
+                  : [{ ts: "-", level: "debug", message: "validate -> computeTotals -> proposal-agent -> render-proposal-pdf -> send-proposal-email" }]
               }
             />
           ),
@@ -126,7 +126,7 @@ export function ProposalAutomationView({
               <p className="font-semibold text-ink">Core rule</p>
               <p>All pricing math runs in TypeScript. The model only writes prose, so totals can never be hallucinated.</p>
               <p className="mt-4 font-semibold text-ink">Pipeline</p>
-              <p>POST <code>/api/proposals</code> → <code>generate-proposal</code> task → validate → totals → Gemini prose → render PDF → send email. The frontend polls <code>/api/proposals/:runId</code> until COMPLETED.</p>
+              <p>POST <code>/api/proposals</code> starts the <code>generate-proposal</code> task, then validation, totals, Gemini prose, PDF rendering, and email delivery run in order. The frontend polls <code>/api/proposals/:runId</code> until COMPLETED.</p>
               <p className="mt-4 font-semibold text-ink">Prompt</p>
               <p>System prompt is versioned at <code>prompts/proposal-agent.ts</code> (current: {PROPOSAL_AGENT_PROMPT_VERSION}).</p>
             </Card>
@@ -143,7 +143,7 @@ function ExecutionHistory({ runs }: { runs: RunRecord[] }) {
       <EmptyState
         icon={<FileText className="h-6 w-6" />}
         title="No executions yet"
-        description="Generate a proposal on the Run tab — every execution shows up here with status, timing, and client."
+        description="Generate a proposal on the Run tab - every execution shows up here with status, timing, and client."
       />
     );
   }
@@ -162,8 +162,8 @@ function ExecutionHistory({ runs }: { runs: RunRecord[] }) {
         <tbody>
           {runs.map((r) => (
             <tr key={r.id} className="border-b border-line/60 last:border-0 hover:bg-canvas">
-              <td className="px-5 py-3 font-medium text-ink">{r.invoiceNumber ?? "—"}</td>
-              <td className="px-5 py-3 text-muted">{r.client ?? "—"}</td>
+              <td className="px-5 py-3 font-medium text-ink">{r.invoiceNumber ?? "-"}</td>
+              <td className="px-5 py-3 text-muted">{r.client ?? "-"}</td>
               <td className="px-5 py-3">
                 <StatusBadge tone={STATUS_TONE[r.status]} dot>
                   {r.status}

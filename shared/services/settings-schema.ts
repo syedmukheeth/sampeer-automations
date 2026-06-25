@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Settings SCHEMA + types — client-safe (no fs/store imports), so client
+ * Settings SCHEMA + types - client-safe (no fs/store imports), so client
  * components (the Settings form) can import constants/types without pulling the
  * Node-only store into the browser bundle. Runtime get/save live in settings.ts.
  */

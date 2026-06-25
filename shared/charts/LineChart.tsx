@@ -3,15 +3,11 @@
 import { useId } from "react";
 import { motion } from "framer-motion";
 
-/**
- * Lightweight inline-SVG area/line chart — no chart dependency.
- * Pass an array of numbers; renders a smooth animated gradient area.
- */
 export function LineChart({
   data,
   labels,
   height = 200,
-  stroke = "#6366F1",
+  stroke = "#123C3A",
 }: {
   data: number[];
   labels?: string[];
@@ -21,7 +17,7 @@ export function LineChart({
   const gid = useId();
   const w = 600;
   const h = height;
-  const pad = 16;
+  const pad = 18;
   const max = Math.max(...data, 1);
   const min = Math.min(...data, 0);
   const span = max - min || 1;
@@ -41,7 +37,7 @@ export function LineChart({
       <svg viewBox={`0 0 ${w} ${h}`} className="h-auto w-full" preserveAspectRatio="none">
         <defs>
           <linearGradient id={`fill-${gid}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={stroke} stopOpacity="0.22" />
+            <stop offset="0%" stopColor={stroke} stopOpacity="0.18" />
             <stop offset="100%" stopColor={stroke} stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -52,8 +48,8 @@ export function LineChart({
             x2={w - pad}
             y1={pad + g * (h - pad * 2)}
             y2={pad + g * (h - pad * 2)}
-            stroke="#E2E8F0"
-            strokeDasharray="3 4"
+            stroke="#DED9CF"
+            strokeDasharray="2 8"
           />
         ))}
         <path d={area} fill={`url(#fill-${gid})`} />
@@ -61,19 +57,19 @@ export function LineChart({
           d={line}
           fill="none"
           stroke={stroke}
-          strokeWidth={2.5}
+          strokeWidth={2.75}
           strokeLinecap="round"
           strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          transition={{ duration: 0.9, ease: "easeInOut" }}
         />
         {pts.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={3} fill="#fff" stroke={stroke} strokeWidth={2} />
+          <circle key={i} cx={x} cy={y} r={3.5} fill="#FFFDF8" stroke={stroke} strokeWidth={2} />
         ))}
       </svg>
       {labels && (
-        <div className="mt-2 flex justify-between px-2 text-[11px] text-muted">
+        <div className="mt-3 flex justify-between px-2 text-[11px] font-medium text-muted">
           {labels.map((l) => (
             <span key={l}>{l}</span>
           ))}

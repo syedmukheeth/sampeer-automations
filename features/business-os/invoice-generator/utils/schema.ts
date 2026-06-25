@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /* ------------------------------------------------------------------ *
- * INPUT — what the frontend form / upstream source sends.
+ * INPUT - what the frontend form / upstream source sends.
  * Numbers are raw; all math is done in calc.ts (never by the LLM).
  * ------------------------------------------------------------------ */
 
@@ -88,7 +88,7 @@ export type InvoiceInput = z.infer<typeof invoiceInputSchema>;
 export type ItemInput = z.infer<typeof itemInputSchema>;
 
 /* ------------------------------------------------------------------ *
- * AGENT OUTPUT — the ONLY thing the model produces. Prose, never numbers.
+ * AGENT OUTPUT - the ONLY thing the model produces. Prose, never numbers.
  * ------------------------------------------------------------------ */
 
 export const agentOutputSchema = z.object({
@@ -110,7 +110,7 @@ export const agentOutputSchema = z.object({
 export type AgentOutput = z.infer<typeof agentOutputSchema>;
 
 /* ------------------------------------------------------------------ *
- * FINAL PACKAGE — exact shape consumed by PDF + email services.
+ * FINAL PACKAGE - exact shape consumed by PDF + email services.
  * ------------------------------------------------------------------ */
 
 export interface InvoicePackage {

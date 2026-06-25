@@ -1,7 +1,6 @@
 import { Card } from "./Card";
 import { cn } from "@shared/lib/cn";
 
-/** A titled surface that wraps a chart. */
 export function ChartCard({
   title,
   subtitle,
@@ -17,10 +16,10 @@ export function ChartCard({
 }) {
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
-      <div className="mb-4 flex items-start justify-between">
+      <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-base font-bold text-ink">{title}</h3>
-          {subtitle && <p className="text-xs text-muted">{subtitle}</p>}
+          <h3 className="text-lg font-semibold tracking-tight text-ink">{title}</h3>
+          {subtitle && <p className="mt-1 text-sm text-muted">{subtitle}</p>}
         </div>
         {action}
       </div>

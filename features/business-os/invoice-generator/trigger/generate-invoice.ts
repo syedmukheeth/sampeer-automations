@@ -17,7 +17,7 @@ import { sendEmail } from "./send-email.js";
  * Pipeline: validate (TS) -> totals (TS) -> model prose -> assemble
  *           package -> render PDF -> send via Resend/Composio Gmail.
  *
- * Returns the full InvoicePackage (+ pdfBase64) — valid JSON, ready for any
+ * Returns the full InvoicePackage (+ pdfBase64) - valid JSON, ready for any
  * PDF/email consumer. On validation failure it returns errors and stops.
  */
 export const generateInvoice = schemaTask({
@@ -34,12 +34,12 @@ export const generateInvoice = schemaTask({
       } satisfies Pick<InvoicePackage, "validation">;
     }
 
-    // ---- STEP 3: Totals (deterministic — never the LLM) ---------------
+    // ---- STEP 3: Totals (deterministic - never the LLM) ---------------
     const totals = computeTotals(input);
     const cur = input.currency;
     const totalDisplay = formatMoney(totals.total, cur);
 
-    // ---- STEP 2/6/7: Model — premium descriptions, notes, email -------
+    // ---- STEP 2/6/7: Model - premium descriptions, notes, email -------
     const agentRun = await invoiceAgent.triggerAndWait({
       input,
       totalDisplay,
@@ -130,7 +130,7 @@ export const generateInvoice = schemaTask({
 /**
  * Wrap the agent's email copy with a professional, branded signature block.
  * The footer adds legitimacy (real sender identity + contact + a transactional
- * reference line) — both premium polish and a deliverability/anti-spam signal.
+ * reference line) - both premium polish and a deliverability/anti-spam signal.
  */
 function buildEmailBody(
   agentBody: string,
@@ -140,7 +140,7 @@ function buildEmailBody(
   const c = input.company;
   const contact = [c.email, c.phone].filter(Boolean).join("  •  ");
   const sig = [
-    "—",
+    "-",
     input.branding?.emailSignatureName || c.name,
     c.address,
     contact,
@@ -152,7 +152,7 @@ function buildEmailBody(
     "",
     `This invoice (${input.invoice.number}) for "${input.project.name}" totals ${totalDisplay},`,
     `due ${input.invoice.dueDate}. The PDF is attached for your records.`,
-    "Reply to this email with any questions — we're happy to help.",
+    "Reply to this email with any questions - we're happy to help.",
   ].join("\n");
 
   return `${agentBody.trim()}\n${ref}\n\n${sig}`;

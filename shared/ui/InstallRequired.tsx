@@ -6,7 +6,7 @@ import { InstallToggle } from "./InstallToggle";
 export function InstallRequired({ slug, name }: { slug: string; name: string }) {
   return (
     <Card className="mx-auto flex max-w-lg flex-col items-center px-6 py-14 text-center">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-accent">
+      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-line bg-stone-50 text-brand">
         <PackageOpen className="h-7 w-7" />
       </div>
       <h1 className="mt-4 text-xl font-bold text-ink">{name} isn&rsquo;t installed</h1>

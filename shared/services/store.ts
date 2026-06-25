@@ -4,12 +4,12 @@ import { dirname, join } from "node:path";
 /**
  * KEY-VALUE STORE (swappable adapter).
  *
- * Default adapter: a JSON file under `.data/` (gitignored) — perfect for local/
+ * Default adapter: a JSON file under `.data/` (gitignored) - perfect for local/
  * single-instance use. On a read-only/serverless filesystem writes fail safely
  * and reads fall back to defaults.
  *
  * To go multi-instance in production, replace the two functions below with a
- * Vercel KV / Upstash Redis client — nothing else in the app changes.
+ * Vercel KV / Upstash Redis client - nothing else in the app changes.
  *
  * Server-only.
  */

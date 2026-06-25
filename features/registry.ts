@@ -1,16 +1,16 @@
 /**
- * SAMPEER OS — PLATFORM REGISTRY
+ * SAMPEER OS - PLATFORM REGISTRY
  *
  * Single source of truth for the platform hierarchy:
  *
- *   Operating System  →  Module  →  Automation
+ *   Operating System  ->  Module  ->  Automation
  *
  * This drives the sidebar, the dashboard KPIs, and the Automation Library.
  * To ship a new automation: build its feature folder, then add ONE entry to
  * the relevant module below and point `href` at its page. Nothing else needs
- * to change — the shell renders everything from here.
+ * to change - the shell renders everything from here.
  *
- * `status: "soon"` entries are metadata only (no page yet) — they populate the
+ * `status: "soon"` entries are metadata only (no page yet) - they populate the
  * sidebar/library so the platform feels alive without stub pages.
  */
 import {
@@ -66,7 +66,7 @@ export type OperatingSystem = {
   modules: ModuleMeta[];
 };
 
-// "soon" automations are not live yet — render them in a muted, neutral tone
+// "soon" automations are not live yet - render them in a muted, neutral tone
 // so color is reserved for live, semantic state (not decoration). This also
 // overrides any per-item accent below, keeping the palette disciplined.
 const SOON_ACCENT = "from-slate-400 to-slate-500";
@@ -80,7 +80,7 @@ export const operatingSystems: OperatingSystem[] = [
     name: "BusinessOS",
     tagline: "Finance, clients & operations",
     icon: Building2,
-    accent: "from-indigo-500 to-violet-600",
+    accent: "from-brand to-brand-700",
     modules: [
       {
         id: "finance",
@@ -97,13 +97,13 @@ export const operatingSystems: OperatingSystem[] = [
             status: "live",
             icon: Receipt,
             tags: ["Finance", "AI", "PDF", "Email"],
-            accent: "from-indigo-500 to-violet-600",
+            accent: "from-brand to-brand-700",
           },
           {
             slug: "proposal-generator",
             name: "Proposal Generator",
             description:
-              "Turn a brief into a persuasive, branded proposal PDF with a priced investment table — emailed to the client automatically.",
+              "Turn a brief into a persuasive, branded proposal PDF with a priced investment table - emailed to the client automatically.",
             osId: "business-os",
             moduleId: "finance",
             href: "/business-os/proposal-generator",
@@ -156,7 +156,7 @@ export const operatingSystems: OperatingSystem[] = [
             moduleId: "clients",
             icon: Briefcase,
             tags: ["Operations"],
-            accent: "from-violet-500 to-purple-600",
+            accent: "from-brand to-brand-700",
           }),
         ],
       },
@@ -167,7 +167,7 @@ export const operatingSystems: OperatingSystem[] = [
     name: "ContentOS",
     tagline: "Create & repurpose at scale",
     icon: Megaphone,
-    accent: "from-fuchsia-500 to-pink-600",
+    accent: "from-brand to-brand-700",
     modules: [
       {
         id: "create",
@@ -176,12 +176,12 @@ export const operatingSystems: OperatingSystem[] = [
           soon({
             slug: "video-factory",
             name: "Video Factory",
-            description: "Script → research → thumbnail in one pipeline.",
+            description: "Script -> research -> thumbnail in one pipeline.",
             osId: "content-os",
             moduleId: "create",
             icon: Video,
             tags: ["Marketing", "AI"],
-            accent: "from-fuchsia-500 to-pink-600",
+            accent: "from-brand to-brand-700",
           }),
           soon({
             slug: "seo-writer",
@@ -262,7 +262,7 @@ export const operatingSystems: OperatingSystem[] = [
             moduleId: "pipeline",
             icon: Phone,
             tags: ["Sales", "AI"],
-            accent: "from-violet-500 to-fuchsia-600",
+            accent: "from-brand to-brand-700",
           }),
         ],
       },

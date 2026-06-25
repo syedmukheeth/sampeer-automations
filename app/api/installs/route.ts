@@ -4,12 +4,12 @@ import { getAutomation } from "@features/registry";
 
 export const runtime = "nodejs";
 
-/** GET /api/installs — current install map (owner-gated by middleware). */
+/** GET /api/installs - current install map (owner-gated by middleware). */
 export async function GET() {
   return NextResponse.json(await getInstalls());
 }
 
-/** PUT /api/installs — { slug, enabled }. Toggle an automation. */
+/** PUT /api/installs - { slug, enabled }. Toggle an automation. */
 export async function PUT(req: Request) {
   let body: unknown;
   try {

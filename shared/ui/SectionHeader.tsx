@@ -10,8 +10,8 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <div className={cn("mb-3 flex items-center justify-between", className)}>
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-muted">
+    <div className={cn("mb-3 flex items-center justify-between gap-3", className)}>
+      <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted">
         {title}
       </h2>
       {action}

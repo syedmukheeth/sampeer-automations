@@ -2,14 +2,14 @@ import { kvGet, kvSet } from "./store";
 import { settingsSchema, type Settings } from "./settings-schema";
 
 /**
- * PLATFORM SETTINGS — owner-level configuration (single owner). Runtime layer.
+ * PLATFORM SETTINGS - owner-level configuration (single owner). Runtime layer.
  *
  * White-label branding + per-automation defaults that let the same automation
  * be reskinned for different clients WITHOUT touching code. Stored via the kv
  * store; defaults are seeded from env so an unconfigured install still works.
  *
  * Server-only (imports the fs-backed store). The invoice worker never reads
- * this — the Next API injects the relevant branding into the task payload.
+ * this - the Next API injects the relevant branding into the task payload.
  */
 
 // Re-export schema + types so callers have a single import surface.

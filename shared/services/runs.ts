@@ -1,7 +1,7 @@
 import { runs } from "@trigger.dev/sdk";
 
 /**
- * RUN STORE — the platform's source of truth for execution history & metrics.
+ * RUN STORE - the platform's source of truth for execution history & metrics.
  *
  * Phase 2 implementation reads Trigger.dev's own run history (every task run is
  * already persisted there), so the dashboard shows REAL data with zero extra
@@ -12,7 +12,7 @@ import { runs } from "@trigger.dev/sdk";
  * Server-only (uses TRIGGER_SECRET_KEY). Never import from a client component.
  */
 
-/** Normalized, serializable run record (safe to pass server → client). */
+/** Normalized, serializable run record (safe to pass server -> client). */
 export type RunRecord = {
   id: string;
   task: string;
@@ -77,7 +77,7 @@ function normalize(run: RawRun): RunRecord {
     costInCents: run.costInCents ?? 0,
     tags: run.tags ?? [],
     client: tagValue(run.tags ?? [], "client"),
-    // Document reference — invoice or proposal number, whichever tagged it.
+    // Document reference - invoice or proposal number, whichever tagged it.
     invoiceNumber: tagValue(run.tags ?? [], "invoice") ?? tagValue(run.tags ?? [], "proposal"),
   };
 }
@@ -135,7 +135,7 @@ export async function getRunMetrics(
   };
 }
 
-/** Group runs into per-day counts for the last `days` days (oldest → newest). */
+/** Group runs into per-day counts for the last `days` days (oldest -> newest). */
 function buildDailyBuckets(
   records: RunRecord[],
   days: number,
@@ -158,7 +158,7 @@ function buildDailyBuckets(
   return buckets;
 }
 
-/** Human "2m ago" style — server-safe (also in shared/lib/format for client). */
+/** Human "2m ago" style - server-safe (also in shared/lib/format for client). */
 export function runTimeAgo(iso: string): string {
   const secs = Math.round((Date.now() - new Date(iso).getTime()) / 1000);
   if (secs < 60) return "just now";
@@ -171,7 +171,7 @@ export function runTimeAgo(iso: string): string {
 
 /** Format ms as "14.6s" / "1.2m". */
 export function formatDuration(ms: number): string {
-  if (ms <= 0) return "—";
+  if (ms <= 0) return "-";
   if (ms < 1000) return `${ms}ms`;
   const s = ms / 1000;
   if (s < 60) return `${s.toFixed(1)}s`;

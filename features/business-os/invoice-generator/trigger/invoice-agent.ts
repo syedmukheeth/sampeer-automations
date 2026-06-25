@@ -7,7 +7,7 @@ import { getInvoiceSystemPrompt } from "../prompts/invoice-agent.js";
 /**
  * The model's ONLY job: turn generic services into premium descriptions and
  * write the notes + client email copy. It receives NO totals and produces
- * NO numbers — all math is deterministic (see ../utils/calc.ts).
+ * NO numbers - all math is deterministic (see ../utils/calc.ts).
  */
 export const invoiceAgent = task({
   id: "invoice-agent",

@@ -12,10 +12,10 @@ import { renderProposalPdf } from "./render-proposal-pdf.js";
 import { sendProposalEmail } from "./send-proposal-email.js";
 
 /**
- * Orchestrator: brief → validated, branded, emailed proposal.
+ * Orchestrator: brief -> validated, branded, emailed proposal.
  *
- * Pipeline: validate (TS) → totals (TS) → model prose → assemble package →
- *           render PDF → send via Resend/Composio Gmail.
+ * Pipeline: validate (TS) -> totals (TS) -> model prose -> assemble package ->
+ *           render PDF -> send via Resend/Composio Gmail.
  *
  * Mirrors generate-invoice: all pricing math in TS, model writes prose only.
  */
@@ -33,12 +33,12 @@ export const generateProposal = schemaTask({
       } satisfies Pick<ProposalPackage, "validation">;
     }
 
-    // ---- STEP 2: Totals (deterministic — never the LLM) ---------------
+    // ---- STEP 2: Totals (deterministic - never the LLM) ---------------
     const totals = computeTotals(input);
     const cur = input.currency;
     const totalDisplay = formatMoney(totals.total, cur);
 
-    // ---- STEP 3: Model — exec summary, descriptions, terms, email -----
+    // ---- STEP 3: Model - exec summary, descriptions, terms, email -----
     const agentRun = await proposalAgent.triggerAndWait({
       input,
       totalDisplay,
@@ -118,14 +118,14 @@ export const generateProposal = schemaTask({
 function buildEmailBody(agentBody: string, input: ProposalInput, totalDisplay: string): string {
   const c = input.company;
   const contact = [c.email, c.phone].filter(Boolean).join("  •  ");
-  const sig = ["—", input.branding?.emailSignatureName || c.name, c.address, contact]
+  const sig = ["-", input.branding?.emailSignatureName || c.name, c.address, contact]
     .filter(Boolean)
     .join("\n");
   const ref = [
     "",
-    `This proposal (${input.proposal.number}) — "${input.proposal.title}" — totals ${totalDisplay},`,
+    `This proposal (${input.proposal.number}) - "${input.proposal.title}" - totals ${totalDisplay},`,
     `valid until ${input.proposal.validUntil}. The PDF is attached for your review.`,
-    "Reply to this email with any questions — we're happy to walk you through it.",
+    "Reply to this email with any questions - we're happy to walk you through it.",
   ].join("\n");
   return `${agentBody.trim()}\n${ref}\n\n${sig}`;
 }

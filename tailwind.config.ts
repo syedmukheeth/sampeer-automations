@@ -9,40 +9,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Core brand — Sampeer Studio violet (matches logo ribbon)
         brand: {
-          DEFAULT: "#7C3AED", // violet-600
-          50: "#F5F3FF",
-          100: "#EDE9FE",
-          400: "#A78BFA",
-          500: "#8B5CF6",
-          600: "#7C3AED",
-          700: "#6D28D9",
+          DEFAULT: "#123C3A",
+          50: "#EAF4F1",
+          100: "#D6E9E4",
+          500: "#2B6F6A",
+          600: "#205C58",
+          700: "#174844",
+          900: "#0E2423",
         },
-        accent: "#7C3AED", // brand violet
-        // Premium surface tokens (CSS-var driven so themes can be swapped)
+        accent: "#B88A44",
         canvas: "rgb(var(--canvas) / <alpha-value>)",
         panel: "rgb(var(--panel) / <alpha-value>)",
         ink: "rgb(var(--ink) / <alpha-value>)",
         muted: "rgb(var(--muted) / <alpha-value>)",
         line: "rgb(var(--line) / <alpha-value>)",
-        // Dark sidebar palette
-        sidebar: "#0B0712", // near-black with violet undertone (matches logo bg)
-        "sidebar-line": "#241B33",
+        sidebar: "#111413",
+        "sidebar-line": "#252B29",
       },
       backgroundImage: {
-        // Single canonical brand gradient — use everywhere instead of rainbow.
-        "brand-gradient": "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
+        "brand-gradient": "linear-gradient(135deg, #123C3A 0%, #205C58 100%)",
+        "page-wash":
+          "radial-gradient(circle at 15% 0%, rgba(184,138,68,0.10), transparent 34%), linear-gradient(180deg, #F7F5EF 0%, #F3F0E8 100%)",
       },
       borderRadius: {
-        xl: "0.875rem",
-        "2xl": "1.125rem",
-        "3xl": "1.5rem",
+        xl: "0.75rem",
+        "2xl": "0.875rem",
+        "3xl": "1rem",
       },
       boxShadow: {
-        soft: "0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.12)",
-        lift: "0 1px 3px rgba(15,23,42,0.06), 0 20px 40px -16px rgba(15,23,42,0.18)",
-        glow: "0 0 0 1px rgba(124,58,237,0.20), 0 12px 32px -12px rgba(124,58,237,0.40)",
+        soft: "0 1px 2px rgba(17,20,19,0.04), 0 10px 28px -22px rgba(17,20,19,0.34)",
+        lift: "0 1px 2px rgba(17,20,19,0.05), 0 22px 46px -30px rgba(17,20,19,0.44)",
+        glow: "0 0 0 1px rgba(184,138,68,0.18), 0 18px 42px -28px rgba(184,138,68,0.55)",
       },
       keyframes: {
         "fade-up": {
@@ -54,7 +52,7 @@ export default {
         },
       },
       animation: {
-        "fade-up": "fade-up 0.4s cubic-bezier(0.22,1,0.36,1) both",
+        "fade-up": "fade-up 0.45s cubic-bezier(0.2,0.8,0.2,1) both",
       },
     },
   },

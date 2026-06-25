@@ -17,8 +17,8 @@ type EmailPayload = {
  * Send the invoice email + PDF.
  *
  * Provider is chosen automatically:
- *   • RESEND_API_KEY + RESEND_FROM set  → Resend (authenticated domain, inbox).
- *   • otherwise                          → Composio Gmail (personal inbox, OAuth).
+ *   • RESEND_API_KEY + RESEND_FROM set  -> Resend (authenticated domain, inbox).
+ *   • otherwise                          -> Composio Gmail (personal inbox, OAuth).
  *
  * Resend is strongly preferred for deliverability: a verified sending domain
  * with SPF/DKIM/DMARC is the only reliable way to land in the inbox for every
@@ -36,7 +36,7 @@ export const sendEmail = task({
 });
 
 /* ------------------------------------------------------------------ *
- * Resend — authenticated-domain sender (recommended for production).
+ * Resend - authenticated-domain sender (recommended for production).
  * ------------------------------------------------------------------ */
 async function sendViaResend(payload: EmailPayload) {
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -61,9 +61,9 @@ async function sendViaResend(payload: EmailPayload) {
 }
 
 /* ------------------------------------------------------------------ *
- * Composio Gmail — OAuth personal-inbox sender (fallback).
+ * Composio Gmail - OAuth personal-inbox sender (fallback).
  * Stages the PDF via files.upload and overrides the descriptor name so the
- * attachment is a clean `Invoice-1234.pdf` (not Composio's `file_ts…pdf`).
+ * attachment is a clean `Invoice-1234.pdf` (not Composio's `file_ts...pdf`).
  * ------------------------------------------------------------------ */
 async function sendViaComposioGmail(payload: EmailPayload) {
   const apiKey = process.env.COMPOSIO_API_KEY;
@@ -107,7 +107,7 @@ async function sendViaComposioGmail(payload: EmailPayload) {
         reason: (e as any)?.cause?.message ?? (e as Error)?.message,
       });
       const note =
-        "\n\nP.S. The PDF copy of your invoice could not be attached automatically — just reply to this email and we'll send it across right away.";
+        "\n\nP.S. The PDF copy of your invoice could not be attached automatically - just reply to this email and we'll send it across right away.";
       result = await composio.tools.execute("GMAIL_SEND_EMAIL", {
         userId,
         dangerouslySkipVersionCheck: true,
