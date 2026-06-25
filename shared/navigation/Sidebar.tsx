@@ -13,7 +13,7 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line bg-sidebar text-stone-300 lg:flex">
+    <aside className="hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#151917] via-[#101413] to-[#0d100f] text-stone-300 lg:flex">
       <div className="shrink-0 px-5 pb-5 pt-6">
         <div className="flex items-center gap-3">
           <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
@@ -44,8 +44,10 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
           return (
             <div key={os.id}>
               <div className="mb-2 flex items-center gap-2 px-3">
-                <OsIcon className="h-3.5 w-3.5 text-stone-500" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-white/[0.06] ring-1 ring-inset ring-white/10">
+                  <OsIcon className="h-3 w-3 text-stone-400" />
+                </span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-400">
                   {os.name}
                 </span>
               </div>
@@ -117,7 +119,7 @@ export function MobileNav({ installed = [] }: { installed?: string[] }) {
             onClick={() => setOpen(false)}
             aria-label="Close navigation overlay"
           />
-          <aside className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-hidden border-r border-sidebar-line bg-sidebar text-stone-300 shadow-2xl">
+          <aside className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#151917] via-[#101413] to-[#0d100f] text-stone-300 shadow-2xl">
             <div className="flex shrink-0 items-center justify-between px-4 pb-4 pt-5">
               <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
                 <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
@@ -175,8 +177,10 @@ function SidebarNav({
           return (
             <div key={os.id}>
               <div className="mb-2 flex items-center gap-2 px-3">
-                <OsIcon className="h-3.5 w-3.5 text-stone-500" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-stone-500">
+                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-white/[0.06] ring-1 ring-inset ring-white/10">
+                  <OsIcon className="h-3 w-3 text-stone-400" />
+                </span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-400">
                   {os.name}
                 </span>
               </div>
@@ -228,21 +232,27 @@ function NavItem({
       href={href}
       onClick={onNavigate}
       className={cn(
-        "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition duration-200",
-        active
-          ? "bg-white text-sidebar shadow-soft"
-          : "text-stone-400 hover:bg-white/10 hover:text-white",
+        "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200",
+        active ? "text-white" : "text-stone-400 hover:bg-white/[0.06] hover:text-white",
       )}
     >
-      {active && (
-        <motion.span
-          layoutId="sidebar-active"
-          className="absolute left-1.5 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-accent"
-        />
-      )}
-      <Icon className="h-4 w-4" />
-      {label}
+      {active && <ActivePill />}
+      <Icon className="relative z-10 h-4 w-4" strokeWidth={2} />
+      <span className="relative z-10">{label}</span>
     </Link>
+  );
+}
+
+/** Shared sliding active background + gold accent bar, animated across rows. */
+function ActivePill() {
+  return (
+    <motion.span
+      layoutId="sidebar-active"
+      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+      className="absolute inset-0 rounded-xl bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-white/10"
+    >
+      <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-accent" />
+    </motion.span>
   );
 }
 
@@ -262,25 +272,30 @@ function AutomationNavItem({
   const content = (
     <span
       className={cn(
-        "group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition duration-200",
+        "group relative flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors duration-200",
         active
-          ? "bg-white/12 font-medium text-white"
+          ? "font-medium text-white"
           : live
-            ? "text-stone-400 hover:bg-white/10 hover:text-white"
+            ? "text-stone-400 hover:bg-white/[0.06] hover:text-white"
             : "cursor-default text-stone-600",
       )}
     >
-      <span className="flex min-w-0 items-center gap-2">
+      {active && <ActivePill />}
+      <span className="relative z-10 flex min-w-0 items-center gap-2.5">
         <span
           className={cn(
-            "h-1.5 w-1.5 shrink-0 rounded-full",
-            live ? "bg-brand-100" : "bg-stone-700",
+            "h-1.5 w-1.5 shrink-0 rounded-full transition-colors",
+            active
+              ? "bg-accent shadow-[0_0_8px_rgba(184,138,68,0.7)]"
+              : live
+                ? "bg-brand-300 group-hover:bg-brand-200"
+                : "bg-stone-700",
           )}
         />
         <span className="truncate">{label}</span>
       </span>
       {!live && (
-        <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-stone-600">
+        <span className="relative z-10 rounded-full bg-white/[0.04] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-stone-500">
           Soon
         </span>
       )}

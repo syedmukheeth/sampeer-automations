@@ -10,16 +10,50 @@ is **working and verified** unless marked PENDING.
 A single-owner **automations dashboard** (`Sampeer Automations`) built on
 **Next.js (frontend + API routes)** + **Trigger.dev (background worker)**.
 
-**BusinessOS is now complete** - six live automations across two modules:
+**ALL 16 automations are now LIVE across four operating systems.** Nothing is
+`soon` anymore. The five most recent (marked ★) ship as **deterministic
+lightweight** versions (instant client-side or kv data-app) and have a documented
+**LLM/live-data upgrade path** - see §7.
 
-| Module  | Automation         | Kind                          | Backend            |
-|---------|--------------------|-------------------------------|--------------------|
-| Finance | Invoice Generator  | LLM-prose + PDF + email       | Trigger + Gemini   |
-| Finance | Proposal Generator | LLM-prose + PDF + email       | Trigger + Gemini   |
-| Finance | Expense Tracker    | CSV → categorize + PDF report | Trigger + Gemini   |
-| Finance | GST / Tax Calc     | Instant calc + client PDF     | Client-only (TS)   |
-| Clients | Client CRM         | kv-backed CRUD + health score | Next API + kv      |
-| Clients | Project Dashboard  | kv-backed CRUD + risk flag    | Next API + kv      |
+| OS         | Automation         | Slug              | Kind                          | Backend          |
+|------------|--------------------|-------------------|-------------------------------|------------------|
+| BusinessOS | Invoice Generator  | invoice-generator | LLM-prose + PDF + email       | Trigger + Gemini |
+| BusinessOS | Proposal Generator | proposal-generator| LLM-prose + PDF + email       | Trigger + Gemini |
+| BusinessOS | Expense Tracker    | expense-tracker   | CSV → categorize + PDF        | Trigger + Gemini |
+| BusinessOS | GST / Tax Calc     | gst-calculator    | Instant calc + PDF            | Client-only (TS) |
+| BusinessOS | Client CRM         | client-crm        | kv CRUD + health score        | Next API + kv    |
+| BusinessOS | Project Dashboard  | project-dashboard | kv CRUD + risk flag           | Next API + kv    |
+| SalesOS    | Cold Email Gen     | cold-email        | Instant 4-touch seq + PDF     | Client-only (TS) |
+| SalesOS    | Lead Pipeline      | lead-pipeline     | kv CRUD + weighted forecast   | Next API + kv    |
+| SalesOS    | Meeting Summary ★  | meeting-summary   | Extractive summary/actions    | Client-only (TS) |
+| ContentOS  | SEO Writer         | seo-writer        | Instant on-page SEO scorer    | Client-only (TS) |
+| ContentOS  | Repurpose Engine   | repurpose-engine  | Long-form → thread/post/etc   | Client-only (TS) |
+| ContentOS  | Video Factory ★    | video-factory     | Script brief + shot list      | Client-only (TS) |
+| ContentOS  | Trend Hunter ★     | trend-hunter      | Scored content angles         | Client-only (TS) |
+| GrowthOS   | Growth Analytics   | analytics         | CAC/ROAS/ROI + PDF            | Client-only (TS) |
+| GrowthOS   | Website Health ★   | website-health    | CWV + SEO audit grade         | Client-only (TS) |
+| GrowthOS   | Competitor Radar ★ | competitors       | kv CRUD + threat index        | Next API + kv    |
+
+> All SalesOS/ContentOS/GrowthOS automations mirror the **gst** (instant
+> client-side) or **crm** (kv data-app) recipes - NO Trigger worker, NO new env
+> vars, they run today as-is. Feature folders live under
+> `features/<os-id>/<slug>/` (osId from registry: `sales-os`, `content-os`,
+> `growth-os`); pages under `app/(app)/<os-id>/<slug>/page.tsx`.
+> New kv CRUD APIs: `/api/leads`, `/api/competitors` (+ `/[id]` DELETE).
+> Each deterministic util has a unit test in `test/` (74 tests pass total).
+
+### ★ Where each deterministic engine lives (swap these to upgrade)
+| Automation      | Pure engine (swap for LLM/live data)                                   |
+|-----------------|------------------------------------------------------------------------|
+| Meeting Summary | `features/sales-os/meeting-summary/utils/summarize.ts` → `summarize()` |
+| Video Factory   | `features/content-os/video-factory/utils/script.ts` → `buildScript()`  |
+| Trend Hunter    | `features/content-os/trend-hunter/utils/angles.ts` → `generateAngles()`|
+| Website Health  | `features/growth-os/website-health/utils/audit.ts` → `auditSite()`     |
+| Competitor Radar| `features/growth-os/competitor-radar/service.ts` (add a fetch enricher)|
+
+> Each View imports its engine and recomputes via `useMemo`. To upgrade: keep the
+> same input/output types, move the call behind an API route (or Trigger task for
+> long jobs), and swap the implementation. The UI does not change.
 
 Same discipline everywhere: **all math/aggregation/scoring in TypeScript; the
 LLM only writes prose + assigns labels.** Invoice pipeline (the original
@@ -154,9 +188,11 @@ app/
   api/clients|projects/route.ts + /[id]/route.ts  kv CRUD (GET/POST + DELETE)
   api/auth/{login,logout}/route.ts
 
-test/*.test.ts               unit tests (npm test runs all - 26 pass):
-                             calc (invoice totals), expense-calc, gst-calc,
-                             crm-health, project-status. Per-suite: test:calc / test:expense.
+test/*.test.ts               unit tests (npm test runs all - 74 pass):
+                             calc suites for invoices/expenses/GST/growth,
+                             scoring suites for CRM/projects/leads/competitors,
+                             and deterministic engines for content, sales,
+                             and growth automations.
 ```
 
 > New runtime deps from the migration: `framer-motion`, `lucide-react`,
@@ -206,7 +242,7 @@ Trigger.dev dashboard (except TRIGGER_SECRET_KEY which is per-env).
 npm install
 CI=false npx trigger.dev@4.4.6 dev      # worker - pin 4.4.6, CI=false avoids CI-abort
 npx next dev                            # web - picks 3000/3001/3002 if busy
-npm test                                # all unit tests (26 pass)
+npm test                                # all unit tests (74 pass)
 npx tsc --noEmit                        # full typecheck (currently 0 errors)
 ```
 
@@ -242,15 +278,10 @@ Then open the printed `localhost:PORT` and sign in with the configured username/
    - Owner buys domain (e.g. sampeerstudio.com) -> verify in Resend (SPF/DKIM/DMARC DNS).
    - Set `RESEND_API_KEY` + `RESEND_FROM` in `.env` -> `send-email.ts` auto-switches
      to Resend (code already done). Restart worker. Run an inbox test.
-2. **More automations** (next: ContentOS / SalesOS / GrowthOS - all still `soon`).
-   Recipe by kind:
-   - *LLM generator* (invoice-shaped): mirror `expense-tracker/` (utils → prompts →
-     trigger → api → components), add trigger dir to `trigger.config.ts dirs`, give
-     trigger files **globally-unique filenames** (Trigger bundles all dirs together).
-   - *Instant tool* (gst-shaped): client-only, no trigger/api; PDF via `pdf().toBlob()`.
-   - *Data app* (crm/project-shaped): `service.ts` over the kv store + `/api/<x>` CRUD.
-   Then flip its `features/registry.ts` entry from `soon({...})` to a live
-   `AutomationMeta` (live = auto-installed). Add a page under `app/(app)/<os>/<slug>/`.
+2. **Upgrade deterministic engines where needed.** SalesOS, ContentOS, and
+   GrowthOS are live today as TypeScript-first tools. For LLM/live-data
+   upgrades, keep the same input/output types and move the engine call behind an
+   API route or Trigger task; the current UI can stay in place.
 3. **Deploy** (README has steps): Vercel for web (needs TRIGGER_SECRET_KEY plus
    auth env vars), `npm run deploy:trigger` for the worker (set all
    worker env vars in dashboard).

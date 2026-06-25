@@ -36,15 +36,20 @@ export function StatusBadge({
       )}
     >
       {dot && (
-        <span
-          className={cn(
-            "h-1.5 w-1.5 rounded-full",
-            tone === "running" && "animate-pulse bg-warn",
-            (tone === "live" || tone === "success") && "bg-brand-600",
-            tone === "failed" && "bg-danger",
-            (tone === "soon" || tone === "neutral") && "bg-stone-400",
+        <span className="relative flex h-1.5 w-1.5">
+          {(tone === "live" || tone === "success") && (
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500/70" />
           )}
-        />
+          <span
+            className={cn(
+              "relative inline-flex h-1.5 w-1.5 rounded-full",
+              tone === "running" && "animate-pulse bg-warn",
+              (tone === "live" || tone === "success") && "bg-brand-600",
+              tone === "failed" && "bg-danger",
+              (tone === "soon" || tone === "neutral") && "bg-stone-400",
+            )}
+          />
+        </span>
       )}
       {children ?? LABELS[tone] ?? tone}
     </span>
