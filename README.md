@@ -53,6 +53,8 @@ All money math and field validation happen in TypeScript. The AI model only writ
    - `RESEND_API_KEY` and `RESEND_FROM`: recommended production sender.
    - `COMPOSIO_API_KEY` and `COMPOSIO_USER_ID`: Gmail fallback sender.
    - `GMAIL_FROM`: optional reference sender for Gmail setup.
+   - `AUTH_SECRET`: random string used to sign the owner session cookie.
+   - `AUTH_USERNAME` and `AUTH_PASSWORD`: owner dashboard login.
 
 4. Confirm `project` in `trigger.config.ts` matches your Trigger.dev `proj_...` ref.
 
@@ -91,13 +93,11 @@ npm run build
 
    - `TRIGGER_SECRET_KEY`
    - `AUTH_SECRET`
-   - `OWNER_EMAIL`
-   - `COMPOSIO_API_KEY`
-   - `COMPOSIO_USER_ID`
-   - `APP_URL` set to the deployed site URL
+   - `AUTH_USERNAME`
+   - `AUTH_PASSWORD`
 
 The AI, PDF, and invoice email work happens inside Trigger.dev. The web app still
-needs the auth variables so it can create and email owner sign-in links.
+needs the auth variables so it can protect the dashboard and API routes.
 
 ## Deploy Trigger.dev
 

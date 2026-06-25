@@ -27,19 +27,19 @@ prose. Totals can never be hallucinated.
 
 ---
 
-## 2. Auth (single-owner magic link) — DONE
+## 2. Auth (single-owner username/password) — DONE
 
 - Stateless: `jose` JWT + httpOnly cookie, **no database**.
 - `middleware.ts` gates **every** route except `/login` and `/api/auth/*`
   (pages → redirect `/login`; api → 401).
-- Only `OWNER_EMAIL` (syedmukheeth09@gmail.com) ever receives a magic link.
-- Magic link emailed via Composio Gmail; 10-min token → sets 30-day session cookie.
+- Only the configured `AUTH_USERNAME` + `AUTH_PASSWORD` can sign in.
+- Successful login sets a 30-day session cookie.
 - Files: `src/lib/auth.ts`, `middleware.ts`, `app/login/page.tsx`,
-  `app/api/auth/{request,verify,logout}/route.ts`.
+  `app/api/auth/{login,logout}/route.ts`.
 - Sign out: link in dashboard header → `/api/auth/logout`.
 
-Verified: owner gets link, non-owner gets nothing (same response), cookie set,
-protected routes 200 with cookie / 401 without.
+Verified: valid credentials set a session cookie; protected routes require that
+cookie and return 401 without it.
 
 ---
 
@@ -63,11 +63,11 @@ app/
   page.tsx                   DASHBOARD (reads automations registry) + Sign out
   automations.ts             REGISTRY — add new automations here (1 entry each)
   invoice/page.tsx           invoice automation page
-  login/page.tsx             magic-link sign-in
+  login/page.tsx             username/password sign-in
   components/InvoiceForm.tsx  the invoice form (client) + polling
   api/invoices/route.ts             POST → triggers generate-invoice
   api/invoices/[runId]/route.ts     GET → poll run status/output
-  api/auth/{request,verify,logout}/route.ts
+  api/auth/{login,logout}/route.ts
 test/calc.test.ts            totals unit tests (npm run test:calc — 5 pass)
 ```
 
@@ -84,8 +84,8 @@ GMAIL_FROM=smpeer05@gmail.com       # the connected Gmail (sender)
 RESEND_API_KEY=                     # EMPTY — set to switch sender to Resend (PENDING)
 RESEND_FROM=Sampeer Studio <finance@sampeerstudio.com>
 AUTH_SECRET=                        # set (random 48-byte)
-OWNER_EMAIL=syedmukheeth09@gmail.com
-# APP_URL optional — unset = auto request origin
+AUTH_USERNAME=                      # set, owner login username
+AUTH_PASSWORD=                      # set, owner login password
 ```
 
 Trigger.dev worker reads `.env` locally. For deploy, set the same vars in the
@@ -103,7 +103,7 @@ npm run test:calc                       # totals tests
 npx tsc --noEmit                        # full typecheck (currently 0 errors)
 ```
 
-Then open the printed `localhost:PORT`, sign in via magic link.
+Then open the printed `localhost:PORT` and sign in with the configured username/password.
 
 > NOTE: dev sometimes drifts ports (3000→3001→3002) because old `next dev`
 > processes hold the port. Kill stragglers or just use the printed port.
@@ -132,7 +132,7 @@ Then open the printed `localhost:PORT`, sign in via magic link.
 2. **More automations.** Add an entry to `app/automations.ts` + a page at its
    `href`. Use `status:"soon"` for a disabled placeholder card.
 3. **Deploy** (README has steps): Vercel for web (needs TRIGGER_SECRET_KEY plus
-   auth/email-link env vars), `npm run deploy:trigger` for the worker (set all
+   auth env vars), `npm run deploy:trigger` for the worker (set all
    worker env vars in dashboard).
 4. Optional: shared top-nav (logo + back-to-hub) across automation pages.
 5. Optional: production cookie `secure` is already gated on NODE_ENV — confirm
