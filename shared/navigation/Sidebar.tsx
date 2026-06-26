@@ -9,22 +9,26 @@ import { cn } from "@shared/lib/cn";
 import { BrandLogo } from "@shared/ui/BrandLogo";
 import { operatingSystems } from "@features/registry";
 
+const shellSurface =
+  "bg-[linear-gradient(180deg,#fffefa_0%,#fbfaf4_46%,#f4f8f2_100%)] text-[#6f9187]";
+const shellScroll = "[scrollbar-color:#b8cfc5_transparent] [scrollbar-width:thin]";
+
 export function Sidebar({ installed = [] }: { installed?: string[] }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#103634] via-[#0c2826] to-[#081d1c] text-stone-300 lg:flex">
+    <aside className={cn("hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line shadow-[18px_0_42px_-34px_rgba(17,20,19,0.32)] lg:flex", shellSurface)}>
       <div className="shrink-0 px-5 pb-5 pt-6">
         <div className="flex items-center gap-3">
-          <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
+          <BrandLogo className="h-10 w-10 rounded-xl shadow-[0_12px_28px_-18px_rgba(17,20,19,0.52)] ring-1 ring-[#c8d9d1]" />
           <div className="min-w-0 leading-tight">
-            <p className="truncate font-display text-base font-medium text-white">Sampeer Studio</p>
-            <p className="text-[11px] text-stone-500">Automations console</p>
+            <p className="truncate font-display text-base font-medium text-[#102d28]">Sampeer Studio</p>
+            <p className="text-[11px] text-[#7a8f87]">Automations console</p>
           </div>
         </div>
       </div>
 
-      <nav className="min-h-0 flex-1 space-y-7 overflow-y-auto overscroll-contain px-3 pb-6 pr-2 [scrollbar-color:#3a403d_transparent] [scrollbar-width:thin]">
+      <nav className={cn("min-h-0 flex-1 space-y-7 overflow-y-auto overscroll-contain px-3 pb-6 pr-2", shellScroll)}>
         <div className="space-y-1">
           <NavItem href="/" label="Overview" icon={Home} active={pathname === "/"} />
           <NavItem
@@ -44,10 +48,10 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
           return (
             <div key={os.id}>
               <div className="mb-2 flex items-center gap-2 px-3">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-white/[0.06] ring-1 ring-inset ring-white/10">
-                  <OsIcon className="h-3 w-3 text-stone-400" />
+                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#eaf4ee] ring-1 ring-inset ring-[#cfe1d8]">
+                  <OsIcon className="h-3 w-3 text-[#6f9187]" />
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6f9187]">
                   {os.name}
                 </span>
               </div>
@@ -67,7 +71,7 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
         })}
       </nav>
 
-      <div className="shrink-0 border-t border-sidebar-line bg-sidebar p-3">
+      <div className="shrink-0 border-t border-sidebar-line bg-white/70 p-3 backdrop-blur">
         <NavItem
           href="/settings"
           label="Settings"
@@ -119,19 +123,19 @@ export function MobileNav({ installed = [] }: { installed?: string[] }) {
             onClick={() => setOpen(false)}
             aria-label="Close navigation overlay"
           />
-          <aside className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#103634] via-[#0c2826] to-[#081d1c] text-stone-300 shadow-2xl">
+          <aside className={cn("absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-hidden border-r border-sidebar-line shadow-2xl", shellSurface)}>
             <div className="flex shrink-0 items-center justify-between px-4 pb-4 pt-5">
               <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-                <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
+                <BrandLogo className="h-10 w-10 rounded-xl shadow-[0_12px_28px_-18px_rgba(17,20,19,0.52)] ring-1 ring-[#c8d9d1]" />
                 <div className="min-w-0 leading-tight">
-                  <p className="truncate font-display text-base font-medium text-white">Sampeer Studio</p>
-                  <p className="text-[11px] text-stone-500">Automations console</p>
+                  <p className="truncate font-display text-base font-medium text-[#102d28]">Sampeer Studio</p>
+                  <p className="text-[11px] text-[#7a8f87]">Automations console</p>
                 </div>
               </Link>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-[#eaf4ee] text-[#173c36] ring-1 ring-inset ring-[#cfe1d8]"
                 aria-label="Close navigation"
               >
                 <X className="h-5 w-5" />
@@ -156,7 +160,7 @@ function SidebarNav({
 
   return (
     <>
-      <nav className="min-h-0 flex-1 space-y-7 overflow-y-auto overscroll-contain px-3 pb-6 pr-2 [scrollbar-color:#3a403d_transparent] [scrollbar-width:thin]">
+      <nav className={cn("min-h-0 flex-1 space-y-7 overflow-y-auto overscroll-contain px-3 pb-6 pr-2", shellScroll)}>
         <div className="space-y-1">
           <NavItem href="/" label="Overview" icon={Home} active={pathname === "/"} onNavigate={onNavigate} />
           <NavItem
@@ -177,10 +181,10 @@ function SidebarNav({
           return (
             <div key={os.id}>
               <div className="mb-2 flex items-center gap-2 px-3">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-white/[0.06] ring-1 ring-inset ring-white/10">
-                  <OsIcon className="h-3 w-3 text-stone-400" />
+                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#eaf4ee] ring-1 ring-inset ring-[#cfe1d8]">
+                  <OsIcon className="h-3 w-3 text-[#6f9187]" />
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6f9187]">
                   {os.name}
                 </span>
               </div>
@@ -201,7 +205,7 @@ function SidebarNav({
         })}
       </nav>
 
-      <div className="shrink-0 border-t border-sidebar-line bg-sidebar p-3">
+      <div className="shrink-0 border-t border-sidebar-line bg-white/70 p-3 backdrop-blur">
         <NavItem
           href="/settings"
           label="Settings"
@@ -232,8 +236,8 @@ function NavItem({
       href={href}
       onClick={onNavigate}
       className={cn(
-        "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors duration-200",
-        active ? "text-white" : "text-stone-400 hover:bg-white/[0.06] hover:text-white",
+        "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ease-out hover:translate-x-0.5",
+        active ? "text-[#102d28]" : "text-[#6f9187] hover:bg-[#eef7f1] hover:text-[#102d28]",
       )}
     >
       {active && <ActivePill />}
@@ -248,10 +252,16 @@ function ActivePill() {
   return (
     <motion.span
       layoutId="sidebar-active"
-      transition={{ type: "spring", stiffness: 420, damping: 34 }}
-      className="absolute inset-0 rounded-xl bg-white/[0.09] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] ring-1 ring-inset ring-white/10"
+      transition={{ type: "spring", stiffness: 430, damping: 32, mass: 0.9 }}
+      className="absolute inset-0 overflow-hidden rounded-xl bg-[linear-gradient(135deg,#f7fbf7_0%,#e7f4ed_58%,#fff8ea_100%)] shadow-[0_14px_30px_-24px_rgba(18,60,58,0.55),inset_0_1px_0_rgba(255,255,255,0.9)] ring-1 ring-inset ring-[#c7ddd3]"
     >
-      <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-accent" />
+      <motion.span
+        aria-hidden="true"
+        className="absolute inset-y-1 left-8 w-16 rounded-full bg-white/40 blur-xl"
+        animate={{ x: [-28, 180], opacity: [0, 0.8, 0] }}
+        transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[#c9963e]" />
     </motion.span>
   );
 }
@@ -272,12 +282,12 @@ function AutomationNavItem({
   const content = (
     <span
       className={cn(
-        "group relative flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors duration-200",
+        "group relative flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-all duration-300 ease-out hover:translate-x-0.5",
         active
-          ? "font-medium text-white"
+          ? "font-medium text-[#102d28]"
           : live
-            ? "text-stone-400 hover:bg-white/[0.06] hover:text-white"
-            : "cursor-default text-stone-600",
+            ? "text-[#6f9187] hover:bg-[#eef7f1] hover:text-[#102d28]"
+            : "cursor-default text-[#a8bbb2]",
       )}
     >
       {active && <ActivePill />}
@@ -286,16 +296,16 @@ function AutomationNavItem({
           className={cn(
             "h-1.5 w-1.5 shrink-0 rounded-full transition-colors",
             active
-              ? "bg-accent shadow-[0_0_8px_rgba(184,138,68,0.7)]"
+              ? "bg-[#c9963e] shadow-[0_0_10px_rgba(201,150,62,0.4)]"
               : live
-                ? "bg-brand-300 group-hover:bg-brand-200"
-                : "bg-stone-700",
+                ? "bg-[#9fc8bd] group-hover:bg-[#6f9187]"
+                : "bg-[#d4ded9]",
           )}
         />
         <span className="truncate">{label}</span>
       </span>
       {!live && (
-        <span className="relative z-10 rounded-full bg-white/[0.04] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-stone-500">
+        <span className="relative z-10 rounded-full bg-[#eef7f1] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8ba399]">
           Soon
         </span>
       )}

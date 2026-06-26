@@ -100,51 +100,65 @@ export function CommandPalette() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex h-10 w-full max-w-md items-center gap-2 rounded-xl border border-line bg-panel/80 px-3 text-sm text-muted shadow-soft transition duration-200 hover:border-brand-500/60 hover:text-ink"
+        aria-label="Open automation search"
+        className="flex h-11 w-full max-w-lg items-center gap-3 rounded-2xl border border-line bg-panel/90 px-4 text-sm text-muted shadow-soft transition duration-200 hover:border-brand-500/50 hover:bg-white hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
       >
-        <Search className="h-4 w-4" />
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
+          <Search className="h-4 w-4" />
+        </span>
         <span className="flex-1 text-left">Search automations</span>
-        <span className="hidden items-center gap-1 rounded-md border border-line bg-stone-50 px-1.5 py-0.5 text-[11px] font-medium text-muted sm:inline-flex">
-          {isMac ? "⌘" : "Ctrl"} K
+        <span className="hidden items-center gap-1 rounded-lg border border-line bg-stone-50 px-2 py-1 text-[11px] font-medium text-muted sm:inline-flex">
+          {isMac ? "Cmd" : "Ctrl"} K
         </span>
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-[12vh]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-3 pt-[9vh] sm:p-4 sm:pt-[11vh]">
           <button
             type="button"
             aria-label="Close search"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-ink/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#101714]/45 backdrop-blur-[2px]"
           />
           <div
             role="dialog"
             aria-modal="true"
             onKeyDown={onListKey}
-            className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-line bg-panel shadow-lift"
+            className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-[#d7d0c1] bg-[#fffefa] shadow-[0_24px_80px_-34px_rgba(17,20,19,0.5)]"
           >
-            <div className="flex items-center gap-3 border-b border-line px-4">
-              <Search className="h-4 w-4 shrink-0 text-muted" />
+            <div className="flex items-center gap-3 border-b border-line bg-white/70 px-4">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-800">
+                <Search className="h-4 w-4" />
+              </span>
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search automations…"
-                className="!border-0 !bg-transparent !px-0 !py-3.5 !shadow-none focus:!shadow-none flex-1 text-sm text-ink outline-none"
+                placeholder="Search by automation, OS, or tag"
+                className="!border-0 !bg-transparent !px-0 !py-4 !shadow-none focus:!shadow-none flex-1 text-sm text-ink outline-none placeholder:text-muted/60"
               />
-              <kbd className="hidden rounded-md border border-line bg-stone-50 px-1.5 py-0.5 text-[10px] font-medium text-muted sm:inline-block">
+              <kbd className="hidden rounded-lg border border-line bg-stone-50 px-2 py-1 text-[10px] font-medium text-muted sm:inline-block">
                 Esc
               </kbd>
             </div>
 
-            <div ref={listRef} className="max-h-[52vh] overflow-y-auto p-2">
+            <div className="flex items-center justify-between px-4 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
+              <span>Automations</span>
+              <span>{results.length} found</span>
+            </div>
+
+            <div ref={listRef} className="max-h-[48vh] overflow-y-auto px-2 pb-2">
               {results.length === 0 ? (
-                <p className="px-3 py-6 text-center text-sm text-muted">
-                  No automations match “{query}”.
-                </p>
+                <div className="mx-2 my-3 rounded-2xl border border-dashed border-line bg-stone-50/70 px-4 py-8 text-center">
+                  <p className="text-sm font-semibold text-ink">No matches</p>
+                  <p className="mt-1 text-sm text-muted">
+                    Try a product name, OS, or tag like invoice, content, sales, or analytics.
+                  </p>
+                </div>
               ) : (
                 results.map((a, i) => {
                   const Icon = a.icon;
+                  const tags = a.tags.slice(0, 2);
                   return (
                     <button
                       key={a.slug}
@@ -153,8 +167,10 @@ export function CommandPalette() {
                       onMouseEnter={() => setActive(i)}
                       onClick={() => go(a.href)}
                       className={cn(
-                        "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
-                        i === active ? "bg-brand-50" : "hover:bg-brand-50/60",
+                        "flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left transition duration-150",
+                        i === active
+                          ? "border-brand-100 bg-brand-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]"
+                          : "border-transparent hover:border-line hover:bg-stone-50/70",
                       )}
                     >
                       <span
@@ -166,11 +182,19 @@ export function CommandPalette() {
                         <Icon className="h-4 w-4" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium text-ink">
+                        <span className="block truncate text-sm font-semibold text-ink">
                           {a.name}
                         </span>
-                        <span className="block truncate text-xs text-muted">
-                          {osName(a.osId)}
+                        <span className="mt-0.5 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-muted">
+                          <span className="truncate">{osName(a.osId)}</span>
+                          {tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full border border-line bg-white/75 px-1.5 py-0.5 text-[10px] font-medium text-muted"
+                            >
+                              {tag}
+                            </span>
+                          ))}
                         </span>
                       </span>
                       {i === active && (
@@ -182,7 +206,7 @@ export function CommandPalette() {
               )}
             </div>
 
-            <div className="flex items-center gap-4 border-t border-line px-4 py-2 text-[11px] text-muted">
+            <div className="flex items-center gap-4 border-t border-line bg-stone-50/70 px-4 py-2.5 text-[11px] text-muted">
               <span className="flex items-center gap-1">
                 <ArrowUp className="h-3 w-3" />
                 <ArrowDown className="h-3 w-3" /> navigate

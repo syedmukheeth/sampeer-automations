@@ -44,8 +44,8 @@ export default {
         ink: "rgb(var(--ink) / <alpha-value>)",
         muted: "rgb(var(--muted) / <alpha-value>)",
         line: "rgb(var(--line) / <alpha-value>)",
-        sidebar: "#0C2826",
-        "sidebar-line": "#1B3A37",
+        sidebar: "#FFFEFA",
+        "sidebar-line": "#D8E4DD",
       },
       backgroundImage: {
         "brand-gradient": "linear-gradient(135deg, #123C3A 0%, #205C58 100%)",
