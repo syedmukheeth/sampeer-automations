@@ -5,10 +5,11 @@ Source of truth: `.env.example`. Verified against `process.env.*` usages in code
 ## Web app (Vercel) — required to run the dashboard
 | Var | Used by | Purpose |
 |-----|---------|---------|
-| `AUTH_SECRET` | shared/services/auth.ts | Signs the owner session JWT. `openssl rand -base64 48`. Required or auth throws. |
-| `AUTH_USERNAME` | auth.ts | Owner login id |
-| `AUTH_PASSWORD` | auth.ts | Owner login password |
-| `TRIGGER_SECRET_KEY` | server routes / runs.ts | Trigger task trigger + poll + run history. Needed for pipeline automations & dashboard metrics. |
+| `AUTH_SECRET` | auth.ts | Signs the session JWT. `openssl rand -base64 48`. Required or auth throws. |
+| `AUTH_USERNAME` / `AUTH_PASSWORD` | credentials.ts | **Owner** (founder) login id/password. |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | credentials.ts | **Admin** (limited) login id/password. Admin can edit but money is redacted + Settings blocked. |
+| `AUTH_PASSWORD_HASH` / `ADMIN_PASSWORD_HASH` | credentials.ts | Optional scrypt hash (`scrypt$salt$hash`, gen `node scripts/hash-password.mjs '<pw>'`). If set, wins over the plaintext `*_PASSWORD`. |
+| `TRIGGER_SECRET_KEY` | server routes / runs.ts | Trigger task trigger + poll + run history. Pipeline automations & dashboard metrics. **Vercel must hold the `tr_prod_` key** (prod env) — a `tr_dev_` key triggers into dev where no worker runs (tasks stay QUEUED). |
 
 ## Trigger.dev worker — required by the background pipelines
 | Var | Used by | Purpose |

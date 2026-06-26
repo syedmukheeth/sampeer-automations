@@ -118,7 +118,7 @@ export function CommandPalette() {
             type="button"
             aria-label="Close search"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-white/60"
+            className="absolute inset-0 bg-white/60 backdrop-blur-sm"
           />
           <div
             role="dialog"
