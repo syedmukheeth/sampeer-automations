@@ -33,7 +33,7 @@ export default function LoginPage() {
         <div className="mb-6 flex flex-col items-center text-center">
           <BrandLogo className="h-16 w-16 rounded-2xl" />
           <h1 className="mt-4 font-display text-xl font-medium text-ink">Sampeer Studio</h1>
-          <p className="text-xs text-muted">Automations / Owner sign-in</p>
+          <p className="text-xs text-muted">Automations / Sign in</p>
         </div>
 
         <form onSubmit={submit} className="space-y-4">
@@ -70,7 +70,7 @@ export default function LoginPage() {
             <p className="text-sm text-danger">{msg}</p>
           )}
           <p className="text-center text-xs text-muted/70">
-            Access is restricted to the studio owner.
+            Restricted access — founder and admin only.
           </p>
         </form>
       </div>

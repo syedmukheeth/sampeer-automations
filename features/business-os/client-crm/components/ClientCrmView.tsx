@@ -7,6 +7,8 @@ import { Card } from "@shared/ui/Card";
 import { EmptyState } from "@shared/ui/EmptyState";
 import { AutomationPageLayout } from "@shared/ui/AutomationPageLayout";
 import { cn } from "@shared/lib/cn";
+import { useIsAdmin } from "@shared/ui/RoleContext";
+import { DemoDataButton } from "@shared/ui/DemoDataButton";
 import {
   CLIENT_STATUSES,
   type Client,
@@ -46,7 +48,8 @@ export function ClientCrmView({ initial }: { initial: Client[] }) {
     };
   }, []);
 
-  const money = (n: number) => fmtMoney(n, currency);
+  const isAdmin = useIsAdmin();
+  const money = (n: number) => (isAdmin ? "••••" : fmtMoney(n, currency));
 
   const stats = useMemo(() => {
     const active = clients.filter((c) => c.status === "active").length;
@@ -89,7 +92,8 @@ export function ClientCrmView({ initial }: { initial: Client[] }) {
           label: "Clients",
           content: (
             <div className="space-y-5">
-              <div className="flex justify-end">
+              <div className="flex items-center justify-between gap-2">
+                <DemoDataButton variant="compact" />
                 <button
                   type="button"
                   onClick={() => setEditing("new")}

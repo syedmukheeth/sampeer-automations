@@ -6,6 +6,7 @@ import { Globe, Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { Card } from "@shared/ui/Card";
 import { EmptyState } from "@shared/ui/EmptyState";
 import { AutomationPageLayout } from "@shared/ui/AutomationPageLayout";
+import { DemoDataButton } from "@shared/ui/DemoDataButton";
 import { cn } from "@shared/lib/cn";
 import { THREAT_LEVELS, type Competitor, type ThreatLevel } from "../utils/schema";
 import { THREAT_LABEL, radarSummary, sortByThreat } from "../utils/score";
@@ -57,7 +58,8 @@ export function CompetitorRadarView({ initial }: { initial: Competitor[] }) {
             label: "Radar",
             content: (
               <div className="space-y-5">
-                <div className="flex justify-end">
+                <div className="flex items-center justify-between gap-2">
+                  <DemoDataButton variant="compact" />
                   <button
                     type="button"
                     onClick={() => setEditing("new")}

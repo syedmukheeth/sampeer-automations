@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deleteLead } from "@features/sales-os/lead-pipeline/service";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
@@ -10,5 +11,6 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const persisted = await deleteLead(id);
+  await logAudit("delete", "lead", id);
   return NextResponse.json({ ok: true, persisted });
 }

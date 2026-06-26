@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deleteCompetitor } from "@features/growth-os/competitor-radar/service";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
@@ -10,5 +11,6 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const persisted = await deleteCompetitor(id);
+  await logAudit("delete", "competitor", id);
   return NextResponse.json({ ok: true, persisted });
 }

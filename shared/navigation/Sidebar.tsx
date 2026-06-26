@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Home, Settings, LibraryBig, Menu, X, LogOut } from "lucide-react";
 import { cn } from "@shared/lib/cn";
 import { BrandLogo } from "@shared/ui/BrandLogo";
+import { useRole } from "@shared/ui/RoleContext";
 import { operatingSystems } from "@features/registry";
 
 const shellSurface =
@@ -15,6 +16,7 @@ const shellScroll = "[scrollbar-color:#b8cfc5_transparent] [scrollbar-width:thin
 
 export function Sidebar({ installed = [] }: { installed?: string[] }) {
   const pathname = usePathname();
+  const isOwner = useRole() === "owner";
 
   return (
     <aside className={cn("hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line shadow-[18px_0_42px_-34px_rgba(17,20,19,0.32)] lg:flex", shellSurface)}>
@@ -71,14 +73,16 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
         })}
       </nav>
 
-      <div className="shrink-0 border-t border-sidebar-line bg-white/70 p-3 backdrop-blur">
-        <NavItem
-          href="/settings"
-          label="Settings"
-          icon={Settings}
-          active={pathname === "/settings"}
-        />
-      </div>
+      {isOwner && (
+        <div className="shrink-0 border-t border-sidebar-line bg-white/70 p-3 backdrop-blur">
+          <NavItem
+            href="/settings"
+            label="Settings"
+            icon={Settings}
+            active={pathname === "/settings"}
+          />
+        </div>
+      )}
     </aside>
   );
 }
@@ -157,6 +161,7 @@ function SidebarNav({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const isOwner = useRole() === "owner";
 
   return (
     <>
@@ -205,15 +210,17 @@ function SidebarNav({
         })}
       </nav>
 
-      <div className="shrink-0 border-t border-sidebar-line bg-white/70 p-3 backdrop-blur">
-        <NavItem
-          href="/settings"
-          label="Settings"
-          icon={Settings}
-          active={pathname === "/settings"}
-          onNavigate={onNavigate}
-        />
-      </div>
+      {isOwner && (
+        <div className="shrink-0 border-t border-sidebar-line bg-white/70 p-3 backdrop-blur">
+          <NavItem
+            href="/settings"
+            label="Settings"
+            icon={Settings}
+            active={pathname === "/settings"}
+            onNavigate={onNavigate}
+          />
+        </div>
+      )}
     </>
   );
 }

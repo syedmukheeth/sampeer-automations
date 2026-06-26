@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useIsAdmin } from "@shared/ui/RoleContext";
 
 type Item = { name: string; quantity: string; unitPrice: string };
 
@@ -15,23 +16,28 @@ const emptyItem = (): Item => ({ name: "", quantity: "1", unitPrice: "" });
 
 export default function InvoiceForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
-  const [items, setItems] = useState<Item[]>([emptyItem()]);
+  // Demo line item — pre-filled so the pipeline is a one-click "Generate".
+  const [items, setItems] = useState<Item[]>([
+    { name: "Marketing retainer — July", quantity: "1", unitPrice: "2000" },
+  ]);
 
   // Flat field state keyed by dotted path matching the schema.
+  // Pre-filled with a demo invoice; the client email points at the studio
+  // inbox so live demo sends land with you, not a real client.
   const [f, setF] = useState<Record<string, string>>({
     "company.name": "Sampeer Studio",
     "company.address": "",
     "company.email": "finance@sampeerstudio.com",
-    "client.name": "",
-    "client.email": "",
-    "project.name": "",
-    "invoice.number": "",
+    "client.name": "Apex Retail",
+    "client.email": "smpeer05@gmail.com",
+    "project.name": "Q3 Marketing Campaign",
+    "invoice.number": "INV-DEMO-001",
     "invoice.issueDate": today(),
     "invoice.dueDate": today(),
     "invoice.paymentTerms": "Net 15",
     currency: "USD",
     "discount.value": "",
-    "tax.rate": "",
+    "tax.rate": "18",
     amountPaid: "",
     "payment.upi": "",
     "payment.bank": "",
@@ -252,11 +258,13 @@ function Result({ run }: { run: RunState }) {
   }
   if (run.phase !== "done") return null;
   const o = run.output;
+  const isAdmin = useIsAdmin();
+  const m = (v: unknown) => (isAdmin ? "••••" : String(v));
   return (
     <div className="space-y-4 rounded-xl border border-line bg-panel p-6 shadow-soft">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-lg font-medium text-brand">
-          Invoice {o.invoice.invoiceNumber} / {o.invoice.currency} {o.summary.total}
+          Invoice {o.invoice.invoiceNumber} / {o.invoice.currency} {m(o.summary.total)}
         </h3>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -267,12 +275,12 @@ function Result({ run }: { run: RunState }) {
         </span>
       </div>
       <div className="grid gap-2 text-sm text-muted sm:grid-cols-2">
-        <span>Subtotal: {o.summary.subtotal}</span>
-        <span>Discount: {o.summary.discount}</span>
-        <span>Tax: {o.summary.tax}</span>
-        <span>Total: {o.summary.total}</span>
-        <span>Paid: {o.summary.paid}</span>
-        <span>Remaining: {o.summary.remaining}</span>
+        <span>Subtotal: {m(o.summary.subtotal)}</span>
+        <span>Discount: {m(o.summary.discount)}</span>
+        <span>Tax: {m(o.summary.tax)}</span>
+        <span>Total: {m(o.summary.total)}</span>
+        <span>Paid: {m(o.summary.paid)}</span>
+        <span>Remaining: {m(o.summary.remaining)}</span>
       </div>
       {o.pdfBase64 && (
         <button

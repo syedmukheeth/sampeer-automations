@@ -6,10 +6,11 @@ import { cn } from "@shared/lib/cn";
 import { analyzeSeo, type CheckStatus, type SeoInput } from "../utils/seo";
 
 const DEFAULTS: SeoInput = {
-  focusKeyword: "",
-  title: "",
-  metaDescription: "",
-  body: "",
+  focusKeyword: "cold email templates",
+  title: "12 Cold Email Templates That Actually Get Replies (2026)",
+  metaDescription:
+    "Steal 12 proven cold email templates with real reply-rate benchmarks. Copy, personalize, and book more meetings this week.",
+  body: "Cold email templates only work when they feel personal. In this guide we break down 12 cold email templates that consistently get replies, with the exact structure behind each one: a sharp subject line, a one-line opener that proves you did your research, a single clear value proposition, and a low-friction call to action. You will see how to personalize each cold email template at scale, which follow-up cadence books the most meetings, and the reply-rate benchmarks to expect for B2B outbound. Use these templates as a starting point, then test subject lines and offers against your own audience.",
 };
 
 const STATUS_ICON: Record<CheckStatus, typeof CircleCheck> = {

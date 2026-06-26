@@ -5,7 +5,11 @@ import { Copy, Check, Flame } from "lucide-react";
 import { cn } from "@shared/lib/cn";
 import { generateAngles, type AngleInput } from "../utils/angles";
 
-const DEFAULTS: AngleInput = { niche: "", keyword: "", audience: "" };
+const DEFAULTS: AngleInput = {
+  niche: "AI automation for agencies",
+  keyword: "AI agency",
+  audience: "agency owners and freelancers",
+};
 
 export default function TrendHunter() {
   const [f, setF] = useState<AngleInput>(DEFAULTS);

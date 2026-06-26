@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { listClients, saveClient } from "@features/business-os/client-crm/service";
+import { redactMoneyForAdmin } from "@shared/services/rbac";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
-/** GET /api/clients - list all clients. */
+/** GET /api/clients - list all clients (money redacted for admin role). */
 export async function GET() {
-  return NextResponse.json(await listClients());
+  const clients = await listClients();
+  return NextResponse.json(await redactMoneyForAdmin(clients, ["value"]));
 }
 
 /** POST /api/clients - create (no id) or update (id present). */
@@ -18,6 +21,7 @@ export async function POST(req: Request) {
   }
   try {
     const { client, persisted } = await saveClient(body);
+    await logAudit((body as { id?: unknown })?.id ? "update" : "create", "client", client.id);
     return NextResponse.json({ ok: true, client, persisted });
   } catch (err) {
     return NextResponse.json(

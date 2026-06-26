@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useIsAdmin } from "@shared/ui/RoleContext";
 
 type Item = { name: string; description: string; quantity: string; unitPrice: string };
 
@@ -15,25 +16,31 @@ const emptyItem = (): Item => ({ name: "", description: "", quantity: "1", unitP
 
 export default function ProposalForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
-  const [items, setItems] = useState<Item[]>([emptyItem()]);
+  // Demo deliverables — pre-filled for a one-click "Generate".
+  const [items, setItems] = useState<Item[]>([
+    { name: "Strategy & setup", description: "Audit, channel plan, and automation setup", quantity: "1", unitPrice: "3000" },
+    { name: "Monthly retainer", description: "Campaign management + reporting", quantity: "3", unitPrice: "2000" },
+  ]);
+  // Pre-filled demo proposal; client email points at the studio inbox so live
+  // demo sends land with you, not a real client.
   const [f, setF] = useState<Record<string, string>>({
     "company.name": "Sampeer Studio",
     "company.address": "",
     "company.email": "",
-    "client.name": "",
-    "client.email": "",
-    "client.company": "",
-    "proposal.title": "",
-    "proposal.number": "",
+    "client.name": "Marcus Lee",
+    "client.email": "smpeer05@gmail.com",
+    "client.company": "Brightwave SaaS",
+    "proposal.title": "Growth Partnership Proposal",
+    "proposal.number": "PROP-DEMO-001",
     "proposal.date": today(),
     "proposal.validUntil": plusDays(14),
-    "proposal.preparedBy": "",
-    "project.name": "",
-    "project.summary": "",
+    "proposal.preparedBy": "Sampeer",
+    "project.name": "GrowthOS Rollout",
+    "project.summary": "Full-funnel growth program: lead capture, fast follow-up, and monthly content.",
     currency: "USD",
     "discount.value": "",
     "tax.rate": "",
-    terms: "",
+    terms: "50% to start, 50% on delivery.",
     notes: "",
   });
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -249,11 +256,13 @@ function Result({ run }: { run: RunState }) {
   }
   if (run.phase !== "done") return null;
   const o = run.output;
+  const isAdmin = useIsAdmin();
+  const m = (v: unknown) => (isAdmin ? "••••" : String(v));
   return (
     <div className="space-y-4 rounded-xl border border-line bg-panel p-6 shadow-soft">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-lg font-medium text-brand">
-          {o.proposal.title} / {o.proposal.currency} {o.summary.total}
+          {o.proposal.title} / {o.proposal.currency} {m(o.summary.total)}
         </h3>
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold ${

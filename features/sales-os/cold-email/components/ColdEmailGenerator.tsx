@@ -13,13 +13,13 @@ import {
 } from "../utils/generate";
 
 const DEFAULTS: ColdEmailInput = {
-  senderName: "",
-  senderCompany: "",
-  offer: "",
-  prospectName: "",
-  prospectCompany: "",
-  painPoint: "",
-  proof: "",
+  senderName: "Sampeer",
+  senderCompany: "Sampeer Studio",
+  offer: "done-for-you marketing automation that follows up with every lead in under 5 minutes",
+  prospectName: "Marcus",
+  prospectCompany: "Brightwave",
+  painPoint: "leads going cold because sales can't follow up fast enough",
+  proof: "we helped a SaaS client book 38 demos in 30 days",
   cta: "a quick 15-minute call this week",
   framework: "aida",
   tone: "direct",

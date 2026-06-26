@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deleteProject } from "@features/business-os/project-dashboard/service";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
@@ -10,5 +11,6 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const persisted = await deleteProject(id);
+  await logAudit("delete", "project", id);
   return NextResponse.json({ ok: true, persisted });
 }

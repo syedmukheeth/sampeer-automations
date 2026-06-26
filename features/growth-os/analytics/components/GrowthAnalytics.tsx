@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Trash2, FileDown, Trophy } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { useIsAdmin } from "@shared/ui/RoleContext";
 import {
   blended,
   bestChannel,
@@ -40,7 +41,8 @@ export default function GrowthAnalytics() {
     };
   }, []);
 
-  const money = (n: number) => fmt(n, currency);
+  const isAdmin = useIsAdmin();
+  const money = (n: number) => (isAdmin ? "••••" : fmt(n, currency));
   const summary = useMemo(() => blended(rows), [rows]);
   const best = useMemo(() => bestChannel(rows), [rows]);
   const maxRevenue = useMemo(() => Math.max(1, ...rows.map((r) => r.revenue)), [rows]);

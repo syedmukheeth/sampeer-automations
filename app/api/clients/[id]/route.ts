@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { deleteClient } from "@features/business-os/client-crm/service";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
@@ -10,5 +11,6 @@ export async function DELETE(
 ) {
   const { id } = await params;
   const persisted = await deleteClient(id);
+  await logAudit("delete", "client", id);
   return NextResponse.json({ ok: true, persisted });
 }

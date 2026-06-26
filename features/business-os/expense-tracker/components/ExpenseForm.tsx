@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Upload, X } from "lucide-react";
+import { useIsAdmin } from "@shared/ui/RoleContext";
 import { parseCsv } from "../utils/csv";
 import { MAX_TRANSACTIONS, type Transaction } from "../utils/schema";
 
@@ -12,11 +13,22 @@ type RunState =
   | { phase: "done"; output: any }
   | { phase: "error"; message: string };
 
+const SAMPLE_CSV = `Date,Description,Amount
+2026-06-01,Figma subscription,-45
+2026-06-02,Google Ads spend,-1200
+2026-06-04,Client payment - Apex Retail,4800
+2026-06-07,Notion team plan,-80
+2026-06-10,Contractor - design,-1500
+2026-06-12,Client payment - Northwind,6000
+2026-06-15,AWS hosting,-320
+2026-06-20,Client payment - Coral Beauty,2600`;
+
 export default function ExpenseForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
-  const [txns, setTxns] = useState<Transaction[]>([]);
+  // Pre-parsed demo transactions so the report is a one-click "Generate".
+  const [txns, setTxns] = useState<Transaction[]>(() => parseCsv(SAMPLE_CSV).transactions);
   const [warnings, setWarnings] = useState<string[]>([]);
-  const [paste, setPaste] = useState("");
+  const [paste, setPaste] = useState(SAMPLE_CSV);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [f, setF] = useState<Record<string, string>>({
@@ -236,7 +248,8 @@ function Result({ run }: { run: RunState }) {
   if (run.phase !== "done") return null;
   const o = run.output;
   const cur = o.report?.currency ?? "USD";
-  const money = (n: number) => fmtMoney(n, cur);
+  const isAdmin = useIsAdmin();
+  const money = (n: number) => (isAdmin ? "••••" : fmtMoney(n, cur));
   const maxCat = o.byCategory?.[0]?.total || 1;
 
   return (

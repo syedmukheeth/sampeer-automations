@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { listCompetitors, saveCompetitor } from "@features/growth-os/competitor-radar/service";
+import { redactMoneyForAdmin } from "@shared/services/rbac";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
-/** GET /api/competitors - list all tracked competitors. */
+/** GET /api/competitors - list all (pricing redacted for admin role). */
 export async function GET() {
-  return NextResponse.json(await listCompetitors());
+  const competitors = await listCompetitors();
+  return NextResponse.json(await redactMoneyForAdmin(competitors, ["pricing"]));
 }
 
 /** POST /api/competitors - create (no id) or update (id present). */
@@ -18,6 +21,7 @@ export async function POST(req: Request) {
   }
   try {
     const { competitor, persisted } = await saveCompetitor(body);
+    await logAudit((body as { id?: unknown })?.id ? "update" : "create", "competitor", competitor.id);
     return NextResponse.json({ ok: true, competitor, persisted });
   } catch (err) {
     return NextResponse.json(

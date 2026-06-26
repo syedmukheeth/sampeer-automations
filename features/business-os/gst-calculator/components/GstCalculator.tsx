@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@shared/lib/cn";
+import { useIsAdmin } from "@shared/ui/RoleContext";
 import {
   computeTax,
   formatMoney,
@@ -46,7 +47,8 @@ export default function GstCalculator() {
     [amount, rate, mode, split, currency, taxName],
   );
   const result = useMemo(() => computeTax(input), [input]);
-  const money = (n: number) => formatMoney(n, input.currency);
+  const isAdmin = useIsAdmin();
+  const money = (n: number) => (isAdmin ? "••••" : formatMoney(n, input.currency));
 
   async function downloadPdf() {
     const { pdf } = await import("@react-pdf/renderer");

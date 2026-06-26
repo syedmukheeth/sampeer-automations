@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { hasOwnerSession, SESSION_COOKIE } from "@shared/services/auth";
+import { getSessionClaims, SESSION_COOKIE } from "@shared/services/auth";
+
+/** Routes the admin role may not touch — Settings holds secrets/config. */
+function isOwnerOnlyPath(pathname: string): boolean {
+  return pathname.startsWith("/settings") || pathname.startsWith("/api/settings");
+}
 
 /**
- * Gate the entire app behind a single-owner session.
- * Public: /login and /api/auth/*. Everything else (dashboard, every
- * automation page, and /api/invoices) requires a valid owner session.
+ * Gate the entire app behind a valid session (owner OR admin).
+ * Public: /login and /api/auth/*. Owner-only paths (Settings + its API)
+ * are additionally blocked for the admin role.
  */
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -16,18 +21,31 @@ export async function middleware(req: NextRequest) {
   }
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;
-  if (await hasOwnerSession(token)) {
-    return NextResponse.next();
+  const claims = await getSessionClaims(token);
+
+  // No session at all -> 401 JSON for APIs, redirect to login for pages.
+  if (!claims) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const url = req.nextUrl.clone();
+    url.pathname = "/login";
+    url.search = "";
+    return NextResponse.redirect(url);
   }
 
-  // API -> 401 JSON; pages -> redirect to login.
-  if (pathname.startsWith("/api/")) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Authenticated, but admin hitting an owner-only path -> forbid.
+  if (claims.role !== "owner" && isOwnerOnlyPath(pathname)) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    const url = req.nextUrl.clone();
+    url.pathname = "/";
+    url.search = "";
+    return NextResponse.redirect(url);
   }
-  const url = req.nextUrl.clone();
-  url.pathname = "/login";
-  url.search = "";
-  return NextResponse.redirect(url);
+
+  return NextResponse.next();
 }
 
 export const config = {

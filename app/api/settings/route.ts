@@ -5,6 +5,7 @@ import {
   getSettings,
   saveSettings,
 } from "@shared/services/settings";
+import { logAudit } from "@shared/services/audit";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,7 @@ export async function PUT(req: Request) {
   }
   try {
     const { settings, persisted } = await saveSettings(body);
+    await logAudit("update", "settings");
     const res = NextResponse.json({
       ok: true,
       settings,

@@ -4,8 +4,19 @@ import { useMemo, useState } from "react";
 import { Copy, Check, CheckSquare, Gavel, HelpCircle, Users } from "lucide-react";
 import { summarize } from "../utils/summarize";
 
+const SAMPLE_NOTES = `Kickoff call with Brightwave (Marcus, VP Growth) and our team (Sampeer, Priya).
+
+Marcus said their biggest problem is leads going cold - reps take 12+ hours to follow up. They want every inbound lead contacted in under 5 minutes.
+
+We agreed to roll out the lead-pipeline automation plus an auto-responder in week one.
+Decision: start with a 30-day pilot priced at $6k, then move to a monthly retainer if booked-demo target is hit.
+Priya will send the proposal by Friday.
+Marcus will get us API access to their CRM by Wednesday.
+Open question: do they need multi-language email support for the EU market?
+Next meeting scheduled for next Tuesday to review the pilot plan.`;
+
 export default function MeetingSummary() {
-  const [text, setText] = useState("");
+  const [text, setText] = useState(SAMPLE_NOTES);
   const result = useMemo(() => summarize(text), [text]);
   const empty = text.trim().length === 0;
 

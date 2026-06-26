@@ -6,8 +6,8 @@ import { cn } from "@shared/lib/cn";
 import { buildScript, type ScriptInput, type VideoTone, type Platform } from "../utils/script";
 
 const DEFAULTS: ScriptInput = {
-  topic: "",
-  audience: "",
+  topic: "How to get your first 1,000 customers with cold email",
+  audience: "B2B founders and early-stage marketers",
   durationMin: 8,
   tone: "educational",
   platform: "youtube",
