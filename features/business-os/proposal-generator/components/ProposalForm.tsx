@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useIsAdmin } from "@shared/ui/RoleContext";
 import { DemoFillButton } from "@shared/ui/DemoFillButton";
+import { computeTotals } from "../utils/calc";
+import { proposalInputSchema, type ProposalInput, type ProposalPackage } from "../utils/schema";
 
 type Item = { name: string; description: string; quantity: string; unitPrice: string };
 
@@ -17,6 +19,7 @@ const emptyItem = (): Item => ({ name: "", description: "", quantity: "1", unitP
 
 export default function ProposalForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
+  const [preview, setPreview] = useState<"idle" | "rendering">("idle");
   const [items, setItems] = useState<Item[]>([emptyItem()]);
   const [f, setF] = useState<Record<string, string>>({
     "company.name": "Sampeer Studio",
@@ -134,6 +137,74 @@ export default function ProposalForm() {
     if (f.terms.trim()) payload.terms = f.terms.trim();
     if (f.notes.trim()) payload.notes = f.notes.trim();
     return payload;
+  }
+
+  // Build the PDF package CLIENT-SIDE from validated input + deterministic
+  // totals (no LLM). The exec summary falls back to the typed brief.
+  function buildInstantPackage(input: ProposalInput): ProposalPackage {
+    const totals = computeTotals(input);
+    return {
+      validation: { success: true, errors: [] },
+      proposal: {
+        title: input.proposal.title,
+        number: input.proposal.number,
+        date: input.proposal.date,
+        validUntil: input.proposal.validUntil,
+        currency: input.currency,
+        preparedBy: input.proposal.preparedBy ?? "",
+      },
+      company: input.company,
+      client: input.client,
+      project: input.project,
+      executiveSummary:
+        input.project.summary?.trim() ||
+        `A proposal prepared for ${input.client.company || input.client.name || "your team"}.`,
+      items: input.items.map((it, i) => ({
+        name: it.name,
+        description: it.description?.trim() || it.name,
+        quantity: it.quantity,
+        unitPrice: it.unitPrice,
+        lineTotal: totals.lineTotals[i],
+      })),
+      summary: {
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        tax: totals.tax,
+        total: totals.total,
+      },
+      terms: input.terms ?? "",
+      notes: input.notes ?? "",
+      email: { subject: "", body: "" },
+      branding: input.branding ?? { accentColor: "#6366F1" },
+    };
+  }
+
+  // Instant, fully client-side PDF preview — no Trigger.dev, no queue, no AI.
+  async function instantPreview() {
+    const parsed = proposalInputSchema.safeParse(buildPayload());
+    if (!parsed.success) {
+      setRun({
+        phase: "error",
+        message:
+          "Fill the form before previewing:\n" +
+          parsed.error.issues.map((i) => `• ${i.path.join(".")}: ${i.message}`).join("\n"),
+      });
+      return;
+    }
+    setPreview("rendering");
+    try {
+      const pkg = buildInstantPackage(parsed.data);
+      const { pdf } = await import("@react-pdf/renderer");
+      const { ProposalDocument } = await import("../utils/proposal-pdf");
+      const blob = await pdf(<ProposalDocument pkg={pkg} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (err) {
+      setRun({ phase: "error", message: "Preview failed: " + String(err) });
+    } finally {
+      setPreview("idle");
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -265,7 +336,15 @@ export default function ProposalForm() {
         <Textarea label="Notes (optional)" v={f.notes} onChange={set("notes")} />
       </Section>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          onClick={instantPreview}
+          disabled={preview === "rendering"}
+          className="rounded-xl border border-brand-200 bg-brand-50 px-6 py-3 font-semibold text-brand shadow-soft transition hover:border-brand-500 disabled:opacity-50"
+        >
+          {preview === "rendering" ? "Rendering..." : "⚡ Instant Preview (PDF)"}
+        </button>
         <button
           type="submit"
           disabled={run.phase === "submitting" || run.phase === "polling"}
@@ -275,6 +354,10 @@ export default function ProposalForm() {
         </button>
         {run.phase === "polling" && <span className="text-sm text-muted">Status: {run.status}</span>}
       </div>
+      <p className="-mt-4 text-xs text-muted">
+        Instant Preview renders the branded PDF in your browser in under a second (no AI,
+        no email) — ideal for live client demos. Generate &amp; Send runs the full AI pipeline.
+      </p>
 
       <Result run={run} />
     </form>

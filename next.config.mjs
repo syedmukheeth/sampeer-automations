@@ -53,6 +53,17 @@ const nextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+
+  // The PDF/calc utils are shared with the Trigger.dev worker, which uses
+  // NodeNext-style ".js" import specifiers. Map them back to ".ts"/".tsx" so
+  // Next can bundle the PDF document client-side for the instant preview.
+  webpack: (config) => {
+    config.resolve.extensionAlias = {
+      ".js": [".ts", ".tsx", ".js"],
+      ".jsx": [".tsx", ".jsx"],
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

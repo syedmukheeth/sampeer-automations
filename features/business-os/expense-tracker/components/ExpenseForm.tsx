@@ -4,6 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import { Upload, X } from "lucide-react";
 import { useIsAdmin } from "@shared/ui/RoleContext";
 import { DemoFillButton } from "@shared/ui/DemoFillButton";
+import { computeExpense } from "../utils/calc";
+import { expenseInputSchema, type ExpenseReport, type Category } from "../utils/schema";
+
+/** Deterministic keyword categorizer — replaces the AI step for instant preview. */
+function categorize(t: { description: string; amount: number }): Category {
+  if (t.amount > 0) return "Income";
+  const d = t.description.toLowerCase();
+  if (/(ads?|google|facebook|linkedin|marketing|campaign|seo)/.test(d)) return "Marketing & Ads";
+  if (/(aws|hosting|figma|notion|slack|saas|subscription|software|github|vercel|adobe|zoom|stripe)/.test(d)) return "Software & SaaS";
+  if (/(contractor|payroll|salary|freelanc|design|developer|wage|hire)/.test(d)) return "Payroll & Contractors";
+  if (/(rent|office|wework|coworking)/.test(d)) return "Office & Rent";
+  if (/(flight|hotel|travel|uber|taxi|train|airbnb)/.test(d)) return "Travel";
+  if (/(restaurant|meal|coffee|lunch|dinner|food|cafe)/.test(d)) return "Meals & Entertainment";
+  if (/(laptop|monitor|hardware|device|equipment|keyboard)/.test(d)) return "Hardware";
+  if (/(bank|fee|charge|interest)/.test(d)) return "Bank & Fees";
+  if (/(tax|gst|vat)/.test(d)) return "Taxes";
+  return "Other";
+}
 import { parseCsv } from "../utils/csv";
 import { MAX_TRANSACTIONS, type Transaction } from "../utils/schema";
 
@@ -26,6 +44,7 @@ const SAMPLE_CSV = `Date,Description,Amount
 
 export default function ExpenseForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
+  const [preview, setPreview] = useState<"idle" | "rendering">("idle");
   const [txns, setTxns] = useState<Transaction[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [paste, setPaste] = useState("");
@@ -77,6 +96,61 @@ export default function ExpenseForm() {
     const reader = new FileReader();
     reader.onload = () => ingest(String(reader.result ?? ""));
     reader.readAsText(file);
+  }
+
+  // Instant, fully client-side report PDF — deterministic categorization +
+  // totals, no Trigger.dev / AI / queue. Renders in under a second.
+  async function instantPreview() {
+    if (!txns.length) {
+      setRun({ phase: "error", message: "Load demo data or paste a CSV first." });
+      return;
+    }
+    const payload = {
+      report: {
+        name: f.name.trim(),
+        periodStart: f.periodStart,
+        periodEnd: f.periodEnd,
+        currency: f.currency.trim(),
+      },
+      transactions: txns,
+    };
+    const parsed = expenseInputSchema.safeParse(payload);
+    if (!parsed.success) {
+      setRun({
+        phase: "error",
+        message: parsed.error.issues.map((i) => `• ${i.path.join(".")}: ${i.message}`).join("\n"),
+      });
+      return;
+    }
+    setPreview("rendering");
+    try {
+      const input = parsed.data;
+      const categories = input.transactions.map((t) => categorize(t));
+      const computed = computeExpense(input, categories);
+      const report: ExpenseReport = {
+        validation: { success: true, errors: [] },
+        report: {
+          name: input.report.name,
+          periodStart: input.report.periodStart,
+          periodEnd: input.report.periodEnd,
+          currency: input.report.currency,
+        },
+        ...computed,
+        headline: `${input.report.name || "Expense report"} — net ${computed.summary.net >= 0 ? "positive" : "negative"} over ${computed.summary.periodDays} days.`,
+        insights: [],
+        branding: { accentColor: "#6366F1" },
+      };
+      const { pdf } = await import("@react-pdf/renderer");
+      const { ExpenseDocument } = await import("../utils/expense-pdf");
+      const blob = await pdf(<ExpenseDocument report={report} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (err) {
+      setRun({ phase: "error", message: "Preview failed: " + String(err) });
+    } finally {
+      setPreview("idle");
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -232,7 +306,15 @@ export default function ExpenseForm() {
         </div>
       </Section>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          onClick={instantPreview}
+          disabled={preview === "rendering"}
+          className="rounded-xl border border-brand-200 bg-brand-50 px-6 py-3 font-semibold text-brand shadow-soft transition hover:border-brand-500 disabled:opacity-50"
+        >
+          {preview === "rendering" ? "Rendering..." : "⚡ Instant Preview (PDF)"}
+        </button>
         <button
           type="submit"
           disabled={busy}
@@ -242,6 +324,10 @@ export default function ExpenseForm() {
         </button>
         {run.phase === "polling" && <span className="text-sm text-muted">Status: {run.status}</span>}
       </div>
+      <p className="-mt-4 text-xs text-muted">
+        Instant Preview categorizes + renders the branded report PDF in your browser in under
+        a second (no AI, no email) — ideal for live demos. Generate Report runs the full AI pipeline.
+      </p>
 
       <Result run={run} />
     </form>

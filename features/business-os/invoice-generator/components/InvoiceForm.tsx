@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useIsAdmin } from "@shared/ui/RoleContext";
 import { DemoFillButton } from "@shared/ui/DemoFillButton";
+import { computeTotals } from "../utils/calc";
+import { invoiceInputSchema, type InvoiceInput, type InvoicePackage } from "../utils/schema";
 
 type Item = { name: string; quantity: string; unitPrice: string };
 
@@ -17,6 +19,7 @@ const emptyItem = (): Item => ({ name: "", quantity: "1", unitPrice: "" });
 
 export default function InvoiceForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
+  const [preview, setPreview] = useState<"idle" | "rendering">("idle");
   const [items, setItems] = useState<Item[]>([emptyItem()]);
 
   // Flat field state keyed by dotted path matching the schema.
@@ -126,6 +129,74 @@ export default function InvoiceForm() {
     if (f["payment.bank"].trim()) pay.bankTransfer = { accountNumber: f["payment.bank"].trim() };
     if (Object.keys(pay).length) payload.payment = pay;
     return payload;
+  }
+
+  // Build the final PDF package CLIENT-SIDE from validated input + deterministic
+  // totals (no LLM). Used by the instant preview so a demo renders in <1s.
+  function buildInstantPackage(input: InvoiceInput): InvoicePackage {
+    const totals = computeTotals(input);
+    return {
+      validation: { success: true, errors: [] },
+      invoice: {
+        invoiceNumber: input.invoice.number,
+        issueDate: input.invoice.issueDate,
+        dueDate: input.invoice.dueDate,
+        status: input.invoice.status ?? "Due",
+        currency: input.currency,
+        projectId: input.project.id ?? "",
+        referenceNumber: input.invoice.referenceNumber ?? "",
+        paymentTerms: input.invoice.paymentTerms ?? "",
+      },
+      company: input.company,
+      client: input.client,
+      project: input.project,
+      items: input.items.map((it, i) => ({
+        description: it.description?.trim() || it.name,
+        quantity: it.quantity,
+        unitPrice: it.unitPrice,
+        lineTotal: totals.lineTotals[i],
+      })),
+      summary: {
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        tax: totals.tax,
+        total: totals.total,
+        paid: totals.paid,
+        remaining: totals.remaining,
+      },
+      payment: { methods: [], instructions: "", details: input.payment },
+      notes: input.notes ?? "",
+      email: { subject: "", body: "" },
+      branding: input.branding ?? { accentColor: "#6366F1" },
+    };
+  }
+
+  // Instant, fully client-side PDF preview — no Trigger.dev, no queue, no AI.
+  async function instantPreview() {
+    const parsed = invoiceInputSchema.safeParse(buildPayload());
+    if (!parsed.success) {
+      setRun({
+        phase: "error",
+        message:
+          "Fill the form before previewing:\n" +
+          parsed.error.issues.map((i) => `• ${i.path.join(".")}: ${i.message}`).join("\n"),
+      });
+      return;
+    }
+    setPreview("rendering");
+    try {
+      const pkg = buildInstantPackage(parsed.data);
+      const { pdf } = await import("@react-pdf/renderer");
+      const { InvoiceDocument } = await import("../utils/invoice-pdf");
+      const blob = await pdf(<InvoiceDocument pkg={pkg} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (err) {
+      setRun({ phase: "error", message: "Preview failed: " + String(err) });
+    } finally {
+      setPreview("idle");
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -253,7 +324,15 @@ export default function InvoiceForm() {
         <Field label="Notes (optional override)" wide v={f.notes} onChange={set("notes")} />
       </Section>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          onClick={instantPreview}
+          disabled={preview === "rendering"}
+          className="rounded-xl border border-brand-200 bg-brand-50 px-6 py-3 font-semibold text-brand shadow-soft transition hover:border-brand-500 disabled:opacity-50"
+        >
+          {preview === "rendering" ? "Rendering..." : "⚡ Instant Preview (PDF)"}
+        </button>
         <button
           type="submit"
           disabled={run.phase === "submitting" || run.phase === "polling"}
@@ -267,6 +346,10 @@ export default function InvoiceForm() {
           <span className="text-sm text-muted">Status: {run.status}</span>
         )}
       </div>
+      <p className="-mt-4 text-xs text-muted">
+        Instant Preview renders the branded PDF in your browser in under a second (no AI,
+        no email) — ideal for live client demos. Generate &amp; Send runs the full AI pipeline.
+      </p>
 
       <Result run={run} />
     </form>
