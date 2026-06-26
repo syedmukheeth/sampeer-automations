@@ -68,15 +68,24 @@ export async function triggerInvoice(req: Request): Promise<NextResponse> {
     );
   }
 
-  const payload = await applySettings(parsed.data);
+  try {
+    const payload = await applySettings(parsed.data);
+    const handle = await tasks.trigger<typeof generateInvoice>(
+      "generate-invoice",
+      payload,
+      { tags: [`client:${payload.client.email}`, `invoice:${payload.invoice.number}`] },
+    );
 
-  const handle = await tasks.trigger<typeof generateInvoice>(
-    "generate-invoice",
-    payload,
-    { tags: [`client:${payload.client.email}`, `invoice:${payload.invoice.number}`] },
-  );
-
-  return NextResponse.json({ runId: handle.id });
+    return NextResponse.json({ runId: handle.id });
+  } catch (err) {
+    return NextResponse.json(
+      {
+        error: "Unable to queue invoice run. Check Vercel TRIGGER_SECRET_KEY and Trigger.dev deployment.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 502 },
+    );
+  }
 }
 
 /** GET: poll run status/output until COMPLETED/FAILED. */

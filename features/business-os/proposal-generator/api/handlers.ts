@@ -50,13 +50,23 @@ export async function triggerProposal(req: Request): Promise<NextResponse> {
     );
   }
 
-  const payload = await applySettings(parsed.data);
-  const handle = await tasks.trigger<typeof generateProposal>(
-    "generate-proposal",
-    payload,
-    { tags: [`client:${payload.client.email}`, `proposal:${payload.proposal.number}`] },
-  );
-  return NextResponse.json({ runId: handle.id });
+  try {
+    const payload = await applySettings(parsed.data);
+    const handle = await tasks.trigger<typeof generateProposal>(
+      "generate-proposal",
+      payload,
+      { tags: [`client:${payload.client.email}`, `proposal:${payload.proposal.number}`] },
+    );
+    return NextResponse.json({ runId: handle.id });
+  } catch (err) {
+    return NextResponse.json(
+      {
+        error: "Unable to queue proposal run. Check Vercel TRIGGER_SECRET_KEY and Trigger.dev deployment.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 502 },
+    );
+  }
 }
 
 /** GET: poll run status/output until COMPLETED/FAILED. */

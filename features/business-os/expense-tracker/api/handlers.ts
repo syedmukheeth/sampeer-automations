@@ -52,13 +52,22 @@ export async function triggerExpenseReport(req: Request): Promise<NextResponse> 
     );
   }
 
-  const payload = await applySettings(parsed.data);
+  try {
+    const payload = await applySettings(parsed.data);
+    const handle = await tasks.trigger<typeof trackExpenses>("track-expenses", payload, {
+      tags: [`expense:${payload.report.name}`, `period:${payload.report.periodStart}`],
+    });
 
-  const handle = await tasks.trigger<typeof trackExpenses>("track-expenses", payload, {
-    tags: [`expense:${payload.report.name}`, `period:${payload.report.periodStart}`],
-  });
-
-  return NextResponse.json({ runId: handle.id });
+    return NextResponse.json({ runId: handle.id });
+  } catch (err) {
+    return NextResponse.json(
+      {
+        error: "Unable to queue expense run. Check Vercel TRIGGER_SECRET_KEY and Trigger.dev deployment.",
+        detail: err instanceof Error ? err.message : String(err),
+      },
+      { status: 502 },
+    );
+  }
 }
 
 /** GET: poll run status/output until COMPLETED/FAILED. */

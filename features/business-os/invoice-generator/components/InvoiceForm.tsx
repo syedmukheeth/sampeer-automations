@@ -208,7 +208,7 @@ export default function InvoiceForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(buildPayload()),
       });
-      const data = await res.json();
+      const data = await readJson(res);
       if (!res.ok) {
         setRun({ phase: "error", message: formatIssues(data) });
         return;
@@ -224,7 +224,11 @@ export default function InvoiceForm() {
     for (let i = 0; i < 120; i++) {
       await sleep(2000);
       const res = await fetch(`/api/invoices/${runId}`);
-      const data = await res.json();
+      const data = await readJson(res);
+      if (!res.ok) {
+        setRun({ phase: "error", message: formatIssues(data) });
+        return;
+      }
       if (data.isCompleted) {
         const out = data.output;
         if (out?.validation && out.validation.success === false) {
@@ -488,7 +492,20 @@ function stripPdf(o: any) {
 
 function formatIssues(data: any): string {
   if (data?.issues) return data.issues.map((i: any) => `${i.path}: ${i.message}`).join("\n");
+  if (data?.detail) return `${data.error ?? "Request failed"}\n${data.detail}`;
   return data?.error ?? "Request failed";
+}
+
+async function readJson(res: Response): Promise<any> {
+  const text = await res.text();
+  if (!text.trim()) {
+    return { error: `Empty response from server (${res.status} ${res.statusText || "HTTP error"})` };
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { error: `Non-JSON response from server (${res.status} ${res.statusText || "HTTP error"})` };
+  }
 }
 
 function today() {
