@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Check, CircleCheck, CircleAlert, CircleX } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import { analyzeSeo, type CheckStatus, type SeoInput } from "../utils/seo";
 
 const DEFAULTS: SeoInput = {
@@ -12,6 +13,7 @@ const DEFAULTS: SeoInput = {
     "Steal 12 proven cold email templates with real reply-rate benchmarks. Copy, personalize, and book more meetings this week.",
   body: "Cold email templates only work when they feel personal. In this guide we break down 12 cold email templates that consistently get replies, with the exact structure behind each one: a sharp subject line, a one-line opener that proves you did your research, a single clear value proposition, and a low-friction call to action. You will see how to personalize each cold email template at scale, which follow-up cadence books the most meetings, and the reply-rate benchmarks to expect for B2B outbound. Use these templates as a starting point, then test subject lines and offers against your own audience.",
 };
+const EMPTY: SeoInput = { focusKeyword: "", title: "", metaDescription: "", body: "" };
 
 const STATUS_ICON: Record<CheckStatus, typeof CircleCheck> = {
   pass: CircleCheck,
@@ -25,7 +27,7 @@ const STATUS_COLOR: Record<CheckStatus, string> = {
 };
 
 export default function SeoWriter() {
-  const [f, setF] = useState<SeoInput>(DEFAULTS);
+  const [f, setF] = useState<SeoInput>(EMPTY);
   const set =
     (k: keyof SeoInput) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -39,6 +41,9 @@ export default function SeoWriter() {
     <div className="grid gap-6 lg:grid-cols-[1fr_24rem]">
       {/* Inputs */}
       <div className="space-y-5 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setF(DEFAULTS)} onClear={() => setF(EMPTY)} />
+        </div>
         <Field label="Focus keyword">
           <input value={f.focusKeyword} onChange={set("focusKeyword")} placeholder="cold email automation" className={inputCls} />
         </Field>

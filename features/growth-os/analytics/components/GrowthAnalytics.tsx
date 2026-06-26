@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Plus, Trash2, FileDown, Trophy } from "lucide-react";
 import { cn } from "@shared/lib/cn";
 import { useIsAdmin } from "@shared/ui/RoleContext";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import {
   blended,
   bestChannel,
@@ -27,7 +28,7 @@ const newRow = (): ChannelRow => ({
 });
 
 export default function GrowthAnalytics() {
-  const [rows, setRows] = useState<ChannelRow[]>(SEED);
+  const [rows, setRows] = useState<ChannelRow[]>([]);
   const [currency, setCurrency] = useState("USD");
 
   useEffect(() => {
@@ -65,6 +66,9 @@ export default function GrowthAnalytics() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <DemoFillButton onLoad={() => setRows(SEED)} onClear={() => setRows([])} />
+      </div>
       {/* Blended KPIs */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <Kpi label="Spend" value={money(summary.spend)} />

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Check, CheckSquare, Gavel, HelpCircle, Users } from "lucide-react";
 import { summarize } from "../utils/summarize";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 
 const SAMPLE_NOTES = `Kickoff call with Brightwave (Marcus, VP Growth) and our team (Sampeer, Priya).
 
@@ -16,7 +17,7 @@ Open question: do they need multi-language email support for the EU market?
 Next meeting scheduled for next Tuesday to review the pilot plan.`;
 
 export default function MeetingSummary() {
-  const [text, setText] = useState(SAMPLE_NOTES);
+  const [text, setText] = useState("");
   const result = useMemo(() => summarize(text), [text]);
   const empty = text.trim().length === 0;
 
@@ -35,6 +36,9 @@ export default function MeetingSummary() {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
       <div className="space-y-4 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setText(SAMPLE_NOTES)} onClear={() => setText("")} />
+        </div>
         <label className="block text-sm">
           <span className="mb-1 block font-medium text-ink">Meeting notes / transcript</span>
           <textarea

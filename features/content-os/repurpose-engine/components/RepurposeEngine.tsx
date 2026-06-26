@@ -3,9 +3,16 @@
 import { useMemo, useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import { repurpose, type Format } from "../utils/repurpose";
 
-const SAMPLE = "";
+const SAMPLE_DEMO = `Most founders treat cold email like a numbers game. Blast 1,000 strangers, hope 3 reply. That's why their open rates are fine but their reply rates are dead.
+
+The teams that win do the opposite. They send fewer, sharper emails. Every line earns the next one. The subject promises one specific thing. The first sentence proves you actually looked at their business. The middle makes one clear offer tied to a pain they already feel. The close asks for something tiny - 15 minutes, not a demo, not a contract.
+
+We tested this with a SaaS client last quarter: same list size, rewritten sequence, 4 follow-ups spaced over 12 days. Reply rate went from 2% to 11%, and they booked 38 demos in 30 days.
+
+The lesson: cold email isn't about volume. It's about relevance per send. Personalize the opener, make one offer, lower the ask, and follow up like a human.`;
 
 const FORMATS: { id: Format; name: string }[] = [
   { id: "thread", name: "X / Thread" },
@@ -15,7 +22,7 @@ const FORMATS: { id: Format; name: string }[] = [
 ];
 
 export default function RepurposeEngine() {
-  const [text, setText] = useState(SAMPLE);
+  const [text, setText] = useState("");
   const [handle, setHandle] = useState("");
   const [active, setActive] = useState<Format>("thread");
 
@@ -26,6 +33,9 @@ export default function RepurposeEngine() {
     <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
       {/* Source */}
       <div className="space-y-4 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setText(SAMPLE_DEMO)} onClear={() => setText("")} />
+        </div>
         <label className="block text-sm">
           <span className="mb-1 block font-medium text-ink">Long-form content</span>
           <textarea

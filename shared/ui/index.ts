@@ -18,3 +18,4 @@ export {
 export { RoleProvider, useRole, useIsAdmin, OwnerOnly } from "./RoleContext";
 export { Money } from "./Money";
 export { DemoDataButton } from "./DemoDataButton";
+export { DemoFillButton } from "./DemoFillButton";

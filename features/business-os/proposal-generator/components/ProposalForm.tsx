@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useIsAdmin } from "@shared/ui/RoleContext";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 
 type Item = { name: string; description: string; quantity: string; unitPrice: string };
 
@@ -16,33 +17,64 @@ const emptyItem = (): Item => ({ name: "", description: "", quantity: "1", unitP
 
 export default function ProposalForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
-  // Demo deliverables — pre-filled for a one-click "Generate".
-  const [items, setItems] = useState<Item[]>([
-    { name: "Strategy & setup", description: "Audit, channel plan, and automation setup", quantity: "1", unitPrice: "3000" },
-    { name: "Monthly retainer", description: "Campaign management + reporting", quantity: "3", unitPrice: "2000" },
-  ]);
-  // Pre-filled demo proposal; client email points at the studio inbox so live
-  // demo sends land with you, not a real client.
+  const [items, setItems] = useState<Item[]>([emptyItem()]);
   const [f, setF] = useState<Record<string, string>>({
     "company.name": "Sampeer Studio",
     "company.address": "",
     "company.email": "",
-    "client.name": "Marcus Lee",
-    "client.email": "smpeer05@gmail.com",
-    "client.company": "Brightwave SaaS",
-    "proposal.title": "Growth Partnership Proposal",
-    "proposal.number": "PROP-DEMO-001",
+    "client.name": "",
+    "client.email": "",
+    "client.company": "",
+    "proposal.title": "",
+    "proposal.number": "",
     "proposal.date": today(),
     "proposal.validUntil": plusDays(14),
-    "proposal.preparedBy": "Sampeer",
-    "project.name": "GrowthOS Rollout",
-    "project.summary": "Full-funnel growth program: lead capture, fast follow-up, and monthly content.",
+    "proposal.preparedBy": "",
+    "project.name": "",
+    "project.summary": "",
     currency: "USD",
     "discount.value": "",
     "tax.rate": "",
-    terms: "50% to start, 50% on delivery.",
+    terms: "",
     notes: "",
   });
+
+  // "Load demo data" fills a believable proposal for a live client demo. The
+  // client email points at the studio inbox so demo sends land with you.
+  function loadDemo() {
+    setF((p) => ({
+      ...p,
+      "client.name": "Marcus Lee",
+      "client.email": "smpeer05@gmail.com",
+      "client.company": "Brightwave SaaS",
+      "proposal.title": "Growth Partnership Proposal",
+      "proposal.number": "PROP-DEMO-001",
+      "proposal.preparedBy": "Sampeer",
+      "project.name": "GrowthOS Rollout",
+      "project.summary": "Full-funnel growth program: lead capture, fast follow-up, and monthly content.",
+      terms: "50% to start, 50% on delivery.",
+    }));
+    setItems([
+      { name: "Strategy & setup", description: "Audit, channel plan, and automation setup", quantity: "1", unitPrice: "3000" },
+      { name: "Monthly retainer", description: "Campaign management + reporting", quantity: "3", unitPrice: "2000" },
+    ]);
+  }
+  function clearForm() {
+    setF((p) => ({
+      ...p,
+      "client.name": "",
+      "client.email": "",
+      "client.company": "",
+      "proposal.title": "",
+      "proposal.number": "",
+      "proposal.preparedBy": "",
+      "project.name": "",
+      "project.summary": "",
+      terms: "",
+      notes: "",
+    }));
+    setItems([emptyItem()]);
+  }
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
 
@@ -150,6 +182,9 @@ export default function ProposalForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
+      <div className="flex justify-end">
+        <DemoFillButton onLoad={loadDemo} onClear={clearForm} />
+      </div>
       <Section title="Client">
         <Field label="Name" v={f["client.name"]} onChange={set("client.name")} required />
         <Field label="Email" type="email" v={f["client.email"]} onChange={set("client.email")} required />

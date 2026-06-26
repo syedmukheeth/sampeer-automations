@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Check, Film, Image as ImageIcon, Clapperboard } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import { buildScript, type ScriptInput, type VideoTone, type Platform } from "../utils/script";
 
 const DEFAULTS: ScriptInput = {
@@ -12,6 +13,7 @@ const DEFAULTS: ScriptInput = {
   tone: "educational",
   platform: "youtube",
 };
+const EMPTY: ScriptInput = { topic: "", audience: "", durationMin: 8, tone: "educational", platform: "youtube" };
 
 const TONES: { id: VideoTone; name: string }[] = [
   { id: "educational", name: "Educational" },
@@ -26,7 +28,7 @@ const PLATFORMS: { id: Platform; name: string }[] = [
 ];
 
 export default function VideoFactory() {
-  const [f, setF] = useState<ScriptInput>(DEFAULTS);
+  const [f, setF] = useState<ScriptInput>(EMPTY);
   const set = <K extends keyof ScriptInput>(k: K) => (v: ScriptInput[K]) => setF((p) => ({ ...p, [k]: v }));
   const script = useMemo(() => buildScript(f), [f]);
 
@@ -46,6 +48,9 @@ export default function VideoFactory() {
     <div className="grid gap-6 lg:grid-cols-[22rem_1fr]">
       {/* Inputs */}
       <div className="space-y-5 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setF(DEFAULTS)} onClear={() => setF(EMPTY)} />
+        </div>
         <Field label="Video topic">
           <input value={f.topic} onChange={(e) => set("topic")(e.target.value)} placeholder="Automating cold email outreach" className={inputCls} />
         </Field>

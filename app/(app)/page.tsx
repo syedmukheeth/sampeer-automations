@@ -11,7 +11,6 @@ import {
   Plus,
 } from "lucide-react";
 import { StatCard } from "@shared/ui/StatCard";
-import { DemoDataButton } from "@shared/ui/DemoDataButton";
 import { ChartCard } from "@shared/ui/ChartCard";
 import { Card } from "@shared/ui/Card";
 import { SectionHeader } from "@shared/ui/SectionHeader";
@@ -63,7 +62,6 @@ export default async function OverviewPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <DemoDataButton />
           <Link
             href="/business-os/invoice-generator"
             className="inline-flex h-10 items-center gap-2 rounded-xl bg-brand px-4 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-700"

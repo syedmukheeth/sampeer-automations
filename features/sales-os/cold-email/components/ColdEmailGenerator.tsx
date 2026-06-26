@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Check, FileDown, Clock } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import {
   buildSequence,
   FRAMEWORKS,
@@ -24,9 +25,21 @@ const DEFAULTS: ColdEmailInput = {
   framework: "aida",
   tone: "direct",
 };
+const EMPTY: ColdEmailInput = {
+  senderName: "",
+  senderCompany: "",
+  offer: "",
+  prospectName: "",
+  prospectCompany: "",
+  painPoint: "",
+  proof: "",
+  cta: "a quick 15-minute call this week",
+  framework: "aida",
+  tone: "direct",
+};
 
 export default function ColdEmailGenerator() {
-  const [f, setF] = useState<ColdEmailInput>(DEFAULTS);
+  const [f, setF] = useState<ColdEmailInput>(EMPTY);
   const set =
     <K extends keyof ColdEmailInput>(k: K) =>
     (v: ColdEmailInput[K]) =>
@@ -52,6 +65,9 @@ export default function ColdEmailGenerator() {
     <div className="grid gap-6 lg:grid-cols-[24rem_1fr]">
       {/* Inputs */}
       <div className="space-y-5 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setF(DEFAULTS)} onClear={() => setF(EMPTY)} />
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Your name">
             <Input value={f.senderName} onChange={set("senderName")} placeholder="Alex Rivera" />

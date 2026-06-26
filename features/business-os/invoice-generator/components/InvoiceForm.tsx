@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useIsAdmin } from "@shared/ui/RoleContext";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 
 type Item = { name: string; quantity: string; unitPrice: string };
 
@@ -16,33 +17,56 @@ const emptyItem = (): Item => ({ name: "", quantity: "1", unitPrice: "" });
 
 export default function InvoiceForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
-  // Demo line item — pre-filled so the pipeline is a one-click "Generate".
-  const [items, setItems] = useState<Item[]>([
-    { name: "Marketing retainer — July", quantity: "1", unitPrice: "2000" },
-  ]);
+  const [items, setItems] = useState<Item[]>([emptyItem()]);
 
   // Flat field state keyed by dotted path matching the schema.
-  // Pre-filled with a demo invoice; the client email points at the studio
-  // inbox so live demo sends land with you, not a real client.
   const [f, setF] = useState<Record<string, string>>({
     "company.name": "Sampeer Studio",
     "company.address": "",
     "company.email": "finance@sampeerstudio.com",
-    "client.name": "Apex Retail",
-    "client.email": "smpeer05@gmail.com",
-    "project.name": "Q3 Marketing Campaign",
-    "invoice.number": "INV-DEMO-001",
+    "client.name": "",
+    "client.email": "",
+    "project.name": "",
+    "invoice.number": "",
     "invoice.issueDate": today(),
     "invoice.dueDate": today(),
     "invoice.paymentTerms": "Net 15",
     currency: "USD",
     "discount.value": "",
-    "tax.rate": "18",
+    "tax.rate": "",
     amountPaid: "",
     "payment.upi": "",
     "payment.bank": "",
     notes: "",
   });
+
+  // "Load demo data" fills a believable invoice for a live client demo. The
+  // client email points at the studio inbox so demo sends land with you.
+  function loadDemo() {
+    setF((p) => ({
+      ...p,
+      "client.name": "Apex Retail",
+      "client.email": "smpeer05@gmail.com",
+      "project.name": "Q3 Marketing Campaign",
+      "invoice.number": "INV-DEMO-001",
+      "tax.rate": "18",
+    }));
+    setItems([{ name: "Marketing retainer — July", quantity: "1", unitPrice: "2000" }]);
+  }
+  function clearForm() {
+    setF((p) => ({
+      ...p,
+      "client.name": "",
+      "client.email": "",
+      "project.name": "",
+      "invoice.number": "",
+      "tax.rate": "",
+      "discount.value": "",
+      amountPaid: "",
+      notes: "",
+    }));
+    setItems([emptyItem()]);
+  }
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
 
@@ -150,6 +174,9 @@ export default function InvoiceForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
+      <div className="flex justify-end">
+        <DemoFillButton onLoad={loadDemo} onClear={clearForm} />
+      </div>
       <Section title="Company">
         <Field label="Name" v={f["company.name"]} onChange={set("company.name")} />
         <Field label="Email" v={f["company.email"]} onChange={set("company.email")} />

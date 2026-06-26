@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Upload, X } from "lucide-react";
 import { useIsAdmin } from "@shared/ui/RoleContext";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import { parseCsv } from "../utils/csv";
 import { MAX_TRANSACTIONS, type Transaction } from "../utils/schema";
 
@@ -25,10 +26,9 @@ const SAMPLE_CSV = `Date,Description,Amount
 
 export default function ExpenseForm() {
   const [run, setRun] = useState<RunState>({ phase: "idle" });
-  // Pre-parsed demo transactions so the report is a one-click "Generate".
-  const [txns, setTxns] = useState<Transaction[]>(() => parseCsv(SAMPLE_CSV).transactions);
+  const [txns, setTxns] = useState<Transaction[]>([]);
   const [warnings, setWarnings] = useState<string[]>([]);
-  const [paste, setPaste] = useState(SAMPLE_CSV);
+  const [paste, setPaste] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [f, setF] = useState<Record<string, string>>({
@@ -140,6 +140,19 @@ export default function ExpenseForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8">
+      <div className="flex justify-end">
+        <DemoFillButton
+          onLoad={() => {
+            setPaste(SAMPLE_CSV);
+            ingest(SAMPLE_CSV);
+          }}
+          onClear={() => {
+            setPaste("");
+            setTxns([]);
+            setWarnings([]);
+          }}
+        />
+      </div>
       <Section title="Report">
         <Field label="Report Name" v={f.name} onChange={set("name")} required />
         <Field label="Currency" v={f.currency} onChange={set("currency")} />

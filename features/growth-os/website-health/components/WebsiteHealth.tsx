@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { AlertTriangle, ArrowUpCircle, MinusCircle } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import { auditSite, type AuditInput, type Rating } from "../utils/audit";
 
 const DEFAULTS: AuditInput = {
@@ -18,6 +19,11 @@ const DEFAULTS: AuditInput = {
   hasH1: true,
   hasAltText: false,
   hasSitemap: false,
+};
+const EMPTY: AuditInput = {
+  lcp: 0, inp: 0, cls: 0, ttfb: 0, pageWeightKb: 0, requests: 0,
+  https: false, mobileFriendly: false, hasMetaDescription: false,
+  hasH1: false, hasAltText: false, hasSitemap: false,
 };
 
 const RATING_STYLE: Record<Rating, string> = {
@@ -44,7 +50,7 @@ const PRIORITY_ICON = { high: ArrowUpCircle, medium: AlertTriangle, low: MinusCi
 const PRIORITY_STYLE = { high: "text-danger", medium: "text-warn", low: "text-muted" } as const;
 
 export default function WebsiteHealth() {
-  const [f, setF] = useState<AuditInput>(DEFAULTS);
+  const [f, setF] = useState<AuditInput>(EMPTY);
   const setNum = (k: keyof AuditInput) => (v: string) => setF((p) => ({ ...p, [k]: Number(v) || 0 }));
   const toggle = (k: keyof AuditInput) => () => setF((p) => ({ ...p, [k]: !p[k] }));
   const r = useMemo(() => auditSite(f), [f]);
@@ -54,6 +60,9 @@ export default function WebsiteHealth() {
     <div className="grid gap-6 lg:grid-cols-[24rem_1fr]">
       {/* Inputs */}
       <div className="space-y-5 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setF(DEFAULTS)} onClear={() => setF(EMPTY)} />
+        </div>
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Core Web Vitals</p>
         <div className="grid grid-cols-2 gap-3">
           <Num label="LCP (s)" value={f.lcp} step={0.1} onChange={setNum("lcp")} />

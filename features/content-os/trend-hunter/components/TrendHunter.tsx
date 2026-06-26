@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Check, Flame } from "lucide-react";
 import { cn } from "@shared/lib/cn";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import { generateAngles, type AngleInput } from "../utils/angles";
 
 const DEFAULTS: AngleInput = {
@@ -10,9 +11,10 @@ const DEFAULTS: AngleInput = {
   keyword: "AI agency",
   audience: "agency owners and freelancers",
 };
+const EMPTY: AngleInput = { niche: "", keyword: "", audience: "" };
 
 export default function TrendHunter() {
-  const [f, setF] = useState<AngleInput>(DEFAULTS);
+  const [f, setF] = useState<AngleInput>(EMPTY);
   const set = (k: keyof AngleInput) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
   const angles = useMemo(() => generateAngles(f), [f]);
@@ -20,6 +22,9 @@ export default function TrendHunter() {
   return (
     <div className="grid gap-6 lg:grid-cols-[22rem_1fr]">
       <div className="space-y-5 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton onLoad={() => setF(DEFAULTS)} onClear={() => setF(EMPTY)} />
+        </div>
         <Field label="Niche / topic">
           <input value={f.niche} onChange={set("niche")} placeholder="B2B sales automation" className={inputCls} />
         </Field>

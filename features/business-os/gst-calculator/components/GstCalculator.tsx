@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@shared/lib/cn";
 import { useIsAdmin } from "@shared/ui/RoleContext";
+import { DemoFillButton } from "@shared/ui/DemoFillButton";
 import {
   computeTax,
   formatMoney,
@@ -12,8 +13,8 @@ import {
 } from "../utils/calc";
 
 export default function GstCalculator() {
-  const [amount, setAmount] = useState("1000");
-  const [rate, setRate] = useState("18");
+  const [amount, setAmount] = useState("");
+  const [rate, setRate] = useState("");
   const [mode, setMode] = useState<TaxMode>("exclusive");
   const [split, setSplit] = useState<TaxSplit>("none");
   const [currency, setCurrency] = useState("INR");
@@ -66,6 +67,22 @@ export default function GstCalculator() {
     <div className="grid gap-6 lg:grid-cols-[1fr_24rem]">
       {/* Inputs */}
       <div className="space-y-6 rounded-2xl border border-line bg-panel p-6 shadow-soft">
+        <div className="flex justify-end">
+          <DemoFillButton
+            onLoad={() => {
+              setAmount("1000");
+              setRate("18");
+              setMode("exclusive");
+              setSplit("none");
+              setCurrency("INR");
+              setTaxName("GST");
+            }}
+            onClear={() => {
+              setAmount("");
+              setRate("");
+            }}
+          />
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Amount">
             <input
