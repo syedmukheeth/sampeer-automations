@@ -88,7 +88,7 @@ export function LeadPipelineView({ initial }: { initial: Lead[] }) {
             content: (
               <div className="space-y-5">
                 <div className="flex items-center justify-between gap-2">
-                  <DemoDataButton variant="compact" />
+                  <DemoDataButton variant="compact" resource="leads" />
                   <button
                     type="button"
                     onClick={() => setEditing("new")}

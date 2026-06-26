@@ -59,7 +59,7 @@ export function CompetitorRadarView({ initial }: { initial: Competitor[] }) {
             content: (
               <div className="space-y-5">
                 <div className="flex items-center justify-between gap-2">
-                  <DemoDataButton variant="compact" />
+                  <DemoDataButton variant="compact" resource="competitors" />
                   <button
                     type="button"
                     onClick={() => setEditing("new")}

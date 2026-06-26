@@ -49,13 +49,19 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
 
           return (
             <div key={os.id}>
-              <div className="mb-2 flex items-center gap-2 px-3">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#eaf4ee] ring-1 ring-inset ring-[#cfe1d8]">
-                  <OsIcon className="h-3 w-3 text-[#6f9187]" />
+              <div className="mb-2.5 flex items-center gap-2.5 px-2">
+                <span
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br text-white shadow-[0_6px_14px_-6px_rgba(17,20,19,0.55)] ring-1 ring-inset ring-white/30",
+                    os.accent,
+                  )}
+                >
+                  <OsIcon className="h-3.5 w-3.5" strokeWidth={2.4} />
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6f9187]">
+                <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-[#0d2b27]">
                   {os.name}
                 </span>
+                <span className="ml-2 h-px flex-1 bg-gradient-to-r from-[#cfe1d8] to-transparent" />
               </div>
               <div className="space-y-0.5">
                 {automations.map((a) => (
@@ -185,13 +191,19 @@ function SidebarNav({
 
           return (
             <div key={os.id}>
-              <div className="mb-2 flex items-center gap-2 px-3">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[#eaf4ee] ring-1 ring-inset ring-[#cfe1d8]">
-                  <OsIcon className="h-3 w-3 text-[#6f9187]" />
+              <div className="mb-2.5 flex items-center gap-2.5 px-2">
+                <span
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br text-white shadow-[0_6px_14px_-6px_rgba(17,20,19,0.55)] ring-1 ring-inset ring-white/30",
+                    os.accent,
+                  )}
+                >
+                  <OsIcon className="h-3.5 w-3.5" strokeWidth={2.4} />
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#6f9187]">
+                <span className="text-[12px] font-bold uppercase tracking-[0.16em] text-[#0d2b27]">
                   {os.name}
                 </span>
+                <span className="ml-2 h-px flex-1 bg-gradient-to-r from-[#cfe1d8] to-transparent" />
               </div>
               <div className="space-y-0.5">
                 {automations.map((a) => (

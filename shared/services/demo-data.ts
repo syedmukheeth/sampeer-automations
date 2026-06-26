@@ -55,18 +55,33 @@ async function stripDemo<T extends WithId>(key: string): Promise<void> {
   await kvSet(key, existing.filter((e) => !e.id.startsWith(D)));
 }
 
-/** Seed all four KV stores with demo records (additive, idempotent). */
-export async function seedDemo(): Promise<void> {
-  await upsert("crm-clients", DEMO_CLIENTS);
-  await upsert("sales-leads", DEMO_LEADS);
-  await upsert("projects", DEMO_PROJECTS);
-  await upsert("competitors", DEMO_COMPETITORS);
+/** The automations that have seedable demo data, each mapped to its kv store. */
+export type DemoResource = "clients" | "leads" | "projects" | "competitors";
+
+const REGISTRY: Record<DemoResource, { key: string; rows: WithId[] }> = {
+  clients: { key: "crm-clients", rows: DEMO_CLIENTS },
+  leads: { key: "sales-leads", rows: DEMO_LEADS },
+  projects: { key: "projects", rows: DEMO_PROJECTS },
+  competitors: { key: "competitors", rows: DEMO_COMPETITORS },
+};
+
+export const DEMO_RESOURCES = Object.keys(REGISTRY) as DemoResource[];
+
+export function isDemoResource(v: unknown): v is DemoResource {
+  return typeof v === "string" && (DEMO_RESOURCES as string[]).includes(v);
 }
 
-/** Remove only the demo records, preserving any real data. */
-export async function clearDemo(): Promise<void> {
-  await stripDemo("crm-clients");
-  await stripDemo("sales-leads");
-  await stripDemo("projects");
-  await stripDemo("competitors");
+/**
+ * Seed demo records. Pass a `resource` to seed only that automation's store;
+ * omit it to seed all. Additive + idempotent (re-seeding replaces same ids).
+ */
+export async function seedDemo(resource?: DemoResource): Promise<void> {
+  const targets = resource ? [resource] : DEMO_RESOURCES;
+  for (const r of targets) await upsert(REGISTRY[r].key, REGISTRY[r].rows);
+}
+
+/** Remove demo records (one resource, or all). Real data is preserved. */
+export async function clearDemo(resource?: DemoResource): Promise<void> {
+  const targets = resource ? [resource] : DEMO_RESOURCES;
+  for (const r of targets) await stripDemo(REGISTRY[r].key);
 }
