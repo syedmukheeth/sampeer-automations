@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Search, CornerDownLeft, ArrowUp, ArrowDown } from "lucide-react";
 import { cn } from "@shared/lib/cn";
@@ -48,6 +49,15 @@ export function CommandPalette() {
       setActive(0);
       requestAnimationFrame(() => inputRef.current?.focus());
     }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
   }, [open]);
 
   const results = useMemo(() => {
@@ -112,13 +122,13 @@ export function CommandPalette() {
         </span>
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-3 pt-[9vh] sm:p-4 sm:pt-[11vh]">
+      {open && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[9999] flex min-h-dvh items-start justify-center p-3 pt-[9vh] sm:p-4 sm:pt-[11vh]">
           <button
             type="button"
             aria-label="Close search"
             onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-white/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-white/55 backdrop-blur-md"
           />
           <div
             role="dialog"
@@ -216,7 +226,8 @@ export function CommandPalette() {
               </span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
