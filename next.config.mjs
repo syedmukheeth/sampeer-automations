@@ -32,6 +32,24 @@ const nextConfig = {
   // runs inside Trigger.dev tasks, never in Next.js.
   serverExternalPackages: ["@react-pdf/renderer"],
 
+  // Heavy packages that NO Vercel serverless function executes - they run only
+  // on the Trigger.dev worker (LLM + PDF + Composio) or in the browser. Next's
+  // file tracer otherwise copies their full node_modules into every lambda,
+  // bloating the upload ("Deploying outputs..." hang). Excluding them keeps
+  // functions tiny and deploys fast. `@trigger.dev/sdk` is NOT excluded - the
+  // API routes need it at runtime to trigger tasks.
+  outputFileTracingExcludes: {
+    "*": [
+      "node_modules/@react-pdf/**",
+      "node_modules/@composio/**",
+      "node_modules/@ai-sdk/**",
+      "node_modules/ai/**",
+      "node_modules/yoga-layout/**",
+      "node_modules/fontkit/**",
+      "node_modules/canvas/**",
+    ],
+  },
+
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
