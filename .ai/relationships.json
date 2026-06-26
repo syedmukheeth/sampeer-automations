@@ -1,0 +1,56 @@
+{
+  "$comment": "Directed edges between major nodes. type: imports|calls|triggers|reads|writes|renders|gates. Node ids match knowledge-graph.json.",
+  "edges": [
+    { "from": "middleware", "to": "auth", "type": "calls", "via": "hasOwnerSession" },
+    { "from": "middleware", "to": "all-app-routes", "type": "gates" },
+    { "from": "app-login", "to": "api-auth-login", "type": "calls" },
+    { "from": "api-auth-login", "to": "auth", "type": "calls", "via": "isOwnerLogin,signSession" },
+
+    { "from": "app-layout-app", "to": "installs", "type": "calls", "via": "installedSlugs" },
+    { "from": "app-layout-app", "to": "Sidebar", "type": "renders" },
+    { "from": "Sidebar", "to": "registry", "type": "imports" },
+    { "from": "app-dashboard", "to": "runs", "type": "calls", "via": "getRunMetrics" },
+    { "from": "app-dashboard", "to": "registry", "type": "imports" },
+    { "from": "app-library", "to": "installs", "type": "calls" },
+
+    { "from": "installs", "to": "store", "type": "calls" },
+    { "from": "installs", "to": "registry", "type": "imports" },
+    { "from": "settings", "to": "store", "type": "calls" },
+    { "from": "settings", "to": "settings-schema", "type": "imports" },
+    { "from": "runs", "to": "trigger-sdk", "type": "calls", "via": "runs.list/retrieve" },
+
+    { "from": "api-invoices", "to": "invoice-handlers", "type": "calls", "via": "triggerInvoice" },
+    { "from": "invoice-handlers", "to": "settings", "type": "calls", "via": "getSettings" },
+    { "from": "invoice-handlers", "to": "trigger-sdk", "type": "triggers", "via": "generate-invoice" },
+    { "from": "generate-invoice", "to": "invoice-validate", "type": "calls" },
+    { "from": "generate-invoice", "to": "invoice-calc", "type": "calls" },
+    { "from": "generate-invoice", "to": "invoice-agent", "type": "triggers" },
+    { "from": "generate-invoice", "to": "invoice-render-pdf", "type": "triggers" },
+    { "from": "generate-invoice", "to": "invoice-send-email", "type": "triggers" },
+    { "from": "invoice-agent", "to": "google-ai", "type": "calls", "via": "Gemini" },
+    { "from": "invoice-render-pdf", "to": "react-pdf", "type": "calls" },
+    { "from": "invoice-send-email", "to": "resend", "type": "calls", "via": "preferred" },
+    { "from": "invoice-send-email", "to": "composio", "type": "calls", "via": "fallback" },
+    { "from": "InvoiceForm", "to": "api-invoices", "type": "calls" },
+    { "from": "InvoiceAutomationView", "to": "api-invoices-poll", "type": "calls" },
+
+    { "from": "proposal-pipeline", "to": "generate-proposal-pattern", "type": "mirrors", "ref": "invoice pipeline" },
+    { "from": "expense-pipeline", "to": "generate-invoice-pattern", "type": "mirrors", "ref": "invoice pipeline" },
+
+    { "from": "api-clients", "to": "crm-service", "type": "calls" },
+    { "from": "crm-service", "to": "store", "type": "calls", "via": "kv crm-clients" },
+    { "from": "ClientCrmView", "to": "crm-health", "type": "calls" },
+    { "from": "api-projects", "to": "projects-service", "type": "calls" },
+    { "from": "api-leads", "to": "leads-service", "type": "calls" },
+    { "from": "api-competitors", "to": "competitors-service", "type": "calls" },
+    { "from": "kv-services", "to": "store", "type": "calls" },
+
+    { "from": "client-only-views", "to": "client-only-engines", "type": "calls", "via": "useMemo" },
+
+    { "from": "ui-barrel", "to": "all-views", "type": "imports", "note": "shared/ui consumed everywhere" },
+    { "from": "trigger-config", "to": "pipeline-trigger-dirs", "type": "registers", "note": "only 3 pipeline features" }
+  ],
+  "highFanIn": ["registry", "store", "ui-barrel", "auth"],
+  "circular": [],
+  "deadOrUnused": [{ "node": "trigger-react-hooks", "note": "dependency present; Views poll REST instead. Kept for live-subscription upgrade." }]
+}

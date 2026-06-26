@@ -1,0 +1,66 @@
+{
+  "$comment": "AI navigation flows: 'when working on X, walk this chain'. Arrow = data/call direction. Files relative to repo root.",
+  "concepts": {
+    "Add a new automation": [
+      "features/registry.ts (add 1 entry under OS>module)",
+      "features/<os>/<slug>/ (build slice: components + utils, +api/trigger if pipeline, +service.ts if kv)",
+      "app/(app)/<os>/<slug>/page.tsx (thin page renders the *View)",
+      "test/<slug>.test.ts (cover the deterministic util)",
+      "trigger.config.ts (ONLY if pipeline: add ./features/<os>/<slug>/trigger)"
+    ],
+    "Authentication": [
+      "app/login/page.tsx",
+      "POST /api/auth/login",
+      "shared/services/auth.ts (isOwnerLogin -> signSession)",
+      "cookie sampeer_session",
+      "middleware.ts (hasOwnerSession gates all)"
+    ],
+    "Invoice (pipeline reference flow)": [
+      "components/InvoiceForm.tsx",
+      "POST /api/invoices",
+      "invoice-generator/api/handlers.ts (applySettings)",
+      "tasks.trigger generate-invoice",
+      "trigger/generate-invoice.ts -> validate.ts -> calc.ts -> invoice-agent.ts(Gemini) -> render-pdf.ts -> send-email.ts",
+      "GET /api/invoices/:runId (poll)",
+      "InvoiceAutomationView renders package + PDF"
+    ],
+    "kv CRUD flow (crm/projects/leads/competitors)": [
+      "<Feature>View.tsx",
+      "GET/POST /api/<resource>",
+      "features/.../service.ts",
+      "shared/services/store.ts kvGet/kvSet",
+      ".data/<key>.json",
+      "utils/<score|health|status>.ts derives metric"
+    ],
+    "Client-only flow (gst/seo/repurpose/trend/video/cold-email/meeting/analytics/website-health)": [
+      "<Feature>View.tsx",
+      "useMemo -> utils/<engine>.ts (pure)",
+      "optional utils/*-pdf.tsx -> in-browser download"
+    ],
+    "Dashboard metrics": [
+      "app/(app)/page.tsx",
+      "shared/services/runs.ts getRunMetrics",
+      "@trigger.dev/sdk runs.list",
+      "Trigger.dev run history"
+    ],
+    "Sidebar / shell rendering": [
+      "app/(app)/layout.tsx (installedSlugs)",
+      "shared/services/installs.ts",
+      "features/registry.ts",
+      "shared/navigation/Sidebar.tsx"
+    ],
+    "White-label settings": [
+      "app/(app)/settings/SettingsForm.tsx",
+      "GET/POST /api/settings",
+      "shared/services/settings.ts (+ settings-schema.ts)",
+      "kv key settings + cookie sampeer_settings",
+      "injected by api/handlers.ts applySettings into Trigger payload"
+    ],
+    "Email send": [
+      "trigger/send-*email.ts",
+      "RESEND_API_KEY set? -> resend",
+      "else -> @composio/core Gmail",
+      "failure -> emailSent:false (run still succeeds)"
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "$comment": "Node graph. Per node: file, type, desc, exports, imports, related (node ids / files), deps (npm). Token-optimized: feature internals summarized as patterns; per-feature files in features.json. Paths from repo root.",
+  "nodes": {
+    "registry": {
+      "file": "features/registry.ts", "type": "config/single-source-of-truth",
+      "desc": "OS>Module>Automation hierarchy. Drives sidebar, dashboard KPIs, library.",
+      "exports": ["operatingSystems", "allAutomations", "liveAutomations", "getAutomation", "countByStatus", "osAutomationCount", "AutomationMeta", "ModuleMeta", "OperatingSystem", "AutomationStatus"],
+      "imports": ["lucide-react"], "usedBy": ["Sidebar", "app-dashboard", "app-library", "installs"], "fanIn": "high"
+    },
+    "middleware": {
+      "file": "middleware.ts", "type": "edge-middleware",
+      "desc": "Gates every route except /login & /api/auth/* behind owner session. API->401 JSON, page->redirect /login.",
+      "exports": ["middleware", "config"], "imports": ["next/server", "auth"], "related": ["auth"]
+    },
+    "auth": {
+      "file": "shared/services/auth.ts", "type": "service/auth",
+      "desc": "Single-owner JWT (jose, HS256, 30d, kind session). Edge-safe.",
+      "exports": ["SESSION_COOKIE", "signSession", "verifyToken", "isOwnerLogin", "isOwnerUsername", "hasOwnerSession", "AuthClaims"],
+      "imports": ["jose"], "usedBy": ["middleware", "api-auth-login", "api-auth-logout"], "deps": ["jose"], "env": ["AUTH_SECRET", "AUTH_USERNAME", "AUTH_PASSWORD"]
+    },
+    "store": {
+      "file": "shared/services/store.ts", "type": "service/persistence",
+      "desc": "Swappable kv adapter. Default: JSON file per key in .data/. Safe no-op on read-only FS. Swap for Redis without touching callers.",
+      "exports": ["kvGet", "kvSet"], "imports": ["node:fs/promises", "node:path"],
+      "usedBy": ["installs", "settings", "crm-service", "projects-service", "leads-service", "competitors-service"], "fanIn": "high", "serverOnly": true
+    },
+    "installs": {
+      "file": "shared/services/installs.ts", "type": "service/marketplace",
+      "desc": "Which automations are installed (enabled). Live default on; overrides in kv 'installs'. Shell surfaces only installed.",
+      "exports": ["getInstalls", "installedSlugs", "isInstalled", "setInstalled", "InstallState"],
+      "imports": ["store", "registry"], "usedBy": ["app-layout-app", "app-library", "api-installs"], "serverOnly": true
+    },
+    "settings": {
+      "file": "shared/services/settings.ts", "type": "service/config",
+      "desc": "White-label branding + invoice defaults. kv 'settings' + cookie sampeer_settings, merged over env-seeded defaults. Injected into Trigger payloads.",
+      "exports": ["getSettings", "saveSettings", "encodeSettingsCookie", "SETTINGS_COOKIE", "(re-export) settingsSchema", "Settings"],
+      "imports": ["store", "settings-schema", "next/headers"], "usedBy": ["api-settings", "invoice-handlers", "proposal-handlers", "expense-handlers"], "serverOnly": true
+    },
+    "settings-schema": { "file": "shared/services/settings-schema.ts", "type": "schema/zod", "desc": "Settings zod schema (branding, invoice).", "exports": ["settingsSchema", "Settings"], "imports": ["zod"] },
+    "runs": {
+      "file": "shared/services/runs.ts", "type": "service/metrics",
+      "desc": "Reads Trigger.dev run history -> dashboard metrics. Returns [] on error so UI never crashes. Tags carry client/invoice context.",
+      "exports": ["listRuns", "getRunMetrics", "runTimeAgo", "formatDuration", "RunRecord", "RunMetrics"],
+      "imports": ["@trigger.dev/sdk"], "usedBy": ["app-dashboard"], "deps": ["@trigger.dev/sdk"], "env": ["TRIGGER_SECRET_KEY"], "serverOnly": true
+    },
+    "ui-barrel": {
+      "file": "shared/ui/index.ts", "type": "design-system/barrel",
+      "desc": "Re-exports the shared UI kit. Import from @shared/ui.",
+      "exports": ["Card", "CardBody", "BrandLogo", "Button", "StatusBadge", "StatCard", "SectionHeader", "PageHeader", "AutomationCard", "EmptyState", "ActivityTimeline", "LogViewer", "ChartCard", "AutomationPageLayout"],
+      "usedBy": "all feature Views + pages", "fanIn": "high",
+      "siblingsNotInBarrel": ["InstallRequired", "InstallToggle", "PageTransition"]
+    },
+    "Sidebar": { "file": "shared/navigation/Sidebar.tsx", "type": "component/nav", "desc": "OS>module>automation tree, filtered by installed slugs.", "exports": ["Sidebar", "MobileNav"], "imports": ["registry", "lucide-react"] },
+    "Topbar": { "file": "shared/navigation/Topbar.tsx", "type": "component/nav", "exports": ["Topbar"] },
+    "lib": { "file": "shared/lib/{cn,format,motion}.ts", "type": "util", "desc": "cn() classnames; client-safe formatters; framer-motion presets.", "exports": ["cn", "format helpers", "motion variants"], "deps": ["clsx", "tailwind-merge", "framer-motion"] },
+    "charts": { "file": "shared/charts/{LineChart,Sparkline}.tsx", "type": "component/chart", "exports": ["LineChart", "Sparkline"] },
+
+    "app-root-layout": { "file": "app/layout.tsx", "type": "next/layout", "desc": "HTML shell, fonts, globals.css." },
+    "app-layout-app": { "file": "app/(app)/layout.tsx", "type": "next/layout", "desc": "Authed shell: loads installedSlugs, renders Sidebar/Topbar/PageTransition. force-dynamic.", "imports": ["installs", "Sidebar", "Topbar", "PageTransition"] },
+    "app-dashboard": { "file": "app/(app)/page.tsx", "type": "next/page", "desc": "Dashboard: registry KPIs + recent runs.", "imports": ["registry", "runs", "ui-barrel"] },
+    "app-library": { "file": "app/(app)/library/page.tsx", "type": "next/page", "desc": "Marketplace, install toggles.", "imports": ["registry", "installs"] },
+    "app-settings": { "file": "app/(app)/settings/{page,SettingsForm}.tsx", "type": "next/page+client", "desc": "White-label settings form.", "imports": ["settings"] },
+    "app-login": { "file": "app/login/page.tsx", "type": "next/page", "desc": "Public login -> POST /api/auth/login." },
+
+    "api-auth-login": { "file": "app/api/auth/login/route.ts", "type": "api", "method": "POST", "imports": ["auth"], "env": ["NODE_ENV"] },
+    "api-auth-logout": { "file": "app/api/auth/logout/route.ts", "type": "api", "method": "POST" },
+    "api-installs": { "file": "app/api/installs/route.ts", "type": "api", "imports": ["installs"] },
+    "api-settings": { "file": "app/api/settings/route.ts", "type": "api", "method": "GET|POST", "imports": ["settings"] },
+
+    "invoice-handlers": {
+      "file": "features/business-os/invoice-generator/api/handlers.ts", "type": "feature-api",
+      "desc": "triggerInvoice: validate shape -> applySettings -> tasks.trigger('generate-invoice', tags). getInvoiceRun: runs.retrieve poll.",
+      "exports": ["triggerInvoice", "getInvoiceRun"], "imports": ["@trigger.dev/sdk", "settings", "../utils/schema", "../trigger/generate-invoice"], "calledBy": ["api-invoices", "api-invoices-poll"]
+    },
+    "generate-invoice": {
+      "file": "features/business-os/invoice-generator/trigger/generate-invoice.ts", "type": "trigger-task/orchestrator", "id": "generate-invoice",
+      "desc": "Pipeline: validate(TS)->computeTotals(TS)->invoiceAgent(Gemini prose)->assemble->renderPdf->sendEmail. Returns InvoicePackage+pdfBase64+emailSent+runId.",
+      "imports": ["invoice-validate", "invoice-calc", "invoice-agent", "invoice-render-pdf", "invoice-send-email", "../utils/schema"], "deps": ["@trigger.dev/sdk", "zod"]
+    },
+    "invoice-agent": { "file": "features/business-os/invoice-generator/trigger/invoice-agent.ts", "type": "trigger-task/llm", "desc": "Gemini. Prose ONLY: premium item descriptions, notes, client email. Never numbers.", "imports": ["ai", "@ai-sdk/google", "../prompts/invoice-agent"], "env": ["GOOGLE_GENERATIVE_AI_API_KEY"] },
+    "invoice-render-pdf": { "file": "features/business-os/invoice-generator/trigger/render-pdf.ts", "type": "trigger-task/pdf", "imports": ["../utils/invoice-pdf", "@react-pdf/renderer"] },
+    "invoice-send-email": { "file": "features/business-os/invoice-generator/trigger/send-email.ts", "type": "trigger-task/email", "desc": "Resend preferred, Composio Gmail fallback. Failure != run failure.", "imports": ["resend", "@composio/core"], "env": ["RESEND_API_KEY", "RESEND_FROM", "COMPOSIO_API_KEY", "COMPOSIO_USER_ID"] },
+    "invoice-calc": { "file": "features/business-os/invoice-generator/utils/calc.ts", "type": "util/deterministic", "exports": ["computeTotals", "formatMoney"], "test": "test/calc.test.ts" },
+    "invoice-validate": { "file": "features/business-os/invoice-generator/utils/validate.ts", "type": "util/deterministic", "exports": ["validateInput"] },
+
+    "crm-service": { "file": "features/business-os/client-crm/service.ts", "type": "feature-service/kv", "desc": "list/save/delete clients over kv 'crm-clients'; parse via schema, sort by value.", "exports": ["listClients", "saveClient", "deleteClient"], "imports": ["store", "./utils/schema"] },
+
+    "pattern-pipeline": {
+      "type": "PATTERN", "appliesTo": ["invoice-generator", "proposal-generator", "expense-tracker"],
+      "desc": "form->Form.tsx -> POST /api/x -> api/handlers.ts(applySettings) -> tasks.trigger(orchestrator) -> validate+calc(TS)+agent(Gemini)+render-pdf+send-email -> poll GET /api/x/:runId -> *AutomationView renders. proposal/expense mirror invoice nodes above with their own slugs (see features.json)."
+    },
+    "pattern-kv": {
+      "type": "PATTERN", "appliesTo": ["client-crm", "project-dashboard", "lead-pipeline", "competitor-radar"],
+      "desc": "*View -> GET/POST /api/<resource> (+DELETE /[id]) -> service.ts -> store kv -> utils/<score|health|status>.ts derives metric. crm-service is the reference node."
+    },
+    "pattern-client": {
+      "type": "PATTERN", "appliesTo": ["gst-calculator", "video-factory", "seo-writer", "repurpose-engine", "trend-hunter", "cold-email", "meeting-summary", "analytics", "website-health"],
+      "desc": "*View -> useMemo -> utils/<engine>.ts (pure, unit-tested) -> optional utils/*-pdf.tsx in-browser. No API/worker. Engine entry fns: summarize, buildScript, generateAngles, auditSite (others: calc/seo/repurpose/generate)."
+    }
+  },
+  "externalNodes": {
+    "google-ai": "Gemini via ai + @ai-sdk/google",
+    "react-pdf": "@react-pdf/renderer",
+    "resend": "primary email",
+    "composio": "fallback Gmail email",
+    "trigger-sdk": "@trigger.dev/sdk tasks+runs"
+  }
+}

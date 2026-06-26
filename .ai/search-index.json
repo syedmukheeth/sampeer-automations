@@ -1,0 +1,70 @@
+{
+  "$comment": "Flat searchable index. fields: name, kind, loc (file or path glob), note. Use ctrl-F by name. Feature engines/schemas follow features/<os>/<slug>/ from features.json.",
+  "entries": [
+    { "name": "operatingSystems", "kind": "const", "loc": "features/registry.ts", "note": "OS>module>automation tree (source of truth)" },
+    { "name": "getAutomation", "kind": "fn", "loc": "features/registry.ts", "note": "slug -> AutomationMeta" },
+    { "name": "liveAutomations / allAutomations", "kind": "const", "loc": "features/registry.ts" },
+    { "name": "AutomationMeta / ModuleMeta / OperatingSystem", "kind": "type", "loc": "features/registry.ts" },
+
+    { "name": "middleware", "kind": "fn", "loc": "middleware.ts", "note": "owner-session gate" },
+    { "name": "signSession / verifyToken / hasOwnerSession", "kind": "fn", "loc": "shared/services/auth.ts", "note": "jose JWT" },
+    { "name": "isOwnerLogin / isOwnerUsername", "kind": "fn", "loc": "shared/services/auth.ts" },
+    { "name": "SESSION_COOKIE", "kind": "const", "loc": "shared/services/auth.ts", "note": "'sampeer_session'" },
+
+    { "name": "kvGet / kvSet", "kind": "fn", "loc": "shared/services/store.ts", "note": "kv adapter (.data/*.json)" },
+    { "name": "getInstalls / installedSlugs / isInstalled / setInstalled", "kind": "fn", "loc": "shared/services/installs.ts" },
+    { "name": "getSettings / saveSettings", "kind": "fn", "loc": "shared/services/settings.ts" },
+    { "name": "settingsSchema / Settings", "kind": "schema/type", "loc": "shared/services/settings-schema.ts" },
+    { "name": "listRuns / getRunMetrics", "kind": "fn", "loc": "shared/services/runs.ts", "note": "Trigger run history -> metrics" },
+    { "name": "runTimeAgo / formatDuration", "kind": "fn", "loc": "shared/services/runs.ts" },
+    { "name": "RunRecord / RunMetrics", "kind": "type", "loc": "shared/services/runs.ts" },
+    { "name": "cn", "kind": "fn", "loc": "shared/lib/cn.ts" },
+    { "name": "format helpers", "kind": "fn", "loc": "shared/lib/format.ts" },
+
+    { "name": "AutomationPageLayout", "kind": "component", "loc": "shared/ui/AutomationPageLayout.tsx", "note": "standard automation chrome (tabs+stats)" },
+    { "name": "StatCard / AutomationCard / ChartCard / Card", "kind": "component", "loc": "shared/ui/", "note": "via @shared/ui barrel" },
+    { "name": "Button / StatusBadge / EmptyState / PageHeader / SectionHeader", "kind": "component", "loc": "shared/ui/" },
+    { "name": "ActivityTimeline / LogViewer", "kind": "component", "loc": "shared/ui/" },
+    { "name": "InstallRequired / InstallToggle", "kind": "component", "loc": "shared/ui/ (not in barrel)" },
+    { "name": "PageTransition", "kind": "component", "loc": "shared/ui/PageTransition.tsx", "note": "framer-motion route transition" },
+    { "name": "Sidebar / MobileNav", "kind": "component", "loc": "shared/navigation/Sidebar.tsx" },
+    { "name": "Topbar", "kind": "component", "loc": "shared/navigation/Topbar.tsx" },
+    { "name": "LineChart / Sparkline", "kind": "component", "loc": "shared/charts/" },
+
+    { "name": "triggerInvoice / getInvoiceRun", "kind": "fn", "loc": "features/business-os/invoice-generator/api/handlers.ts" },
+    { "name": "applySettings", "kind": "fn", "loc": "features/business-os/*/api/handlers.ts", "note": "merge settings into payload (pipeline)" },
+    { "name": "generateInvoice (task generate-invoice)", "kind": "trigger-task", "loc": "features/business-os/invoice-generator/trigger/generate-invoice.ts" },
+    { "name": "invoiceAgent / proposalAgent / expenseAgent", "kind": "trigger-task/llm", "loc": "features/business-os/*/trigger/*-agent.ts", "note": "Gemini prose only" },
+    { "name": "renderPdf / render-proposal-pdf / render-expense-pdf", "kind": "trigger-task", "loc": "features/business-os/*/trigger/render-*.ts" },
+    { "name": "sendEmail / send-proposal-email", "kind": "trigger-task", "loc": "features/business-os/*/trigger/send-*email.ts", "note": "Resend->Composio fallback" },
+    { "name": "computeTotals / formatMoney", "kind": "fn", "loc": "features/business-os/invoice-generator/utils/calc.ts" },
+    { "name": "validateInput", "kind": "fn", "loc": "features/business-os/*/utils/validate.ts" },
+    { "name": "invoiceInputSchema / InvoiceInput / InvoicePackage", "kind": "schema/type", "loc": "features/business-os/invoice-generator/utils/schema.ts" },
+
+    { "name": "GST calc", "kind": "engine", "loc": "features/business-os/gst-calculator/utils/calc.ts", "note": "CGST/SGST/IGST, incl/excl" },
+    { "name": "client health score", "kind": "engine", "loc": "features/business-os/client-crm/utils/health.ts" },
+    { "name": "project status (on-track/at-risk)", "kind": "engine", "loc": "features/business-os/project-dashboard/utils/status.ts" },
+    { "name": "lead score / weighted forecast", "kind": "engine", "loc": "features/sales-os/lead-pipeline/utils/score.ts" },
+    { "name": "competitor threat index", "kind": "engine", "loc": "features/growth-os/competitor-radar/utils/score.ts" },
+    { "name": "buildScript", "kind": "engine-fn", "loc": "features/content-os/video-factory/utils/script.ts" },
+    { "name": "generateAngles", "kind": "engine-fn", "loc": "features/content-os/trend-hunter/utils/angles.ts" },
+    { "name": "SEO scorer", "kind": "engine", "loc": "features/content-os/seo-writer/utils/seo.ts" },
+    { "name": "repurpose", "kind": "engine", "loc": "features/content-os/repurpose-engine/utils/repurpose.ts" },
+    { "name": "cold email sequence", "kind": "engine", "loc": "features/sales-os/cold-email/utils/generate.ts" },
+    { "name": "summarize", "kind": "engine-fn", "loc": "features/sales-os/meeting-summary/utils/summarize.ts" },
+    { "name": "growth analytics (CAC/ROAS/ROI)", "kind": "engine", "loc": "features/growth-os/analytics/utils/calc.ts" },
+    { "name": "auditSite", "kind": "engine-fn", "loc": "features/growth-os/website-health/utils/audit.ts" },
+
+    { "name": "listClients / saveClient / deleteClient", "kind": "fn", "loc": "features/business-os/client-crm/service.ts" },
+    { "name": "leads/projects/competitors service", "kind": "fn", "loc": "features/{sales-os/lead-pipeline,business-os/project-dashboard,growth-os/competitor-radar}/service.ts" },
+
+    { "name": "POST /api/auth/login | logout", "kind": "route", "loc": "app/api/auth/*" },
+    { "name": "POST /api/invoices | proposals | expenses + GET /:runId", "kind": "route", "loc": "app/api/{invoices,proposals,expenses}/" },
+    { "name": "GET/POST /api/clients|projects|leads|competitors + DELETE /:id", "kind": "route", "loc": "app/api/<resource>/" },
+    { "name": "GET/POST /api/settings", "kind": "route", "loc": "app/api/settings/route.ts" },
+    { "name": "/api/installs", "kind": "route", "loc": "app/api/installs/route.ts" },
+
+    { "name": "schema (any feature)", "kind": "schema/zod", "loc": "features/<os>/<slug>/utils/schema.ts", "note": "data model per kv/pipeline feature" },
+    { "name": "tests", "kind": "test", "loc": "test/*.test.ts", "note": "one per deterministic engine; npm test (74)" }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "$comment": "slug -> owning files. Path roots: feat=features/<os>/<slug>, page=app/(app)/<route>/page.tsx. See feature-map.md.",
+  "invoice-generator": {
+    "os": "business-os", "module": "finance", "kind": "pipeline",
+    "route": "/business-os/invoice-generator",
+    "files": ["feat/api/handlers.ts", "feat/trigger/generate-invoice.ts", "feat/trigger/invoice-agent.ts", "feat/trigger/render-pdf.ts", "feat/trigger/send-email.ts", "feat/prompts/invoice-agent.ts", "feat/utils/schema.ts", "feat/utils/validate.ts", "feat/utils/calc.ts", "feat/utils/invoice-pdf.tsx", "feat/types/index.ts", "feat/components/InvoiceAutomationView.tsx", "feat/components/InvoiceForm.tsx", "app/api/invoices/route.ts", "app/api/invoices/[runId]/route.ts"],
+    "api": ["POST /api/invoices", "GET /api/invoices/:runId"], "task": "generate-invoice", "test": "calc.test.ts"
+  },
+  "proposal-generator": {
+    "os": "business-os", "module": "finance", "kind": "pipeline",
+    "route": "/business-os/proposal-generator",
+    "files": ["feat/api/handlers.ts", "feat/trigger/generate-proposal.ts", "feat/trigger/proposal-agent.ts", "feat/trigger/render-proposal-pdf.ts", "feat/trigger/send-proposal-email.ts", "feat/prompts/proposal-agent.ts", "feat/utils/{schema,validate,calc,proposal-pdf}", "feat/components/{ProposalAutomationView,ProposalForm}"],
+    "api": ["POST /api/proposals", "GET /api/proposals/:runId"], "task": "generate-proposal"
+  },
+  "expense-tracker": {
+    "os": "business-os", "module": "finance", "kind": "pipeline",
+    "route": "/business-os/expense-tracker",
+    "files": ["feat/api/handlers.ts", "feat/trigger/{track-expenses,expense-agent,render-expense-pdf}", "feat/prompts/expense-agent.ts", "feat/utils/{csv,calc,validate,schema,expense-pdf}", "feat/components/{ExpenseAutomationView,ExpenseForm}"],
+    "api": ["POST /api/expenses", "GET /api/expenses/:runId"], "task": "track-expenses", "test": "expense-calc.test.ts"
+  },
+  "gst-calculator": {
+    "os": "business-os", "module": "finance", "kind": "client",
+    "route": "/business-os/gst-calculator",
+    "files": ["feat/utils/calc.ts", "feat/utils/gst-pdf.tsx", "feat/components/{GstCalculatorView,GstCalculator}"],
+    "test": "gst-calc.test.ts"
+  },
+  "client-crm": {
+    "os": "business-os", "module": "clients", "kind": "kv",
+    "route": "/business-os/client-crm",
+    "files": ["feat/service.ts", "feat/utils/health.ts", "feat/utils/schema.ts", "feat/components/ClientCrmView.tsx", "app/api/clients/route.ts", "app/api/clients/[id]/route.ts"],
+    "api": ["GET/POST /api/clients", "DELETE /api/clients/:id"], "kvKey": "crm-clients", "test": "crm-health.test.ts"
+  },
+  "project-dashboard": {
+    "os": "business-os", "module": "clients", "kind": "kv",
+    "route": "/business-os/project-dashboard",
+    "files": ["feat/service.ts", "feat/utils/status.ts", "feat/utils/schema.ts", "feat/components/ProjectDashboardView.tsx", "app/api/projects/route.ts", "app/api/projects/[id]/route.ts"],
+    "api": ["GET/POST /api/projects", "DELETE /api/projects/:id"], "kvKey": "projects", "test": "project-status.test.ts"
+  },
+  "video-factory": {
+    "os": "content-os", "module": "create", "kind": "client",
+    "route": "/content-os/video-factory",
+    "files": ["feat/utils/script.ts", "feat/components/{VideoFactoryView,VideoFactory}"],
+    "engine": "buildScript()", "test": "video-script.test.ts"
+  },
+  "seo-writer": {
+    "os": "content-os", "module": "create", "kind": "client",
+    "route": "/content-os/seo-writer",
+    "files": ["feat/utils/seo.ts", "feat/components/{SeoWriterView,SeoWriter}"], "test": "seo-analyze.test.ts"
+  },
+  "repurpose-engine": {
+    "os": "content-os", "module": "create", "kind": "client",
+    "route": "/content-os/repurpose-engine",
+    "files": ["feat/utils/repurpose.ts", "feat/components/{RepurposeEngineView,RepurposeEngine}"], "test": "repurpose.test.ts"
+  },
+  "trend-hunter": {
+    "os": "content-os", "module": "research", "kind": "client",
+    "route": "/content-os/trend-hunter",
+    "files": ["feat/utils/angles.ts", "feat/components/{TrendHunterView,TrendHunter}"],
+    "engine": "generateAngles()", "test": "trend-angles.test.ts"
+  },
+  "lead-pipeline": {
+    "os": "sales-os", "module": "pipeline", "kind": "kv",
+    "route": "/sales-os/lead-pipeline",
+    "files": ["feat/service.ts", "feat/utils/score.ts", "feat/utils/schema.ts", "feat/components/LeadPipelineView.tsx", "app/api/leads/route.ts", "app/api/leads/[id]/route.ts"],
+    "api": ["GET/POST /api/leads", "DELETE /api/leads/:id"], "kvKey": "leads", "test": "lead-score.test.ts"
+  },
+  "cold-email": {
+    "os": "sales-os", "module": "pipeline", "kind": "client",
+    "route": "/sales-os/cold-email",
+    "files": ["feat/utils/generate.ts", "feat/utils/cold-email-pdf.tsx", "feat/components/{ColdEmailView,ColdEmailGenerator}"], "test": "cold-email.test.ts"
+  },
+  "meeting-summary": {
+    "os": "sales-os", "module": "pipeline", "kind": "client",
+    "route": "/sales-os/meeting-summary",
+    "files": ["feat/utils/summarize.ts", "feat/components/{MeetingSummaryView,MeetingSummary}"],
+    "engine": "summarize()", "test": "meeting-summary.test.ts"
+  },
+  "analytics": {
+    "os": "growth-os", "module": "insight", "kind": "client",
+    "route": "/growth-os/analytics",
+    "files": ["feat/utils/calc.ts", "feat/utils/analytics-pdf.tsx", "feat/components/{GrowthAnalyticsView,GrowthAnalytics}"], "test": "growth-analytics.test.ts"
+  },
+  "website-health": {
+    "os": "growth-os", "module": "insight", "kind": "client",
+    "route": "/growth-os/website-health",
+    "files": ["feat/utils/audit.ts", "feat/components/{WebsiteHealthView,WebsiteHealth}"],
+    "engine": "auditSite()", "test": "website-audit.test.ts"
+  },
+  "competitor-radar": {
+    "os": "growth-os", "module": "insight", "kind": "kv", "registrySlug": "competitors",
+    "route": "/growth-os/competitor-radar",
+    "files": ["feat/service.ts", "feat/utils/score.ts", "feat/utils/schema.ts", "feat/components/CompetitorRadarView.tsx", "app/api/competitors/route.ts", "app/api/competitors/[id]/route.ts"],
+    "api": ["GET/POST /api/competitors", "DELETE /api/competitors/:id"], "kvKey": "competitors", "test": "competitor-radar.test.ts"
+  }
+}

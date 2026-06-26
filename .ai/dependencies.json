@@ -1,0 +1,36 @@
+{
+  "$comment": "Module import graph (internal). external = npm. See dependencies.md for prose.",
+  "aliases": { "@features/*": "features/*", "@shared/*": "shared/*" },
+  "internal": {
+    "middleware.ts": { "imports": ["@shared/services/auth"], "constraint": "edge-safe only" },
+    "features/registry.ts": { "imports": ["lucide-react"], "importedBy": ["shared/navigation/Sidebar", "shared/services/installs", "app/(app)/page", "app/(app)/library/page"], "fanIn": "high" },
+    "shared/services/auth.ts": { "imports": ["jose"], "serverOrEdge": true },
+    "shared/services/store.ts": { "imports": ["node:fs/promises", "node:path"], "importedBy": ["installs", "settings", "client-crm/service", "project-dashboard/service", "lead-pipeline/service", "competitor-radar/service"], "serverOnly": true, "fanIn": "high" },
+    "shared/services/installs.ts": { "imports": ["./store", "@features/registry"], "serverOnly": true },
+    "shared/services/settings.ts": { "imports": ["./store", "./settings-schema", "next/headers"], "serverOnly": true },
+    "shared/services/runs.ts": { "imports": ["@trigger.dev/sdk"], "serverOnly": true },
+    "shared/ui/index.ts": { "role": "barrel", "importedBy": "all feature Views + pages", "fanIn": "high" },
+    "features/**/api/handlers.ts": { "imports": ["@trigger.dev/sdk", "@shared/services/settings", "../utils/schema", "../trigger/<task>"], "scope": "pipeline only" },
+    "features/**/trigger/<orchestrator>.ts": { "imports": ["@trigger.dev/sdk", "../utils/{schema,validate,calc}", "./<agent>", "./render-*", "./send-*"], "scope": "pipeline only" },
+    "features/**/trigger/<agent>.ts": { "imports": ["ai", "@ai-sdk/google", "../prompts/<agent>"], "scope": "pipeline only" },
+    "features/**/service.ts": { "imports": ["@shared/services/store", "./utils/schema"], "scope": "kv only" },
+    "features/**/components/*View.tsx": { "imports": ["@shared/ui", "../utils/*", "react"], "clientComponent": true, "mustNotImport": ["@shared/services/*"] }
+  },
+  "external": {
+    "next": "App Router", "react": "19", "react-dom": "19",
+    "@trigger.dev/sdk": "tasks+runs", "@trigger.dev/react-hooks": "available/unused-in-views",
+    "ai + @ai-sdk/google": "Gemini agents", "@react-pdf/renderer": "PDFs",
+    "resend": "email primary", "@composio/core": "email fallback",
+    "jose": "auth jwt", "zod": "schemas", "framer-motion": "anim", "lucide-react": "icons",
+    "clsx + tailwind-merge": "cn()"
+  },
+  "rules": [
+    "features may import @shared/* and @features/registry; avoid feature->feature imports",
+    "shared/services/* are server-only; never import in a client component",
+    "middleware.ts: edge-safe imports only (auth.ts yes; store/settings no)",
+    "money/scores never pass through the LLM"
+  ],
+  "circular": [],
+  "unused": ["@trigger.dev/react-hooks (in Views; kept for upgrade path)"],
+  "deadFiles": []
+}

@@ -13,7 +13,7 @@ export function Sidebar({ installed = [] }: { installed?: string[] }) {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#151917] via-[#101413] to-[#0d100f] text-stone-300 lg:flex">
+    <aside className="hidden h-dvh w-[19rem] shrink-0 flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#103634] via-[#0c2826] to-[#081d1c] text-stone-300 lg:flex">
       <div className="shrink-0 px-5 pb-5 pt-6">
         <div className="flex items-center gap-3">
           <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
@@ -119,7 +119,7 @@ export function MobileNav({ installed = [] }: { installed?: string[] }) {
             onClick={() => setOpen(false)}
             aria-label="Close navigation overlay"
           />
-          <aside className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#151917] via-[#101413] to-[#0d100f] text-stone-300 shadow-2xl">
+          <aside className="absolute inset-y-0 left-0 flex w-[min(21rem,88vw)] flex-col overflow-hidden border-r border-sidebar-line bg-gradient-to-b from-[#103634] via-[#0c2826] to-[#081d1c] text-stone-300 shadow-2xl">
             <div className="flex shrink-0 items-center justify-between px-4 pb-4 pt-5">
               <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
                 <BrandLogo className="h-10 w-10 rounded-xl ring-1 ring-white/10" />
